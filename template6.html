@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+		canvas{
+			background:#ccc;
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var polygon = qcanvas.qpolygon.polygon({
+	r:30,
+	num:6,
+	start:[100,100]
+})
+
+	var shape = qcanvas.qshape.shape({
+				fillColor:'#999',
+				opacity:0.3,
+				points:function(){
+					return [
+						[80,10],
+						[80,50],
+						[150,70],
+						[160,20],
+					]
+				}
+			});
+	
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+		canvas{
+			background:#ccc;
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var rect;
+
+var create = function(){
+	rect = qcanvas.qrect.rect({
+		start:[0,10],
+		borderColor:'red',
+		fillColor:'blue',
+	})	
+
+	createWord.setDisplay('none');	
+}
+
+
+	
+
+qcanvas.qtext.text({
+	start:[50,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'显示',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('block');
+
+	}
+
+})
+
+qcanvas.qtext.text({
+	start:[100,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'隐藏',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('none');
+
+	}
+})
+
+qcanvas.qtext.text({
+	start:[150,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'删除',
+	drag:false,
+	mouseup:function(){
+		qcanvas.removeEle(rect);
+
+		createWord.setDisplay('block');
+	}
+})
+
+var createWord = qcanvas.qtext.text({
+	start:[200,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'创建',
+	display:"none",
+	drag:false,
+	mouseup:function(){
+		create();
+
+	}
+})
+
+create();
+
+
+
+
+
+
+
+</script>
+
+</html>

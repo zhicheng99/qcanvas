@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+		canvas{
+			background:#ccc;
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var line1 = qcanvas.qline.line({
+	start:function(){return [0,80];},
+	end:[50,50],
+	color:'red',
+	like:'-',
+	withText:'动画'
+});
+var line2 = qcanvas.qline.line({
+	start:function(){return [0,20];},
+	end:[150,50],
+	color:'blue',
+	like:'--',
+	withText:'line2'
+});
+var line3 = qcanvas.qline.line({
+	start:function(){return [30,50];},
+	end:[150,60],
+	width:1,
+	like:'->',
+	color:'gray',
+	withText:'line3'
+});		
+
+var line4 = qcanvas.qline.line({
+	start:function(){return [100,123];},
+	end:[150,180],
+	width:1,
+	like:'-->',
+	color:'gray',
+	withText:'line4',
+	withTextAlign:'left'
+});
+
+
+
+</script>
+
+</html>

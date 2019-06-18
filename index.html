@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Qcanvas</title>
+	<script src="https://sandbox.runjs.cn/js/sandbox/jquery/jquery-1.8.3.min.js"></script>
+	<link href="http://cdn.bootcss.com/highlight.js/8.1/styles/default.min.css" rel="stylesheet">
+	<script src="http://cdn.bootcss.com/highlight.js/8.1/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+	<style>
+		
+		html,body{
+			font-size: 14px;
+
+		}
+
+		pre {
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid #C3CCD0;
+    background: #FFF;
+    overflow: hidden;
+}
+
+code {
+  display: block;
+  padding: 12px 24px;
+  overflow-y: auto;
+  font-weight: 300;
+  font-family: Menlo, monospace;
+  font-size: 0.8em;
+}
+
+code.has-numbering {
+    margin-left: 21px;
+}
+
+.pre-numbering {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    padding: 12px 2px 12px 0;
+    border-right: 1px solid #C3CCD0;
+    border-radius: 3px 0 0 3px;
+    background-color: #EEE;
+    text-align: right;
+    font-family: Menlo, monospace;
+    font-size: 0.8em;
+    color: #AAA;
+}
+	.frm,.frm iframe{
+		overflow: hidden;
+	}
+
+	</style>
+</head>
+<body>
+
+	Qcanvas框架用法示例
+	 <a href="game.html" target="_blank">小游戏正在开发中...</a>
+	<hr>
+	1、初始化
+	   <pre><code class="js">
+var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+		</code>
+	</pre>
+	<div class="frm">
+		<iframe src="template1.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	2、画线
+	<pre><code class="js">
+var line1 = qcanvas.qline.line({
+	start:[0,80],
+	end:[50,50],
+	color:'red',
+	like:'-',
+	withText:'动画'
+});
+var line2 = qcanvas.qline.line({
+	start:[0,20],
+	end:[150,50],
+	color:'blue',
+	like:'--',
+	withText:'line2'
+});
+var line3 = qcanvas.qline.line({
+	start:[30,50],
+	end:[150,60],
+	width:1,
+	like:'->',
+	color:'gray',
+	withText:'line3'
+});		
+
+var line4 = qcanvas.qline.line({
+	start:[100,123],
+	end:[150,180],
+	width:1,
+	like:'-->',
+	color:'gray',
+	withText:'line4',
+	withTextAlign:'left'
+});
+		
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template2.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+	3、画文字
+	<pre>
+		<code class="js">
+
+var text = qcanvas.qtext.text({
+	start:[100,100],
+	color:'blue',
+	fontSize:'20px'
+})		
+var textfps = qcanvas.qtext.text({
+	start:[20,20],
+		text:function(){ return qcanvas.currFps},
+	color:'blue',
+	fontSize:'20px'
+})	
+			
+		</code>
+	</pre>
+<div class="frm">
+		<iframe src="template3.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+	4、画矩形
+	<pre>
+		<code class="js">
+			
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	borderColor:'red',
+	fillColor:'blue'
+})		
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template4.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	5、画圆
+	<pre>
+		<code class="js">
+			
+var arc = qcanvas.qarc.arc({
+	start:[100,100],
+	sAngle:0,
+	eAngle:360,
+	fillColor:'#fff',
+	opacity:0.2,
+	r:20
+});		
+		</code>
+	</pre>
+	<div class="frm">
+		<iframe src="template5.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	6、多边形
+	<pre>
+		<code class="js">
+//正多边形
+var polygon = qcanvas.qpolygon.polygon({
+	r:30,
+	num:6,
+	start:[350,200]
+})
+
+//不规则图形
+
+var shape = qcanvas.qshape.shape({
+				fillColor:'#999',
+				opacity:0.3,
+				points:[
+					[80,10],
+					[80,50],
+					[150,70],
+					[160,20],
+				]
+			});
+
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template6.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+	7、画图片
+	<pre>
+		<code class="js">
+			
+qcanvas.load({
+	"b":"http://sandbox.runjs.cn/uploads/rs/475/t0qpfflr/hand.png"
+},function(){ 
+	var b = qcanvas.getSourceByName("b");
+	
+	
+	qcanvas.qimg.img({
+		img:b,
+		sStart:[0,0],
+		sWidth:b.width,
+		sHeight:b.height,
+		size:"cover",
+		tStart:[100,0],
+		tWidth:80,
+		tHeight:70,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+		
+	});
+	
+	
+});	
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template7.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	8、画精灵图
+	<pre>
+		<code class="js">
+			
+qcanvas.load({			
+	"person":"http://sandbox.runjs.cn/uploads/rs/475/t0qpfflr/spirit.png"
+},function(){
+	
+		var spiritSource = qcanvas.getSourceByName("person");
+	
+		qcanvas.qspirit.spirit({
+			img:spiritSource,
+			row:2,
+			column:10,
+			framesIndex:[0,0],
+			tStart:[100,120],
+			tWidth:50,
+			tHeight:50,
+			isLoop:true,
+			during:1,
+			mouseup:function(){
+				console.log(this);
+				console.log('触发mouseup事件');
+			}
+		})
+			
+				
+})		
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template8.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	9、动画
+	<pre>
+		<code class="js">
+
+var rect = qcanvas.qrect.rect({
+	start:[0,10],
+	borderColor:'red',
+	fillColor:'blue',
+	drag:false
+})		
+
+qcanvas.qanimation.animate(rect,{
+	start:[0,10],
+},{
+	start:[200,10],
+},2,true,'Back.easeInOut');
+			
+
+		</code>
+	</pre>
+	<div class="frm">
+		<iframe src="template9.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+	10、事件
+	<pre>
+		<code class="js">
+var rect = qcanvas.qrect.rect({
+	start:[0,10],
+	borderColor:'red',
+	fillColor:'blue',
+	drag:false,
+	mouseup:function(){
+		console.log('自定义的mouseup事件');
+		tip.innerHTML ='自定义的mouseup事件<br>'+tip.innerHTML;
+	},
+	mousedown:function(){
+		console.log('自定义的mousedown事件');
+		tip.innerHTML ='自定义的mousedown事件<br>'+tip.innerHTML;
+	},
+	mousemove:function(){
+		console.log('自定义的mousemove事件');
+		tip.innerHTML ='自定义的mousemove事件<br>'+tip.innerHTML;
+	}
+})		
+			
+		</code>
+	</pre>
+		<div class="frm">
+		<iframe src="template10.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+	11、显示元素、隐藏元素、删除元素
+	<pre>
+		<code class="js">
+var rect;
+
+var create = function(){
+	rect = qcanvas.qrect.rect({
+		start:[0,10],
+		borderColor:'red',
+		fillColor:'blue',
+	})	
+
+	createWord.setDisplay('none');	
+}
+
+
+	
+
+qcanvas.qtext.text({
+	start:[50,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'显示',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('block');
+
+	}
+
+})
+
+qcanvas.qtext.text({
+	start:[100,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'隐藏',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('none');
+
+	}
+})
+
+qcanvas.qtext.text({
+	start:[150,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'删除',
+	drag:false,
+	mouseup:function(){
+		qcanvas.removeById(rect.id);
+
+		createWord.setDisplay('block');
+	}
+})
+
+var createWord = qcanvas.qtext.text({
+	start:[200,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'创建',
+	display:"none",
+	drag:false,
+	mouseup:function(){
+		create();
+
+	}
+})
+
+create();
+			
+		</code>
+	</pre>
+
+	<div class="frm">
+		<iframe src="template11.html" width="100%" height="200" frameborder="0"></iframe>
+	</div>
+
+
+
+
+
+<script>
+$(function(){
+    $('pre code').each(function(){
+        var lines = $(this).text().split('\n').length - 1;
+        var $numbering = $('<ul/>').addClass('pre-numbering');
+        $(this)
+            .addClass('has-numbering')
+            .parent()
+            .append($numbering);
+        for(i=1;i<=lines;i++){
+            $numbering.append($('<li/>').text(i));
+        }
+    });
+});
+
+
+</script>
+
+
+</body>
+</html>
