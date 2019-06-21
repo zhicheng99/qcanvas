@@ -128,18 +128,48 @@ Qline.prototype.paintLine  = function(obj){
 			break;
 
 		case '--':
-			this.paintDashLine(obj);
+			this.qcanvas.context.strokeStyle = obj.color;
+			this.qcanvas.context.beginPath();
+			this.qcanvas.context.lineWidth=obj.width; 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+			// this.paintDashLine(obj);
 			break;
 		
 		case '-->':
-			this.paintDashLine(obj);
+			this.qcanvas.context.strokeStyle = obj.color;
+			this.qcanvas.context.beginPath();
+			this.qcanvas.context.lineWidth=obj.width; 
 
-			
-			//画箭头
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+
+			//分解出两条实线 生成箭头效果
+			if(this.lineIsChange(obj)){
+					this.appendArrow(obj);
+			}
+
+			//画箭头 虚线加箭头 线段可以能比较短  后期修复			
 			if(typeof obj.arrow !='undefined'){ 
 					arguments.callee.call(this,obj.arrow[0]);
 					arguments.callee.call(this,obj.arrow[1]);
 			}
+
+			// this.paintDashLine(obj);
+
+			
+			//画箭头
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
 			
 			
 
@@ -342,6 +372,8 @@ Qtext.prototype.paintText = function(obj){
     this.qcanvas.context.strokeStyle = obj.color;
     //从坐标点(50,50)开始绘制文字
 		
+		//可能路径是虚线形式的 设置成实线
+		this.qcanvas.context.setLineDash([]); 
 		
 		var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
 		this.qcanvas.context.textBaseline = obj.textBaseline;
