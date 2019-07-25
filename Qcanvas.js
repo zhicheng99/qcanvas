@@ -115,15 +115,17 @@ Qline.prototype.paintLine  = function(obj){
 			this.qcanvas.context.stroke();
 			
 			//分解出两条实线 生成箭头效果
-			if(this.lineIsChange(obj)){
-					this.appendArrow(obj);
-			}
+			// if(this.lineIsChange(obj)){
+			// 		this.appendArrow(obj);
+			// }
 
-			//画箭头			
-			if(typeof obj.arrow !='undefined'){ 
-					arguments.callee.call(this,obj.arrow[0]);
-					arguments.callee.call(this,obj.arrow[1]);
-			}
+			// //画箭头			
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			
 			
 			break;
 
@@ -152,15 +154,15 @@ Qline.prototype.paintLine  = function(obj){
 
 
 			//分解出两条实线 生成箭头效果
-			if(this.lineIsChange(obj)){
-					this.appendArrow(obj);
-			}
+			// if(this.lineIsChange(obj)){
+			// 		this.appendArrow(obj);
+			// }
 
-			//画箭头 虚线加箭头 线段可以能比较短  后期修复			
-			if(typeof obj.arrow !='undefined'){ 
-					arguments.callee.call(this,obj.arrow[0]);
-					arguments.callee.call(this,obj.arrow[1]);
-			}
+			// //画箭头 虚线加箭头 线段可以能比较短  后期修复			
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
 
 			// this.paintDashLine(obj);
 
@@ -170,6 +172,9 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			
+			
 			
 			
 
@@ -178,7 +183,61 @@ Qline.prototype.paintLine  = function(obj){
 	
 }	
 
-//附加箭头对象
+
+/**
+ * 画箭头的两条实线
+ * @param  {[type]} fromX   [description]
+ * @param  {[type]} fromY   [description]
+ * @param  {[type]} toX     [description]
+ * @param  {[type]} toY     [description]
+ * @param  {[type]} theta   [description]
+ * @param  {[type]} headlen [description]
+ * @param  {[type]} width   [description]
+ * @param  {[type]} color   [description]
+ * @return {[type]}         [description]
+ */
+Qline.prototype.drawArrow = function(fromX, fromY, toX, toY,theta,headlen,width,color) {
+ 
+    theta = typeof(theta) != 'undefined' ? theta : 30;
+    headlen = typeof(theta) != 'undefined' ? headlen : 10;
+    width = typeof(width) != 'undefined' ? width : 1;
+    color = typeof(color) != 'color' ? color : '#000';
+ 
+    // 计算各角度和对应的P2,P3坐标
+    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
+        angle1 = (angle + theta) * Math.PI / 180,
+        angle2 = (angle - theta) * Math.PI / 180,
+        topX = headlen * Math.cos(angle1),
+        topY = headlen * Math.sin(angle1),
+        botX = headlen * Math.cos(angle2),
+        botY = headlen * Math.sin(angle2);
+ 
+    this.qcanvas.context.save();
+    this.qcanvas.context.beginPath();
+ 
+    var arrowX = fromX - topX,
+        arrowY = fromY - topY;
+ 		this.qcanvas.context.beginPath();
+  		this.qcanvas.context.setLineDash([]);
+    // this.qcanvas.context.moveTo(arrowX, arrowY);
+    // this.qcanvas.context.moveTo(fromX, fromY);
+    // this.qcanvas.context.lineTo(toX, toY);
+    arrowX = toX + topX;
+    arrowY = toY + topY;
+    this.qcanvas.context.moveTo(arrowX, arrowY);
+    this.qcanvas.context.lineTo(toX, toY);
+    arrowX = toX + botX;
+    arrowY = toY + botY;
+    this.qcanvas.context.lineTo(arrowX, arrowY);
+    this.qcanvas.context.strokeStyle = color;
+    this.qcanvas.context.lineWidth = width;
+    this.qcanvas.context.stroke();
+
+}
+
+
+
+//附加箭头对象 (不用这个了)
 Qline.prototype.appendArrow = function(obj){
 
 	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
