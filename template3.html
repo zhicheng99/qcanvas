@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+	    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
 	<meta charset="utf-8">
 	<title></title>
 	<style>
@@ -25,7 +27,11 @@
 var text = qcanvas.qtext.text({
 	start:[100,100],
 	color:'blue',
-	fontSize:'20px'
+	fontSize:'20px',
+	drag:false,
+	touchstart:function(pos){
+		console.log(pos);
+	}
 })		
 	var textfps = qcanvas.qtext.text({
 	start:[20,20],

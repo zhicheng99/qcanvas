@@ -125,7 +125,7 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
 			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-			
+
 			
 			break;
 
@@ -1135,7 +1135,7 @@ Qspirit.prototype.paintSpirit = function(obj){
 	
 		//console.log(obj.frames[obj.framesIndex[1]][obj.framesIndex[0]]);
 	
-			this.qcanvas.context.drawImage(obj.img,sx,sy,sWidth,sHeight,obj.tStart[0],obj.tStart[1],obj.tWidth,obj.tHeight);
+		this.qcanvas.context.drawImage(obj.img,sx,sy,sWidth,sHeight,obj.tStart[0],obj.tStart[1],obj.tWidth,obj.tHeight);
 }	
 	
 
@@ -1144,16 +1144,12 @@ function Qevent(qcanvas){
 	this.qeventVersion = '1.0';
 	this.qcanvas = qcanvas;
 	var _this = this;
-	this.PC_Event = {
-		"mousedown":function(e){
+	var eventCallback = {
+		'mousedown_or_touchstart':function(e){
 			var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
 			
-			console.log(aim);
-			
-			console.log('mousedown');
-			
-			if(aim!=null && aim.drag && 
+			if(aim!==null && aim.drag && 
 				(aim.TYPE == 'rect' || aim.TYPE == 'text' || aim.TYPE == 'arc' || aim.TYPE == 'polygon')
 			 ){
 			 	var start = _this.qcanvas.isFun(aim.start)?aim.start():aim.start;
@@ -1161,7 +1157,7 @@ function Qevent(qcanvas){
 				_this.qcanvas.dragAim = aim;
 			}
 			
-			if(aim!=null && aim.drag && 
+			if(aim!==null && aim.drag && 
 				(aim.TYPE == 'img' || aim.TYPE == 'spirit')
 				){
 				var tStart = _this.qcanvas.isFun(aim.tStart)?aim.tStart():aim.tStart;
@@ -1171,7 +1167,7 @@ function Qevent(qcanvas){
 			
 			
 			
-			if(aim!=null && aim.TYPE == 'shape' && aim.drag){
+			if(aim!==null && aim.TYPE == 'shape' && aim.drag){
 				
 				
 				aim.dis = [
@@ -1191,14 +1187,13 @@ function Qevent(qcanvas){
 				_this.qcanvas.dragAim = aim;
 			}
 			
-			
-			
 		},
-		"mousemove":function(e){
+		'mousemove_or_touchmove':function(e){
+
 				//处理拖动的元素
 				var position = _this.getEventPosition(e);
 			
-				if(_this.qcanvas.dragAim != null && 
+				if(_this.qcanvas.dragAim !== null && 
 					(_this.qcanvas.dragAim.TYPE=='rect' || 
 						_this.qcanvas.dragAim.TYPE=='text' || 
 						_this.qcanvas.dragAim.TYPE=='arc' ||
@@ -1214,7 +1209,7 @@ function Qevent(qcanvas){
 					_this.qcanvas.dragAim.start = start;
 				}
 			
-				if(_this.qcanvas.dragAim != null && 
+				if(_this.qcanvas.dragAim !== null && 
 					(_this.qcanvas.dragAim.TYPE=='img' || _this.qcanvas.dragAim.TYPE=='spirit')){
 					var dis  =_this.qcanvas.dragAim.dis;
 					_this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
@@ -1223,7 +1218,7 @@ function Qevent(qcanvas){
 				
 			
 			
-				if(_this.qcanvas.dragAim != null && _this.qcanvas.dragAim.TYPE=='shape'){
+				if(_this.qcanvas.dragAim !== null && _this.qcanvas.dragAim.TYPE=='shape'){
 					var dis  =_this.qcanvas.dragAim.dis;
 					var points = _this.qcanvas.isFun(_this.qcanvas.dragAim.points)?_this.qcanvas.dragAim.points():_this.qcanvas.dragAim.points;
 					
@@ -1236,18 +1231,23 @@ function Qevent(qcanvas){
 					_this.qcanvas.dragAim.points = points;
 					
 				} 
-			
-				
 		},
-		"mouseup":function(e){
-			_this.qcanvas.dragAim = null;
-			console.log('mouseup');
-		},
-		"mouseout":function(){
+		'mouseup_or_mouseout_or_touchend':function(e){
 			_this.qcanvas.dragAim = null;
 		}
 	};
-	this.MOBILE_Event = {"touchstart":1,"touchmove":1,"touchend":1};
+
+	this.PC_Event = {
+		"mousedown":eventCallback['mousedown_or_touchstart'],
+		"mousemove":eventCallback['mousemove_or_touchmove'],
+		"mouseup":eventCallback['mouseup_or_mouseout_or_touchend'],
+		"mouseout":eventCallback['mouseup_or_mouseout_or_touchend'],
+	};
+	this.MOBILE_Event = {
+		"touchstart":eventCallback['mousedown_or_touchstart'],
+		"touchmove":eventCallback['mousemove_or_touchmove'],
+		"touchend":eventCallback['mouseup_or_mouseout_or_touchend']
+	};	
 	
 	this.init();
 }
@@ -1256,22 +1256,23 @@ Qevent.prototype.init = function(){
 	var canvas = this.qcanvas.canvas;
 	var _this = this;
 	
-	
-	var callback = function(e){
-		_this.eventCallback(e);		
-	}
+
 	
 	if("ontouchstart" in window){
 		for(var i in this.MOBILE_Event){
-			canvas.addEventListener(i,callback,false);		
+			// canvas.addEventListener(i,callback,false);		
+			canvas.addEventListener(i,function(e){
+				_this.eventCallback(e);	//用户定义的回调函数
+				_this.MOBILE_Event[e.type](e); //系统定义的回调函数
+			},false);		
+
 		}
 		
 	}else{
 		for(var i in this.PC_Event){
 			canvas.addEventListener(i,function(e){
-				
-				_this.eventCallback(e);	
-				_this.PC_Event[e.type](e);
+				_this.eventCallback(e);	 //用户定义的回调函数
+				_this.PC_Event[e.type](e);  //系统定义的回调函数
 			},false);		
 		}
 		
@@ -1286,7 +1287,7 @@ Qevent.prototype.eventCallback = function(e){
 	
 		var aim = this.findElmByEventPosition(this.getEventPosition(e));
 		
-		if(aim != null){
+		if(aim !== null){
 			//console.log(aim);
 			//触发aim的事件(调用时配置好的事件)
 			(typeof aim[e.type] !='undefined') && aim[e.type](this.getEventPosition(e));
@@ -1309,6 +1310,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 		//越往后的元素 在画布上是越在上面的 
 		for(var i=elements.length-1;i>=0;i--){
 
+			
 			if(elements[i].display=='none'){
 				continue;
 			};
@@ -1432,6 +1434,7 @@ function Qcanvas(c_p){
 	this.context = c_obj.getContext('2d');
 	this.canvas = c_obj;
 	this.fps = 60;
+	this.dragAim = null;  //当前拖动的对象
 	
 	
 	//舞台对象
