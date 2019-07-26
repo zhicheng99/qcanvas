@@ -38,15 +38,15 @@ var rect = qcanvas.qrect.rect({
 	drag:false,
 	mouseup:function(){
 		console.log('自定义的mouseup事件');
-		tip.innerHTML ='自定义的mouseup事件<br>'+tip.innerHTML;
+		tip.innerHTML ='自定义的mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	},
 	mousedown:function(){
 		console.log('自定义的mousedown事件');
-		tip.innerHTML ='自定义的mousedown事件<br>'+tip.innerHTML;
+		tip.innerHTML ='自定义的mousedown事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	},
 	mousemove:function(){
 		console.log('自定义的mousemove事件');
-		tip.innerHTML ='自定义的mousemove事件<br>'+tip.innerHTML;
+		tip.innerHTML ='自定义的mousemove事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	}
 })		
 

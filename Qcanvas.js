@@ -1481,7 +1481,12 @@ function Qcanvas(c_p){
 	//启动
 	this.start();
 }
-	
+
+//销毁所有对象 释放资源
+Qcanvas.prototype.destroy = function(){
+	this.elements = []; 
+
+}
 Qcanvas.prototype.Tween = {
     Linear: function(t, b, c, d) { return c*t/d + b; },
     Quad: {

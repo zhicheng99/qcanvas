@@ -29,8 +29,9 @@ var text = qcanvas.qtext.text({
 	color:'blue',
 	fontSize:'20px',
 	drag:false,
-	touchstart:function(pos){
+	mouseup:function(pos){
 		console.log(pos);
+		qcanvas.destroy();
 	}
 })		
 	var textfps = qcanvas.qtext.text({
