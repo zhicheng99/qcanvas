@@ -860,6 +860,7 @@ Qanimation.prototype.createAnimation = function(obj){
 
 							if(obj.animation.loopNum <= isLoop){
 								obj.animation.step = 1; //反方向运动回去	
+								// obj.animation.framesIndex = 0;
 							}
 
 							if((obj.animation.loopNum -1) == isLoop){
@@ -874,6 +875,7 @@ Qanimation.prototype.createAnimation = function(obj){
 						if(isLoop){
 							if(obj.animation.framesIndex==(framesCount-1)){
 								obj.animation.step = -1; //反方向运动回去	
+								// obj.animation.framesIndex = 0;
 								obj.animation.finishCallback(obj);
 							}
 				
