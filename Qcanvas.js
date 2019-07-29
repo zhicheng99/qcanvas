@@ -406,6 +406,7 @@ Qtext.prototype.text = function(options){
 			fontFamily:'Microsoft YaHei',
 			start:[0,0],
 			drag:true,
+			pointerEvent:'auto',
 			range:{width:0,height:0},
 			polyPoints:function(){  //顶点坐标序列
 					var half_x = this.range.width*0.5;
@@ -469,6 +470,7 @@ Qrect.prototype.rect = function(options){
 			borderColor:'#000',
 			fillColor:'',
 			drag:true,
+			pointerEvent:'auto',
 			polyPoints:function(){  //顶点坐标序列
 					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 					var width = _this.qcanvas.isFun(this.width)?this.width():this.width;
@@ -482,9 +484,9 @@ Qrect.prototype.rect = function(options){
 					]
 					
 			},	
-			mouseup:function(position){
-					console.log('添加一些点击的事件');
-			}			
+			// mouseup:function(position){
+			// 		console.log('添加一些点击的事件');
+			// }			
 
 		
 			
@@ -540,6 +542,7 @@ Qshape.prototype.shape = function(options){
 				[350,180]
 			],
 			drag:true,
+			pointerEvent:'auto',
 			polyPoints:function(){  //顶点坐标序列
 					
 				var temp = [];
@@ -613,6 +616,7 @@ Qarc.prototype.arc = function(options){
 			eAngle:0,
 			counterclockwise:false,
 		  drag:true,
+		  pointerEvent:'auto',
 			polyPoints:function(){  //顶点坐标序列 (注意顺序 要形成一个闭合的区域)
 				
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
@@ -678,6 +682,7 @@ Qpolygon.prototype.polygon = function(options){
 			r:20,
 			num:4,
 			drag:true,
+			pointerEvent:'auto'
 		}
 			
 	this.qcanvas.extend(OPTIONS,options);
@@ -955,6 +960,7 @@ Qimg.prototype.img = function(options){
 			img:{},
 			size:"",
 			drag:true,
+			pointerEvent:'auto',
 			/*sStart:[0,0],
 			sWidth:options.width,
 			sHeight:options.height,
@@ -1032,6 +1038,7 @@ Qspirit.prototype.spirit = function(options){
 			stop:function(){this.isLoop = false},
 			play:function(){this.isLoop = true},
 		  	drag:true,
+		  	pointerEvent:'auto',
 			/*img:{},
 			row:0,
 			column:0,
@@ -1310,8 +1317,8 @@ Qevent.prototype.findElmByEventPosition = function(position){
 		//越往后的元素 在画布上是越在上面的 
 		for(var i=elements.length-1;i>=0;i--){
 
-			
-			if(elements[i].display=='none'){
+			//跳过不显示的元素和不响应事件的元素
+			if(elements[i].display=='none' || elements[i].pointerEvent == 'none'){
 				continue;
 			};
 			
