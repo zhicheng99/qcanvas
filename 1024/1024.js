@@ -7,7 +7,7 @@
 function Game(){
 	this.option = {
 		gap:5, //块与块之间的间隔
-	};
+	}
 
 	this.init();
 }
