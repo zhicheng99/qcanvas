@@ -99,25 +99,25 @@ Game.prototype.createPanel = function() {
 
 
 	this.qcanvas.qrect.rect({
-		start:[180,30],
+		start:[180,10],
 		width:50,
-		height:50,
+		height:40,
 		fillColor:'#756940',
 		borderColor:'#534928',
 		pointerEvent:'none'
 	})
 
 	this.qcanvas.qrect.rect({
-		start:[240,30],
+		start:[240,10],
 		width:50,
-		height:50,
+		height:40,
 		fillColor:'#756940',
 		borderColor:'#534928',
 		pointerEvent:'none'
 	})
 
 	this.qcanvas.qtext.text({
-		start:[205,45],
+		start:[205,20],
 		color:'#c3c3c3',
 		text:'得分',
 		fontSize:'12px',
@@ -127,7 +127,7 @@ Game.prototype.createPanel = function() {
 	})
 
 	this.qcanvas.qtext.text({
-		start:[265,45],
+		start:[265,20],
 		color:'#c3c3c3',
 		text:'最高分',
 		fontSize:'12px',
@@ -138,7 +138,7 @@ Game.prototype.createPanel = function() {
 
 	var _this = this;
 	this.qcanvas.qtext.text({
-		start:[205,65],
+		start:[205,40],
 		color:'#c3c3c3',
 		text:function(){return _this.options.score},
 		fontSize:'12px',
@@ -147,12 +147,39 @@ Game.prototype.createPanel = function() {
 		
 	})
 	this.qcanvas.qtext.text({
-		start:[265,65],
+		start:[265,40],
 		color:'#c3c3c3',
 		text:function(){return _this.options.maxScore},
 		fontSize:'12px',
 		fontFamily:'Arial',
 		pointerEvent:'none'
+		
+	})
+
+	this.qcanvas.qrect.rect({
+		start:[240,60],
+		width:50,
+		height:20,
+		fillColor:'#756940',
+		borderColor:'#534928',
+		drag:false,
+		mouseup:function(){
+			alert('mouseup->restart');
+		},
+		touchend:function(){
+			alert('touchend->restart');
+		}
+
+	})
+
+	this.qcanvas.qtext.text({
+		start:[265,70],
+		color:'#c3c3c3',
+		text:'restart',
+		fontSize:'12px',
+		fontFamily:'Arial',
+		pointerEvent:'none',
+		
 		
 	})
 
