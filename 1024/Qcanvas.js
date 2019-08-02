@@ -429,7 +429,10 @@ Qtext.prototype.text = function(options){
 
 Qtext.prototype.paintText = function(obj){
 		//设置字体颜色
-    this.qcanvas.context.strokeStyle = obj.color;
+    // this.qcanvas.context.strokeStyle = obj.color;
+    this.qcanvas.context.fillStyle = obj.color;
+
+
     //从坐标点(50,50)开始绘制文字
 		
 		//可能路径是虚线形式的 设置成实线
@@ -439,7 +442,10 @@ Qtext.prototype.paintText = function(obj){
 		this.qcanvas.context.textBaseline = obj.textBaseline;
 		this.qcanvas.context.font = obj.fontSize + ' '+obj.fontFamily;
 		this.qcanvas.context.textAlign = obj.withTextAlign;
-    	this.qcanvas.context.strokeText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
+    	// this.qcanvas.context.strokeText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
+    	this.qcanvas.context.fillText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
+
+
 		
 		this.qcanvas.context.textAlign ='center';
 		obj.range = {width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
