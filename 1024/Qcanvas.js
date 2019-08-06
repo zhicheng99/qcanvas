@@ -1493,6 +1493,19 @@ function Qcanvas(c_p){
 	this.lastLoop = (new Date()).getMilliseconds();
 	this.count = 1;
   	this.currFps = 0;
+
+  	this.TypeGroup = {
+  		'line':this.qline.paintLine,
+  		'text':this.qtext.paintText,
+  		'rect':this.qrect.paintRect,
+  		'arc':this.qarc.paintArc,
+  		'polygon':this.qpolygon.paintPolygon,
+  		'img':this.qimg.paintImg,
+  		'spirit':this.qspirit.paintSpirit,
+  		'shape':this.qshape.paintShape
+  	} 
+
+
 	//启动
 	this.start();
 }
@@ -1704,33 +1717,35 @@ Qcanvas.prototype.paint = function(	){
 		if(o.display=='none'){
 			continue;
 		}
+
+		this.TypeGroup[o.TYPE].call(this['q'+o.TYPE],o);
 		
-		switch (o.TYPE){
-			case 'line':
-				this.qline.paintLine(o);
-				break;
-			case 'text':
-				this.qtext.paintText(o);
-				break;
-			case 'rect':
-				this.qrect.paintRect(o);
-				break;
-			case 'arc':
-				this.qarc.paintArc(o);
-				break;	
-			case 'polygon':
-				this.qpolygon.paintPolygon(o);
-				break;	
-			case 'img':
-				this.qimg.paintImg(o);
-				break;
-			case 'spirit':
-				this.qspirit.paintSpirit(o);
-				break;	
-			case 'shape':
-				this.qshape.paintShape(o);
-				break;		
-		}
+		// switch (o.TYPE){
+		// 	case 'line':
+		// 		this.qline.paintLine(o);
+		// 		break;
+		// 	case 'text':
+		// 		this.qtext.paintText(o);
+		// 		break;
+		// 	case 'rect':
+		// 		this.qrect.paintRect(o);
+		// 		break;
+		// 	case 'arc':
+		// 		this.qarc.paintArc(o);
+		// 		break;	
+		// 	case 'polygon':
+		// 		this.qpolygon.paintPolygon(o);
+		// 		break;	
+		// 	case 'img':
+		// 		this.qimg.paintImg(o);
+		// 		break;
+		// 	case 'spirit':
+		// 		this.qspirit.paintSpirit(o);
+		// 		break;	
+		// 	case 'shape':
+		// 		this.qshape.paintShape(o);
+		// 		break;		
+		// }
 				
 	}
 }
