@@ -13,7 +13,9 @@ function Game(){
 		gridAreaH:300,
 		grid:[],
 		score:0,
-		maxScore:0
+		maxScore:0,
+
+		triggerDis:50  //多大距离触发行为
 	}
 
 
@@ -192,6 +194,7 @@ Game.prototype.createPanel = function() {
  */
 Game.prototype.createBglayer = function(){
 
+	var _this = this;
 	//格子区域矩形
 	this.qcanvas.qrect.rect({
 		start:[0,100],
@@ -200,8 +203,14 @@ Game.prototype.createBglayer = function(){
 		borderColor:'#000',
 		fillColor:'#7d7d7d',
 		drag:false,
-		mouseup:function(){
-			console.log('mouseup')
+		mousedown:function(e){
+			_this.bgMouseDown.call(_this,e);
+		},
+		mousemove:function(e){
+			_this.bgMouseMove.call(_this,e);
+		},
+		mouseup:function(e){
+			_this.bgMouseUp.call(_this,e);
 		}
 	})
 
@@ -209,5 +218,50 @@ Game.prototype.createBglayer = function(){
 
 
 }
+
+Game.prototype.bgMouseDown = function(e) {
+	this.options.mouseStart = e;
+};
+
+Game.prototype.bgMouseMove = function(e) {
+	
+
+	if(typeof this.options.mouseStart == 'undefined'){
+		return false;
+	}
+
+	//判读划动的方向
+	var xdis = e.x - this.options.mouseStart.x;
+	var ydis = e.y - this.options.mouseStart.y;
+
+	if(Math.abs(xdis) >= Math.abs(ydis)){
+
+		if(Math.abs(xdis) >= this.options.triggerDis){
+			if(xdis>0){
+				console.log('向右');
+			}else{
+				console.log('向左');
+			}
+		}
+
+		
+	}else{
+		if(Math.abs(ydis) >= this.options.triggerDis){
+			if(ydis>0){
+				console.log('向下');
+			}else{
+				console.log('向上');
+			}
+		}
+
+		
+	}
+
+};
+
+Game.prototype.bgMouseUp = function() {
+	delete this.options.mouseStart;
+};
+
 
  new Game();
