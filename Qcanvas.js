@@ -813,6 +813,7 @@ Qanimation.prototype.animate = function(aim,startStyle,endStyle,during,isLoop,tw
 		'during':during,
 		'frames':frames,
 		'isLoop':isLoop?isLoop:false,
+		'isExeCallback':false,  //是否已执行了finishCallback
 		'finishCallback':finishCallback?finishCallback:function(){}
 	}
 	
@@ -892,7 +893,7 @@ Qanimation.prototype.createAnimation = function(obj){
 							}							
 						}else{
 							if(obj.animation.framesIndex==(framesCount-1)){
-						
+								!obj.animation.isExeCallback && (obj.animation.isExeCallback = true) && 
 								obj.animation.finishCallback(obj);
 							}
 							
@@ -905,7 +906,7 @@ Qanimation.prototype.createAnimation = function(obj){
 				}else{
 
 					if(obj.animation.framesIndex==(framesCount-1)){
-						
+						!obj.animation.isExeCallback && (obj.animation.isExeCallback = true) && 
 						obj.animation.finishCallback(obj);
 					}
 

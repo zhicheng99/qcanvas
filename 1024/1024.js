@@ -12,10 +12,11 @@ function Game(){
 		gridAreaW:300,
 		gridAreaH:300,
 		grid:[],
+		gridWithNumObj:[],
 		score:0,
 		maxScore:0,
 
-		triggerDis:50  //多大距离触发行为
+		triggerDis:50  //多大距离触发合并行为
 	}
 
 
@@ -30,6 +31,65 @@ Game.prototype.init = function() {
 	this.createPanel();
 	this.createBglayer();
 	this.createGrid();
+
+
+	//生成带数字的格子 
+	this.createGridByNum();
+};
+/**
+ * 生成带数字的格子 每次划动完成后 再生成一组
+ * @return {[type]} [description]
+ */
+Game.prototype.createGridByNum = function() {
+	//只生成横纵坐标即可 具体坐标值直接对应this.options.grid背景格子
+	var x = Math.floor(Math.random()*this.options.col);
+	var y = Math.floor(Math.random()*this.options.row);
+
+	//随机生成2或4 先写固定值
+	var num = 2;
+
+	//先写固定值 用于测试
+	var x = 3;
+	var y = 0;
+
+	console.log(x,y);
+
+	//生成块
+	var _this = this;
+	var obj = {
+		start:this.options.grid[x][y].start,
+		 
+		width:this.options.perGridW,
+		height:this.options.perGridH,
+		fillColor:'#f7d476',
+		borderColor:'#534928',
+		pointerEvent:'none',
+		position:[x,y] // 所处的位置
+
+	}
+
+
+	var length = this.options.gridWithNumObj.push(this.qcanvas.qrect.rect(obj));
+ 	
+ 	// 依赖于块的数值
+ 	this.qcanvas.qtext.text({
+ 		start:function(){
+ 			// 取得依赖块的中心点坐标做为文字的位置
+ 			return [this.dependRect.start[0]+this.context.options.perGridW*0.5,this.dependRect.start[1]+this.context.options.perGridH*0.5];
+ 		},
+		color:'#322e22',
+		text:num,
+		fontSize:'30px',
+		// fontFamily:'Arial',
+		pointerEvent:'none',
+		context:this,
+		dependRectId:this.options.gridWithNumObj[length-1].id,  //用于合并块 动画完成后 删除依赖于矩形的文字 （先删文字后删矩形）
+		dependRect:this.options.gridWithNumObj[length-1]  //依赖块对象
+ 	})
+ 	
+
+
+
 };
 
 /**
@@ -239,8 +299,10 @@ Game.prototype.bgMouseMove = function(e) {
 		if(Math.abs(xdis) >= this.options.triggerDis){
 			if(xdis>0){
 				console.log('向右');
+				this.move('r');
 			}else{
 				console.log('向左');
+				this.move('l');
 			}
 		}
 
@@ -249,8 +311,10 @@ Game.prototype.bgMouseMove = function(e) {
 		if(Math.abs(ydis) >= this.options.triggerDis){
 			if(ydis>0){
 				console.log('向下');
+				this.move('d');
 			}else{
 				console.log('向上');
+				this.move('u')
 			}
 		}
 
@@ -261,6 +325,18 @@ Game.prototype.bgMouseMove = function(e) {
 
 Game.prototype.bgMouseUp = function() {
 	delete this.options.mouseStart;
+};
+
+Game.prototype.move = function(direct) {
+
+	this.qcanvas.qanimation.animate(this.options.gridWithNumObj[0],{
+		start:this.options.gridWithNumObj[0].start,
+	},{
+		start:[200,10],
+	},0.1,false,'Linear',function(){console.log('ok')});
+
+
+	
 };
 
 
