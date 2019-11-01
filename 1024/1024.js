@@ -11,12 +11,14 @@ function Game(){
 		col:4,
 		gridAreaW:300,
 		gridAreaH:300,
-		grid:[],
+		gridCol:[],
+		gridRow:[],
 		gridWithNumObj:[],
 		score:0,
 		maxScore:0,
 
-		triggerDis:50  //多大距离触发合并行为
+		triggerDis:50,  //多大距离触发合并行为,
+		moveing:false
 	}
 
 
@@ -57,14 +59,15 @@ Game.prototype.createGridByNum = function() {
 	//生成块
 	var _this = this;
 	var obj = {
-		start:this.options.grid[x][y].start,
+		start:this.options.gridCol[x][y].start,
 		 
 		width:this.options.perGridW,
 		height:this.options.perGridH,
 		fillColor:'#f7d476',
 		borderColor:'#534928',
 		pointerEvent:'none',
-		position:[x,y] // 所处的位置
+		position:[x,y], // 所处的位置
+		relatedId:this.options.gridCol[x][y].id   //关联底图格子的id
 
 	}
 
@@ -88,6 +91,8 @@ Game.prototype.createGridByNum = function() {
  	})
  	
 
+ 	//num也需要记录到this.options.grid里 (用于划动时判断位置上是否有数字)
+ 	this.options.gridCol[x][y].num = num;
 
 
 };
@@ -103,34 +108,63 @@ Game.prototype.createGrid = function() {
 	this.options.perGridH = (this.options.gridAreaH - this.options.gap*(this.options.row+1))/this.options.row;
 	
 	//生成格子的二维数据
+	/**
+	 * gridCol格式为一列保存为一个数组
+	 * gridRow格式为一行保存为一个数组
+	 */
 	//行
 	for (var i = 0; i < this.options.row; i++) {
-		!this.options.grid[i] && this.options.grid.push([]);
+		!this.options.gridCol[i] && this.options.gridCol.push([]);
+
 
 		//列
 		for (var j = 0; j < this.options.col; j++) {
 
-			var obj = {
+			var p = {
 				start:[i*this.options.perGridW+this.options.gap*(i+1),j*this.options.perGridH+this.options.gap*(j+1)+100],
 				width:this.options.perGridW,
 				height:this.options.perGridH,
 				fillColor:'#756940',
 				borderColor:'#534928',
-				pointerEvent:'none'
+				pointerEvent:'none',
+				num:null,
+				space:0,
 
 			};
+			var obj = this.qcanvas.qrect.rect(p);
 
-			this.options.grid[i].push(obj);
+
+			this.options.gridCol[i].push(obj);
+
+			!this.options.gridRow[j] && 
+			(this.options.gridRow[j] = []) && 
+			this.options.gridRow[j].push(obj) ||
+			this.options.gridRow[j].push(obj);
 
 
-			this.qcanvas.qrect.rect(obj);		
+
+
+
+
+
 
 		}
 		
 	}
+
+	// for (var i = 0; i < this.options.gridCol.length; i++) {
+	// 	this.options.gridCol[i]
+	//     this.options.gridRow.push([]);
+
+	// }
+
+
 	
 
-	console.log(this.options.grid);
+	console.log(this.options.gridCol);
+	console.log(this.options.gridRow);
+
+
 
 };
 
@@ -325,15 +359,58 @@ Game.prototype.bgMouseMove = function(e) {
 
 Game.prototype.bgMouseUp = function() {
 	delete this.options.mouseStart;
+	// this.options.moveing = false;
+
 };
 
 Game.prototype.move = function(direct) {
 
-	this.qcanvas.qanimation.animate(this.options.gridWithNumObj[0],{
-		start:this.options.gridWithNumObj[0].start,
-	},{
-		start:[200,10],
-	},0.1,false,'Linear',function(){console.log('ok')});
+	//左右划动时用 this.options.gridRow进行逻辑判断
+	//上下划动时用 this.options.gridCol进行逻辑判断
+	
+	if(this.options.moveing){
+		return false;
+	}
+	this.options.moveing = true;
+	
+	if(direct == 'l'){
+
+		for (var i = 0; i < this.options.gridRow.length; i++) {
+
+			//循每一行
+			var space = 0;  //计算每个块前面有几个空格 （合并时需要移动多少空格）
+			for (var j = 0; j < this.options.gridRow[i].length; j++) {
+
+
+				if(this.options.gridRow[i][j].num === null){
+					space++;
+				}
+				if(this.options.gridRow[i][j].num !== null){
+					this.options.gridRow[i][j].space = space;
+				}
+
+			}
+
+
+			//如果空位等于列数 表示是个空行
+			//空位小于列数 表示有数字的块 需要移动
+			if(space < this.options.col){   
+
+			}
+
+
+		}
+
+		console.log(this.options.gridRow);
+
+	}
+	
+
+	// this.qcanvas.qanimation.animate(this.options.gridWithNumObj[0],{
+	// 	start:this.options.gridWithNumObj[0].start,
+	// },{
+	// 	start:[200,10],
+	// },0.1,false,'Linear',function(){console.log('ok')});
 
 
 	
