@@ -12,6 +12,9 @@
 		canvas{
 			background:#ccc;
 		}
+		.q{
+			background:#333;
+		}
 		#tip{
 			float: right;
 			font-size: 12px;
@@ -22,6 +25,7 @@
 </head>
 <body>
 <canvas id="qcanvas"></canvas>
+ 
 <span id="tip">
 	
 </span>
@@ -31,25 +35,42 @@
 <script>
 	var qcanvas = new Qcanvas(["qcanvas",300,200]);
 	var tip = document.getElementById('tip');
+
+	var rect1 = qcanvas.qrect.rect({
+		start:[20,20],
+		borderColor:'red',
+		fillColor:'green',
+		drag:false,
+		mouseout:function(){
+			console.log('绿色块mouseup事件');
+		tip.innerHTML ='绿色块mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+		}
+	})
+
+
 var rect = qcanvas.qrect.rect({
 	start:[0,10],
 	borderColor:'red',
 	fillColor:'blue',
 	drag:false,
 	mouseup:function(){
-		console.log('自定义的mouseup事件');
-		tip.innerHTML ='自定义的mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+		console.log('蓝色块mouseup事件');
+		tip.innerHTML ='蓝色块mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	},
 	mousedown:function(){
-		console.log('自定义的mousedown事件');
-		tip.innerHTML ='自定义的mousedown事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+		console.log('蓝色块mousedown事件');
+		tip.innerHTML ='蓝色块mousedown事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	},
 	mousemove:function(){
-		console.log('自定义的mousemove事件');
-		tip.innerHTML ='自定义的mousemove事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+		console.log('蓝色块mousemove事件');
+		tip.innerHTML ='蓝色块mousemove事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+	},
+	mouseout:function(){
+		console.log('蓝色块mouseout事件');
+		tip.innerHTML ='蓝色块mouseout事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 	}
 })		
-
+ 
 
 </script>
 
