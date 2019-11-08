@@ -2,7 +2,7 @@
 function Qline(qcanvas){
 	this.qlineVersion = '1.0';
 	this.qcanvas = qcanvas;
-	console.log(this);
+	// console.log(this);
 	
 
 	
@@ -758,10 +758,10 @@ Qanimation.prototype.animate = function(aim,startStyle,endStyle,during,isLoop,tw
 	var frames = {};
 	var framesCount = this.qcanvas.fps * during;
 	var tweenType = typeof tweenType !='undefined'?(tweenType==''?'Linear':tweenType):'Linear';
-	console.log(tweenType);
+	// console.log(tweenType);
 	
 	var tween = eval('this.qcanvas.Tween["'+tweenType.split('.').join('"]["')+'"]');
-	console.log(tween);
+	// console.log(tween);
 	
 	for(var i in startStyle){
 			
@@ -1296,12 +1296,41 @@ Qevent.prototype.init = function(){
 	
 }	
 
+Qevent.prototype.executeMouseOut = function(aim,e){
+	//修复对象mouseout自定义事件不执行的问题 
+	if(this.qcanvas.isObj(aim)){
+
+		if(this.qcanvas.moveAim == null){
+				this.qcanvas.moveAim = aim;
+
+		}else if(this.qcanvas.moveAim.id !== aim.id){ //划过了不同的对象 需要执行上一个对象的moveout事件
+				// console.log('划过了不同的对象');
+				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.getEventPosition(e));
+				this.qcanvas.moveAim = aim;
+			}
+
+	}else{
+
+
+		if(this.qcanvas.isObj(this.qcanvas.moveAim)){
+			this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.getEventPosition(e));
+			this.qcanvas.moveAim = null;
+		}
+	}
+
+}
+
+
+
+
 Qevent.prototype.eventCallback = function(e){
+
+		// console.log(this.qcanvas.moveAim);
 	
+	 	var aim = this.findElmByEventPosition(this.getEventPosition(e));
+	  	this.executeMouseOut(aim,e);
+
 	
-		//console.log(this.getEventPosition(e));
-	
-		var aim = this.findElmByEventPosition(this.getEventPosition(e));
 		
 		if(aim !== null){
 			//console.log(aim);
@@ -1312,6 +1341,8 @@ Qevent.prototype.eventCallback = function(e){
 			//(typeof aim['q'+e.type] !='undefined') && aim['q'+e.type](this.getEventPosition(e));
 			
 		}
+	
+		
 }	
 	
 
@@ -1436,7 +1467,7 @@ function Qcanvas(c_p){
 	
 	var doc = document;
 	if(c_p.length<3 ){
-		console.log('Qcanvas 初始化参数不正确');
+		// console.log('Qcanvas 初始化参数不正确');
 		return false;
 	}
 	
@@ -1451,6 +1482,7 @@ function Qcanvas(c_p){
 	this.canvas = c_obj;
 	this.fps = 60;
 	this.dragAim = null;  //当前拖动的对象
+	this.moveAim = null;  //当前鼠标划过的对象
 	
 	
 	//舞台对象
@@ -1470,7 +1502,7 @@ function Qcanvas(c_p){
 	
 	
 	
-	console.log('主类构造函数执行');
+	// console.log('主类构造函数执行');
 	
 	
 	this.qline = new Qline(this);
@@ -1487,8 +1519,8 @@ function Qcanvas(c_p){
 	this.event = new Qevent(this);
 	
 	this.animationFrame = this.requestNextAnimationFrame();
-	console.log('animationFrame');
-	console.log(this.animationFrame.toString());
+	// console.log('animationFrame');
+	// console.log(this.animationFrame.toString());
 	
 	//计算fps
 	this.lastLoop = (new Date()).getMilliseconds();
@@ -1903,13 +1935,14 @@ Qcanvas.prototype.getSourceByName = function(name){
 		
 		return this.source[name];		
 }				
-				
-				
-				
-				
-				
-				
-				
+
+Qcanvas.prototype.isObj = function(o){
+	if(Object.prototype.toString.call(o)=='[object Object]'){
+		return true;
+	}else{
+		return false;
+	}
+}			
 
 	
 Qcanvas.prototype.isFun = function(o){
