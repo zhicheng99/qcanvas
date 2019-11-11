@@ -22,19 +22,19 @@
 <script>
 	var qcanvas = new Qcanvas(["qcanvas",300,200]);
 qcanvas.load({			
-	"person":"http://sandbox.runjs.cn/uploads/rs/475/t0qpfflr/spirit.png"
+	"person":"img/spirit1.png",
 },function(){
 	
-		var spiritSource = qcanvas.getSourceByName("person");
-	
+		var spiritSource = qcanvas.getSourceByName("person"); 
+
 		qcanvas.qspirit.spirit({
 			img:spiritSource,
-			row:2,
-			column:10,
+			row:1,
+			column:8,
 			framesIndex:[0,0],
-			tStart:[100,120],
-			tWidth:50,
-			tHeight:50,
+			tStart:[0,120],
+			tWidth:40,
+			tHeight:64,
 			isLoop:true,
 			during:1,
 			mouseup:function(){
