@@ -1161,8 +1161,8 @@ function Qevent(qcanvas){
 	this.qcanvas = qcanvas;
 	var _this = this;
 	var eventCallback = {
-		'mousedown_or_touchstart':function(e){
-			var position = _this.getEventPosition(e);
+		'mousedown_or_touchstart':function(position){
+			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
 			
 			if(aim!==null && aim.drag && 
@@ -1204,10 +1204,10 @@ function Qevent(qcanvas){
 			}
 			
 		},
-		'mousemove_or_touchmove':function(e){
+		'mousemove_or_touchmove':function(position){
 
 				//处理拖动的元素
-				var position = _this.getEventPosition(e);
+				// var position = _this.getEventPosition(e);
 			
 				if(_this.qcanvas.dragAim !== null && 
 					(_this.qcanvas.dragAim.TYPE=='rect' || 
@@ -1248,7 +1248,7 @@ function Qevent(qcanvas){
 					
 				} 
 		},
-		'mouseup_or_mouseout_or_touchend':function(e){
+		'mouseup_or_mouseout_or_touchend':function(position){
 			_this.qcanvas.dragAim = null;
 		}
 	};
@@ -1278,8 +1278,9 @@ Qevent.prototype.init = function(){
 		for(var i in this.MOBILE_Event){
 			// canvas.addEventListener(i,callback,false);		
 			canvas.addEventListener(i,function(e){
-				_this.eventCallback(e);	//用户定义的回调函数
-				_this.MOBILE_Event[e.type](e); //系统定义的回调函数
+				var position = _this.getEventPosition(e);
+				_this.eventCallback(e,position);	//用户定义的回调函数
+				_this.MOBILE_Event[e.type](position); //系统定义的回调函数
 			},false);		
 
 		}
@@ -1287,8 +1288,9 @@ Qevent.prototype.init = function(){
 	}else{
 		for(var i in this.PC_Event){
 			canvas.addEventListener(i,function(e){
-				_this.eventCallback(e);	 //用户定义的回调函数
-				_this.PC_Event[e.type](e);  //系统定义的回调函数
+				var position = _this.getEventPosition(e);
+				_this.eventCallback(e,position);	 //用户定义的回调函数
+				_this.PC_Event[e.type](position);  //系统定义的回调函数
 			},false);		
 		}
 		
@@ -1296,7 +1298,7 @@ Qevent.prototype.init = function(){
 	
 }	
 
-Qevent.prototype.executeMouseOut = function(aim,e){
+Qevent.prototype.executeMouseOut = function(aim,position){
 	//修复对象mouseout自定义事件不执行的问题 
 	if(this.qcanvas.isObj(aim)){
 
@@ -1305,7 +1307,7 @@ Qevent.prototype.executeMouseOut = function(aim,e){
 
 		}else if(this.qcanvas.moveAim.id !== aim.id){ //划过了不同的对象 需要执行上一个对象的moveout事件
 				// console.log('划过了不同的对象');
-				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.getEventPosition(e));
+				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](position);
 				this.qcanvas.moveAim = aim;
 			}
 
@@ -1313,7 +1315,7 @@ Qevent.prototype.executeMouseOut = function(aim,e){
 
 
 		if(this.qcanvas.isObj(this.qcanvas.moveAim)){
-			this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.getEventPosition(e));
+			this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](position);
 			this.qcanvas.moveAim = null;
 		}
 	}
@@ -1323,26 +1325,19 @@ Qevent.prototype.executeMouseOut = function(aim,e){
 
 
 
-Qevent.prototype.eventCallback = function(e){
+Qevent.prototype.eventCallback = function(e,position){
 
 		// console.log(this.qcanvas.moveAim);
 	
-	 	var aim = this.findElmByEventPosition(this.getEventPosition(e));
-	  	this.executeMouseOut(aim,e);
+	 	var aim = this.findElmByEventPosition(position);
 
-	
-		
-		if(aim !== null){
-			//console.log(aim);
-			//触发aim的事件(调用时配置好的事件)
-			(typeof aim[e.type] !='undefined') && aim[e.type](this.getEventPosition(e));
-			
-			//触发框架中元素默认的事件
-			//(typeof aim['q'+e.type] !='undefined') && aim['q'+e.type](this.getEventPosition(e));
-			
-		}
-	
-		
+	 	//修复对象mouseout自定义事件不执行的问题
+	  	this.executeMouseOut(aim,position);
+
+	  	//触发aim的事件(调用配置好的事件)
+	  	(aim !== null) && (typeof aim[e.type] !='undefined') && aim[e.type](position);
+
+	  
 }	
 	
 
