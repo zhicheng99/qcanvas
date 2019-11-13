@@ -978,18 +978,15 @@ Qimg.prototype.img = function(options){
 			tHeight:options.height,*/
 		  polyPoints:function(){  //顶点坐标序列
 				
-				if(_this.qcanvas.isFun(this.tStart)){
-					var tStart = this.tStart();
-				}else{
-					var tStart = this.tStart;
-				}
+				
+				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
 						
-					return [
-						{"x":tStart[0],"y":tStart[1]},
-						{"x":tStart[0]+this.tWidth,"y":tStart[1]},
-						{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
-						{"x":tStart[0],"y":tStart[1]+this.tHeight},
-					]
+				return [
+					{"x":tStart[0],"y":tStart[1]},
+					{"x":tStart[0]+this.tWidth,"y":tStart[1]},
+					{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
+					{"x":tStart[0],"y":tStart[1]+this.tHeight},
+				]
 					
 			},	
 		}
@@ -1025,12 +1022,8 @@ Qimg.prototype.img = function(options){
 	return OPTIONS;
 }	
 Qimg.prototype.paintImg = function(obj){
-	
-		if(this.qcanvas.isFun(obj.tStart)){
-					var tStart = obj.tStart();
-				}else{
-					var tStart = obj.tStart;
-				}
+	 
+	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;
 						
 	this.qcanvas.context.drawImage(obj.img,obj.sStart[0],obj.sStart[1],obj.sWidth,obj.sHeight,tStart[0],tStart[1],obj.tWidth,obj.tHeight);
 	
