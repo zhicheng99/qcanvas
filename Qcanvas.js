@@ -976,8 +976,7 @@ Qimg.prototype.img = function(options){
 			tStart:[0,0],
 			tWidth:options.width,
 			tHeight:options.height,*/
-		  polyPoints:function(){  //顶点坐标序列
-				 
+		  polyPoints:function(){  //顶点坐标序列 
 				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
 						
 				return [
@@ -1020,9 +1019,9 @@ Qimg.prototype.img = function(options){
 	
 	return OPTIONS;
 }	
-Qimg.prototype.paintImg = function(obj){
+Qimg.prototype.paintImg = function(obj){ 
 	
-	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;						
+	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;	 
 	this.qcanvas.context.drawImage(obj.img,obj.sStart[0],obj.sStart[1],obj.sWidth,obj.sHeight,tStart[0],tStart[1],obj.tWidth,obj.tHeight);
 	
 }	
