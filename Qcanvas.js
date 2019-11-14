@@ -977,19 +977,15 @@ Qimg.prototype.img = function(options){
 			tWidth:options.width,
 			tHeight:options.height,*/
 		  polyPoints:function(){  //顶点坐标序列
-				
-				if(_this.qcanvas.isFun(this.tStart)){
-					var tStart = this.tStart();
-				}else{
-					var tStart = this.tStart;
-				}
+				 
+				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
 						
-					return [
-						{"x":tStart[0],"y":tStart[1]},
-						{"x":tStart[0]+this.tWidth,"y":tStart[1]},
-						{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
-						{"x":tStart[0],"y":tStart[1]+this.tHeight},
-					]
+				return [
+					{"x":tStart[0],"y":tStart[1]},
+					{"x":tStart[0]+this.tWidth,"y":tStart[1]},
+					{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
+					{"x":tStart[0],"y":tStart[1]+this.tHeight},
+				]
 					
 			},	
 		}
@@ -1004,7 +1000,7 @@ Qimg.prototype.img = function(options){
 		//全覆盖目标区域 图像的某些部分也许无法显示在目标区域中
 		if(OPTIONS.size =='cover'){ 
 				delete OPTIONS.sStart;
-			  delete OPTIONS.sWidth;
+			  	delete OPTIONS.sWidth;
 				delete OPTIONS.sHeight;
 			  
 				
@@ -1026,12 +1022,7 @@ Qimg.prototype.img = function(options){
 }	
 Qimg.prototype.paintImg = function(obj){
 	
-		if(this.qcanvas.isFun(obj.tStart)){
-					var tStart = obj.tStart();
-				}else{
-					var tStart = obj.tStart;
-				}
-						
+	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;						
 	this.qcanvas.context.drawImage(obj.img,obj.sStart[0],obj.sStart[1],obj.sWidth,obj.sHeight,tStart[0],tStart[1],obj.tWidth,obj.tHeight);
 	
 }	
