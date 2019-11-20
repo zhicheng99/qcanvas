@@ -1506,7 +1506,7 @@ function Qcanvas(c_p){
 	
 	this.event = new Qevent(this);
 	
-	this.animationFrame = this.requestNextAnimationFrame();
+	// this.animationFrame = this.requestNextAnimationFrame();
 	// console.log('animationFrame');
 	// console.log(this.animationFrame.toString());
 	
@@ -1528,7 +1528,16 @@ function Qcanvas(c_p){
 
 
 	//启动
-	this.start();
+	// this.start();
+	// this.requestNextAnimationFrame1.call(this,this.start);
+	// 
+	// 
+window.requestNextAnimationFrame(this.start.bind(this))
+
+
+// this.animationFrame(this.start.bind(this));
+
+
 }
 
 //销毁所有对象 释放资源
@@ -1724,7 +1733,13 @@ Qcanvas.prototype.start = function(){
 				
 		this.lastLoop = currentLoop;		
 	
-	this.animationFrame(this.callback = arguments.callee);		
+	// this.animationFrame(this.callback = arguments.callee);
+	// this.animationFrame(this.start.bind(this));
+
+	// this.requestNextAnimationFrame1.call(this,this.start);
+
+
+window.requestNextAnimationFrame(this.start.bind(this))
 	
 }				
 	
@@ -1978,7 +1993,22 @@ Qcanvas.prototype.colorRgb = function(color){
         return sColor;        
     }};	
 	
-	
+
+Qcanvas.prototype.requestNextAnimationFrame1 = function(callback){
+         
+		var self = this;
+
+        return window.requestNextAnimationFrame ||
+               window.webkitRequestAnimationFrame ||
+               window.mozRequestAnimationFrame ||
+               window.oRequestAnimationFrame ||
+               window.msRequestAnimationFrame ||
+
+
+               function (callback){ 
+                    window.setTimeout(callback , self.timeout);
+               };
+}
 				
 Qcanvas.prototype.requestNextAnimationFrame = function(){
         var originalWebkitMethod,
@@ -2030,5 +2060,99 @@ Qcanvas.prototype.requestNextAnimationFrame = function(){
                     } , self.timeout);
                };
 }
+
+typeof window.requestNextAnimationFrame =='undefined'
+&& (function(){
+
+	window.requestNextAnimationFrame =
+   (function () {
+      var originalWebkitRequestAnimationFrame = undefined,
+          wrapper = undefined,
+          callback = undefined,
+          geckoVersion = 0,
+          userAgent = navigator.userAgent,
+          index = 0,
+          self = this;
+
+      // Workaround for Chrome 10 bug where Chrome
+      // does not pass the time to the animation function
+      
+      if (window.webkitRequestAnimationFrame) {
+         // Define the wrapper
+
+         wrapper = function (time) {
+           if (time === undefined) {
+              time = +new Date();
+           }
+           self.callback(time);
+         };
+
+         // Make the switch
+          
+         originalWebkitRequestAnimationFrame = window.webkitRequestAnimationFrame;    
+
+         window.webkitRequestAnimationFrame = function (callback, element) {
+            self.callback = callback;
+
+            // Browser calls the wrapper and wrapper calls the callback
+            
+            originalWebkitRequestAnimationFrame(wrapper, element);
+         }
+      }
+
+      // Workaround for Gecko 2.0, which has a bug in
+      // mozRequestAnimationFrame() that restricts animations
+      // to 30-40 fps.
+
+      if (window.mozRequestAnimationFrame) {
+         // Check the Gecko version. Gecko is used by browsers
+         // other than Firefox. Gecko 2.0 corresponds to
+         // Firefox 4.0.
+         
+         index = userAgent.indexOf('rv:');
+
+         if (userAgent.indexOf('Gecko') != -1) {
+            geckoVersion = userAgent.substr(index + 3, 3);
+
+            if (geckoVersion === '2.0') {
+               // Forces the return statement to fall through
+               // to the setTimeout() function.
+
+               window.mozRequestAnimationFrame = undefined;
+            }
+         }
+      }
+      
+      return window.requestAnimationFrame   ||
+         window.webkitRequestAnimationFrame ||
+         window.mozRequestAnimationFrame    ||
+         window.oRequestAnimationFrame      ||
+         window.msRequestAnimationFrame     ||
+
+         function (callback, element) {
+            var start,
+                finish;
+
+
+            window.setTimeout( function () {
+               start = +new Date();
+               callback(start);
+               finish = +new Date();
+
+               self.timeout = 1000 / self.fps - (finish - start);
+
+            }, self.timeout);
+         };
+      }
+   )
+();
+
+
+
+})()
+
+
+
+
 				
 

@@ -16,35 +16,74 @@
 </head>
 <body>
 <canvas id="qcanvas"></canvas>
+<canvas id="qcanvas1"></canvas>
+
+
+
 
 </body>
 <script src='Qcanvas.js'></script>
 <script>
-	var qcanvas = new Qcanvas(["qcanvas",300,200]);
-qcanvas.load({			
-	"person":"img/spirit1.png",
-},function(){
-	
-		var spiritSource = qcanvas.getSourceByName("person"); 
-
-		qcanvas.qspirit.spirit({
-			img:spiritSource,
-			row:1,
-			column:8,
-			framesIndex:[0,0],
-			tStart:[0,120],
-			tWidth:40,
-			tHeight:64,
-			isLoop:true,
-			during:1,
-			mouseup:function(){
-				console.log(this);
-				console.log('触发mouseup事件');
-			}
-		})
-			
+	(function(){
+		var qcanvas = new Qcanvas(["qcanvas",300,200]);
+			qcanvas.load({			
+				"person":"img/spirit1.png",
+			},function(){
 				
-})	
+					var spiritSource = qcanvas.getSourceByName("person"); 
+
+					qcanvas.qspirit.spirit({
+						img:spiritSource,
+						row:1,
+						column:8,
+						framesIndex:[0,0],
+						tStart:[0,120],
+						tWidth:40,
+						tHeight:64,
+						isLoop:true,
+						during:1,
+						mouseup:function(){
+							console.log(this);
+							console.log('触发mouseup事件');
+						}
+					})
+						
+							
+			})
+
+
+	})();
+
+	(function(){
+		var qcanvas = new Qcanvas(["qcanvas1",300,200]);
+			qcanvas.load({			
+				"person":"img/spirit1.png",
+			},function(){
+				
+					var spiritSource = qcanvas.getSourceByName("person"); 
+
+					qcanvas.qspirit.spirit({
+						img:spiritSource,
+						row:1,
+						column:8,
+						framesIndex:[0,0],
+						tStart:[0,120],
+						tWidth:40,
+						tHeight:64,
+						isLoop:true,
+						during:1,
+						mouseup:function(){
+							console.log(this);
+							console.log('触发mouseup事件');
+						}
+					})
+						
+							
+			})
+
+
+	})()
+		
 
 
 </script>
