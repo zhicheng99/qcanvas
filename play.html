@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+		canvas{
+			background:#ccc;
+			border:solid #ccc 1px;
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+<button type="button" onclick="play()">aaa</button>
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(["qcanvas",540,288]);
+	
+
+	//先实现加载图片资源
+	var imgArr = [];
+	var num = 0;
+	var sourceObj = [
+	'img/1.png',
+	'img/2.png',
+	'img/3.png',
+	'img/4.png',
+	'img/5.png',
+	'img/6.png',
+	'img/7.png',
+	'img/8.png',
+	'img/9.png',
+	'img/10.png',
+	'img/11.png',
+	'img/12.png',
+	'img/13.png',
+	'img/14.png',
+	'img/15.png',
+	'img/16.png',
+	'img/17.png',
+	'img/18.png',
+	'img/19.png',
+	'img/20.png',
+	'img/21.png',
+	'img/22.png',
+	'img/23.png',
+	'img/24.png',
+	'img/25.png',
+	'img/26.png',
+	'img/27.png',
+	'img/28.png',
+	'img/29.png',
+	'img/30.png',
+	'img/31.png',
+	'img/32.png',
+	'img/33.png',
+	'img/34.png',
+	'img/35.png',
+	'img/36.png',
+	'img/37.png',
+	'img/38.png',
+	'img/39.png',
+	'img/40.png',
+
+	];
+
+	var draw = function(){
+		  //  imgArr.forEach(function(item,index){
+		  //  		console.log(index);
+		  //  		qcanvas.qimg.img({
+				// 	img:item,
+				// 	sStart:[0,0],
+				// 	sWidth:item.width,
+				// 	sHeight:item.height,
+				// 	size:"cover",
+				// 	drag:false,
+				// 	tStart:[index*5,0],
+				// 	tWidth:540,
+				// 	tHeight:258,
+				// 	mousemove:function(position){
+				// 		console.log(position);
+				// 	}
+					
+					
+				// });
+		  //  })
+
+		   qcanvas.qimg.img({
+					img:imgArr[0],
+					sStart:[0,0],
+					sWidth:540,
+					sHeight:258,
+					size:"cover",
+					drag:false,
+					tStart:[0,0],
+					tWidth:540,
+					tHeight:258,
+					mousemove:function(position){
+						console.log(position);
+					}
+					
+					
+				});
+
+		   console.log(qcanvas.elements[0]);
+
+
+		   var sort = 0;
+		   setInterval(function(){
+		   		sort++;
+		   		// console.log(sort);
+
+		   		if(sort == (imgArr.length-1)){
+		   			sort = 0;
+		   		}
+
+		   		qcanvas.elements[0].setImg( imgArr[sort]);
+		   		qcanvas.elements[0].setTStart([sort*5,0]);
+
+		   },20);
+
+	}
+
+	for(var i in sourceObj){
+		
+		
+		img = new Image();
+		imgArr.push(img);
+		img.onload = function(){
+			
+			num++;
+			
+			if(num==imgArr.length){
+				console.log('加载完成');
+				draw();
+			}
+			
+			
+		};
+		img.src=sourceObj[i];
+	}
+
+
+	// var textfps = qcanvas.qtext.text({
+	// 	start:[20,20],
+	// 		text:function(){ return num},
+	// 	color:'blue',
+	// 	fontSize:'20px'
+	// })
+
+	// qcanvas.qrect.rect({
+	// 	start:[0,258],
+	// 	borderColor:'red',
+	// 	fillColor:'blue',
+	// 	mousedown:function(){
+	// 		console.log('dddd');
+	// 	}
+	// 	})
+	
+
+	function play(){
+		qcanvas.isRepaint = !qcanvas.isRepaint;
+		console.log(qcanvas.repaintIndex);
+	}
+
+  
+
+
+
+
+// qcanvas.load({
+// 	"b":"img/bd_logo1.png"
+// },function(){ 
+// 	var b = qcanvas.getSourceByName("b");
+	
+	
+// 	qcanvas.qimg.img({
+// 		img:b,
+// 		sStart:[0,0],
+// 		sWidth:b.width,
+// 		sHeight:b.height,
+// 		size:"cover",
+// 		tStart:[0,0],
+// 		tWidth:540,
+// 		tHeight:258,
+// 		mousemove:function(position){
+// 			console.log(position);
+// 		}
+		
+		
+// 	});
+	
+	
+// });	
+
+
+</script>
+
+</html>

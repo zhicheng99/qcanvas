@@ -1896,6 +1896,55 @@ Qcanvas.prototype.getIndexById = function(id){
 }
 
 
+Qcanvas.prototype.lower = function(el){
+
+	var currIndex = this.getIndexById(el.id); 
+	if((currIndex-1 < 0) || (typeof this.elements[currIndex-1] == 'undefined')){
+		return false;
+	}
+
+	this.elements[currIndex] = this.elements.splice(currIndex-1,1,this.elements[currIndex])[0];
+
+
+}
+
+Qcanvas.prototype.lowerToBottom = function(el){
+	var currIndex = this.getIndexById(el.id);
+	if(currIndex == 0){  //已经是最底层
+
+		return false;
+	}
+
+	this.removeEle(el);
+	this.elements.unshift(el);
+
+}
+
+Qcanvas.prototype.raise = function(el){ 
+
+	var currIndex = this.getIndexById(el.id); 
+	if(typeof this.elements[currIndex+1] == 'undefined'){
+		return false;
+	}
+
+	this.elements[currIndex] = this.elements.splice(currIndex+1,1,this.elements[currIndex])[0];
+
+
+}
+
+Qcanvas.prototype.raiseToTop = function(el){
+
+	var currIndex = this.getIndexById(el.id);
+	if(currIndex == (this.elements.length-1)){  //已经是最顶层
+
+		return false;
+	}
+
+	this.removeEle(el);
+	this.elements.push(el);
+}
+
+
 
 //加载图片资源				
 Qcanvas.prototype.load = function(sourceObj,callback){
