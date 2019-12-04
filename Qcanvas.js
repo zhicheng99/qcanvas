@@ -519,12 +519,17 @@ Qrect.prototype.paintRect = function(obj){
 		
 	
 		this.qcanvas.context.rect(start[0],start[1],width,height);
-	
-	
 		this.qcanvas.context.stroke();
+
+		var rgb = this.qcanvas.colorRgb(obj.fillColor).replace('RGB(','').replace(')','');
+	
+	(obj.fillColor!='') && 
+		(obj.opacity && (this.qcanvas.context.fillStyle="rgba("+rgb+','+obj.opacity+")") ||
+		(this.qcanvas.context.fillStyle = obj.fillColor)) &&
+		this.qcanvas.context.fill();
 	
 	
-		(obj.fillColor!='') && (this.qcanvas.context.fillStyle = obj.fillColor) && this.qcanvas.context.fill();
+		// (obj.fillColor!='') && (this.qcanvas.context.fillStyle = obj.fillColor) && this.qcanvas.context.fill();
 }
 
 		
@@ -2019,6 +2024,33 @@ Qcanvas.prototype.isNum = function(o){
 }					
 				
 Qcanvas.prototype.colorRgb = function(color){
+
+	//17种基本色
+	var basicColor = {
+		"aqua":"#00FFFF",
+		"black":"#000000",
+		"blue":"#0000FF",
+		"fuchsia":"#FF00FF",
+		"gray":"#808080",
+		"green":"#008000",
+		"lime":"#00FF00",
+		"maroon":"#800000",
+		"navy":"#000080",
+		"olive":"#808000",
+		"orange":"#FFA500",
+		"purple":"#800080",
+		"red":"#FF0000",
+		"silver":"#C0C0C0",
+		"teal":"#008080",
+		"white":"#FFFFFF",
+		"yellow":"#FFFF00"
+	}
+
+	if(color.indexOf('#')<0){ 
+		color = basicColor[color.toLowerCase()];
+	}
+
+	
 	var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/;
     var sColor = color.toLowerCase();
     if(sColor && reg.test(sColor)){
