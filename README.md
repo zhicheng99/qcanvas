@@ -6,7 +6,7 @@ https://zhicheng99.gitbooks.io/qcanvas-api-v1-0/content/
 框架引入方法
 > ##### 方法一
 > npm安装
->> 执行：npm qcanvas
+>> 执行：npm install qcanvas
 >> 页面里： import {Qcanvas} from 'qcanvas';
 
 
