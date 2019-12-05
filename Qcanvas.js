@@ -1359,12 +1359,30 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				 || elements[i].TYPE=='shape'
 				 || elements[i].TYPE=='arc'
 				 || elements[i].TYPE=='polygon'
+				 || elements[i].TYPE=='layer'
 				){
-				
-				if(this.rayCasting(position,elements[i].polyPoints())=='in'){
-					aim = elements[i];
-					break;
+
+
+				//如果是容器对象 要判断属于该容器里的元素
+				if(elements[i].TYPE == 'layer'){  
+					for (var j = 0; j < elements[i].elements.length; j++) {
+						
+						if(this.rayCasting(position,elements[i].elements[j].polyPoints())=='in'){
+							aim = elements[i].elements[j];
+							break;
+						}
+					}
 				}
+
+
+				if((aim === null) && (elements[i].TYPE !== 'layer')){
+					if(this.rayCasting(position,elements[i].polyPoints())=='in'){
+						aim = elements[i];
+						break;
+					}
+				} 
+
+				
 					
 			}
 		}
@@ -1439,6 +1457,170 @@ Qevent.prototype.rayCasting = function(p, poly) {
     // 射线穿过多边形边界的次数为奇数时点在多边形内
     return flag ? 'in' : 'out'
   }	
+
+
+
+//元素容器类
+function Qlayer(qcanvas){
+	this.qlayerVersion = '1.0';
+	this.qcanvas = qcanvas;
+}
+Qlayer.prototype.layer = function(options){
+	var _this = this;
+	var OPTIONS = {
+			TYPE:'layer',
+			display:'block',
+			width:_this.qcanvas.stage.width,
+			height:_this.qcanvas.stage.height,
+			elements:[],   //容器里包含的元素
+			canvasEle:_this.createCanvas(),
+			push:this.push,
+			qcanvas:this.qcanvas,
+			getEleById:this.getEleById,
+			removeEle:this.removeEle,
+			getIndexById:this.getIndexById,
+			lower:this.lower,
+			lowerToBottom:this.lowerToBottom,
+			raise:this.raise,
+			raiseToTop:this.raiseToTop
+
+		}
+
+	this.qcanvas.extend(OPTIONS,options);
+	this.qcanvas.appendSetFun(OPTIONS);
+
+
+	return OPTIONS;	
+
+}
+Qlayer.prototype.createCanvas = function(){
+
+	var t = document.createElement('canvas');
+	t.width = this.qcanvas.stage.width;
+	t.height = this.qcanvas.stage.height;
+
+
+	return {
+		layerCanvas:t,
+		context:t.getContext('2d')
+	}
+
+}
+
+Qlayer.prototype.paintLayer = function(obj){
+
+	//把属于该容器的元素绘在layerCanvas
+	for(var i = 0; i<obj.elements.length; i++){
+		var o = obj.elements[i];
+
+		if(o.display=='none'){
+			continue;
+		}
+
+		this.qcanvas.TypeGroup[o.TYPE].call(this.qcanvas['q'+o.TYPE],o);
+
+	}
+
+	//把临时canvas直接绘到主canvas上
+	this.qcanvas.context.drawImage(obj.canvasEle.layerCanvas,0,0);
+}
+Qlayer.prototype.push = function(ele){
+
+	//核心Qcanvas类成员 elements中 删掉该元素
+	this.qcanvas.removeEle(ele);
+
+
+	//添加到Qlayer类成员elements中
+	this.elements.push(ele);
+
+}
+
+Qlayer.prototype.getEleById = function(id){
+	
+	for(var i=0;i<this.elements.length;i++){
+		if(this.elements[i].id == id){
+				return this.elements[i];
+				break;
+		}	
+	}
+	
+}
+
+//从elements数组中删除 
+//该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
+Qlayer.prototype.removeEle = function(obj){
+	
+	for(var i=0;i<this.elements.length;i++){
+		if(this.elements[i].id == obj.id){
+				this.elements.splice(i,1);
+				//return this.elements[i];
+				break;
+		}	
+	}
+	
+}
+
+
+Qlayer.prototype.getIndexById = function(id){
+	
+	for(var i=0;i<this.elements.length;i++){
+		if(this.elements[i].id == id){
+				return i;
+				break;
+		}	
+	}
+	
+}
+
+
+Qlayer.prototype.lower = function(el){
+
+	var currIndex = this.getIndexById(el.id); 
+	if((currIndex-1 < 0) || (typeof this.elements[currIndex-1] == 'undefined')){
+		return false;
+	}
+
+	this.elements[currIndex] = this.elements.splice(currIndex-1,1,this.elements[currIndex])[0];
+
+
+}
+
+Qlayer.prototype.lowerToBottom = function(el){
+	var currIndex = this.getIndexById(el.id);
+	if(currIndex == 0){  //已经是最底层
+
+		return false;
+	}
+
+	this.removeEle(el);
+	this.elements.unshift(el);
+
+}
+
+Qlayer.prototype.raise = function(el){ 
+
+	var currIndex = this.getIndexById(el.id); 
+	if(typeof this.elements[currIndex+1] == 'undefined'){
+		return false;
+	}
+
+	this.elements[currIndex] = this.elements.splice(currIndex+1,1,this.elements[currIndex])[0];
+
+
+}
+
+Qlayer.prototype.raiseToTop = function(el){
+
+	var currIndex = this.getIndexById(el.id);
+	if(currIndex == (this.elements.length-1)){  //已经是最顶层
+
+		return false;
+	}
+
+	this.removeEle(el);
+	this.elements.push(el);
+}
+
 	
 /*-------end---------*/	
 	
@@ -1504,6 +1686,8 @@ function Qcanvas(c_p){
 	this.qimg = new Qimg(this);
 	this.qspirit = new Qspirit(this);
 	this.qshape = new Qshape(this);
+	this.qlayer = new Qlayer(this);
+
 	
 	
 	this.event = new Qevent(this);
@@ -1525,7 +1709,8 @@ function Qcanvas(c_p){
   		'polygon':this.qpolygon.paintPolygon,
   		'img':this.qimg.paintImg,
   		'spirit':this.qspirit.paintSpirit,
-  		'shape':this.qshape.paintShape
+  		'shape':this.qshape.paintShape,
+  		'layer':this.qlayer.paintLayer
   	} 
 
 
