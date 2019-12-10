@@ -408,15 +408,91 @@ Qtext.prototype.text = function(options){
 			drag:true,
 			pointerEvent:'auto',
 			range:{width:0,height:0},
+			degree:0,
+			centerPoints:function(){ //元素中心点相对于整个画布的坐标
+
+				var x = 0;
+				var y = 0;
+
+
+				if(this.textAlign == 'left'){
+					x = this.range.width*0.5+this.start[0];
+
+				}else if(this.textAlign == 'center'){
+					x = this.start[0];
+				}else if(this.textAlign == 'right'){
+					x = this.start[0] - this.range.width*0.5;
+				}
+
+				if(this.textBaseline == 'top'){
+					y = this.range.height *0.5+this.start[1];
+				}else if(this.textBaseline == 'middle'){
+					y = this.start[1];
+				}else if(this.textBaseline == 'bottom'){
+					y = this.start[1] - this.range.height*0.5;
+				}
+
+				return {
+					x:x,
+					y:y
+				}
+			},
 			polyPoints:function(){  //顶点坐标序列
 					var half_x = this.range.width*0.5;
-					var half_y = this.range.height*0.5;
+					var half_y = this.range.height*0.5; 
+
+					var pos1x = 0,pos1y = 0,pos2x = 0,pos2y = 0,pos3x = 0,pos3y = 0,pos4x = 0,pos4y = 0;
+
+
+					if(this.textAlign == 'center'){
+						pos1x = this.start[0]-half_x;
+						pos2x = this.start[0]+half_x;
+						pos3x = this.start[0]+half_x;
+						pos4x = this.start[0]-half_x;
+					}else if(this.textAlign == 'left'){
+						pos1x = this.start[0];
+						pos2x = this.start[0]+half_x*2;
+						pos3x = this.start[0];
+						pos4x = this.start[0]+half_x*2;
+					}else if(this.textAlign == 'right'){
+						pos1x = this.start[0]-half_x*2;
+						pos2x = this.start[0];
+						pos3x = this.start[0];
+						pos4x = this.start[0]-half_x*2;
+					}
+
+					if(this.textBaseline == 'middle'){
+						pos1y = this.start[1]-half_y;
+						pos2y = this.start[1]-half_y;
+						pos3y = this.start[1]+half_y;
+						pos4y = this.start[1]+half_y;
+					}else if(this.textBaseline == 'top'){
+						pos1y = this.start[1];
+						pos2y = this.start[1];
+						pos3y = this.start[1]+half_y*2;
+						pos4y = this.start[1]+half_y*2;
+					}else if(this.textBaseline == 'bottom'){
+						pos1y = this.start[1]-half_y*2;
+						pos2y = this.start[1]-half_y*2;
+						pos3y = this.start[1];
+						pos4y = this.start[1];
+					}
+
 					return [
-						{"x":this.start[0]-half_x,"y":this.start[1]-half_y},
-						{"x":this.start[0]+half_x,"y":this.start[1]-half_y},
-						{"x":this.start[0]+half_x,"y":this.start[1]+half_y},
-						{"x":this.start[0]-half_x,"y":this.start[1]+half_y},
+						{"x":pos1x,"y":pos1y},
+						{"x":pos2x,"y":pos2y},
+						{"x":pos3x,"y":pos3y},
+						{"x":pos4x,"y":pos4y}
+
 					]
+
+
+					// return [
+					// 	{"x":this.start[0]-half_x,"y":this.start[1]-half_y},
+					// 	{"x":this.start[0]+half_x,"y":this.start[1]-half_y},
+					// 	{"x":this.start[0]+half_x,"y":this.start[1]+half_y},
+					// 	{"x":this.start[0]-half_x,"y":this.start[1]+half_y},
+					// ]
 					
 			},	
 		}
@@ -428,29 +504,49 @@ Qtext.prototype.text = function(options){
 }
 
 Qtext.prototype.paintText = function(obj){
-		//设置字体颜色
-    // this.qcanvas.context.strokeStyle = obj.color;
-    this.qcanvas.context.fillStyle = obj.color;
-
-
-    //从坐标点(50,50)开始绘制文字
+	obj.range = {width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
+							 height:parseInt(obj.fontSize)	
+							};
+		//有角度时 移动画布原点 旋转画布
+		// var centerPos = obj.centerPoints();
 		
+		// if(obj.degree != 0){
+		// 	this.qcanvas.context.translate(centerPos.x,centerPos.y);
+		// 	this.qcanvas.context.rotate(obj.degree*Math.PI/180);
+		// 	this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+
+		// }					
+							
+
+
+		//设置字体颜色
+    	// this.qcanvas.context.strokeStyle = obj.color;
+    	this.qcanvas.context.fillStyle = obj.color;
+ 
 		//可能路径是虚线形式的 设置成实线
 		this.qcanvas.context.setLineDash([]); 
 		
 		var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
 		this.qcanvas.context.textBaseline = obj.textBaseline;
 		this.qcanvas.context.font = obj.fontSize + ' '+obj.fontFamily;
-		this.qcanvas.context.textAlign = obj.withTextAlign;
+		this.qcanvas.context.textAlign = obj.textAlign;
     	// this.qcanvas.context.strokeText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
     	this.qcanvas.context.fillText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
 
 
+    	
+
+		// //重置画布原点 旋转复原
+		// if(obj.degree != 0){
+		// 	this.qcanvas.context.translate(centerPos.x,centerPos.y);
+		// 	this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
+		// 	this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+		// }
 		
+
+		//重置
 		this.qcanvas.context.textAlign ='center';
-		obj.range = {width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
-							 height:parseInt(obj.fontSize)	
-							};
+		this.qcanvas.context.textBaseline ='middle';
 	
 				
 				
@@ -473,7 +569,7 @@ Qrect.prototype.rect = function(options){
 			start:[0,0],
 			width:100,
 			height:50,
-			borderColor:'#000',
+			borderColor:'#000', 
 			fillColor:'',
 			drag:true,
 			pointerEvent:'auto',
@@ -2209,6 +2305,10 @@ Qcanvas.prototype.isNum = function(o){
 }					
 				
 Qcanvas.prototype.colorRgb = function(color){
+
+	if(color == ''){
+		return '0,0,0';
+	}
 
 	//17种基本色
 	var basicColor = {
