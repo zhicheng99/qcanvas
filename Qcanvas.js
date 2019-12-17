@@ -440,51 +440,54 @@ Qtext.prototype.text = function(options){
 			polyPoints:function(){  //顶点坐标序列
 					var half_x = this.range.width*0.5;
 					var half_y = this.range.height*0.5; 
+					var center = this.centerPoints();
 
-					var pos1x = 0,pos1y = 0,pos2x = 0,pos2y = 0,pos3x = 0,pos3y = 0,pos4x = 0,pos4y = 0;
 
 
-					if(this.textAlign == 'center'){
-						pos1x = this.start[0]-half_x;
-						pos2x = this.start[0]+half_x;
-						pos3x = this.start[0]+half_x;
-						pos4x = this.start[0]-half_x;
-					}else if(this.textAlign == 'left'){
-						pos1x = this.start[0];
-						pos2x = this.start[0]+half_x*2;
-						pos3x = this.start[0];
-						pos4x = this.start[0]+half_x*2;
-					}else if(this.textAlign == 'right'){
-						pos1x = this.start[0]-half_x*2;
-						pos2x = this.start[0];
-						pos3x = this.start[0];
-						pos4x = this.start[0]-half_x*2;
-					}
+					// var pos1x = 0,pos1y = 0,pos2x = 0,pos2y = 0,pos3x = 0,pos3y = 0,pos4x = 0,pos4y = 0;
 
-					if(this.textBaseline == 'middle'){
-						pos1y = this.start[1]-half_y;
-						pos2y = this.start[1]-half_y;
-						pos3y = this.start[1]+half_y;
-						pos4y = this.start[1]+half_y;
-					}else if(this.textBaseline == 'top'){
-						pos1y = this.start[1];
-						pos2y = this.start[1];
-						pos3y = this.start[1]+half_y*2;
-						pos4y = this.start[1]+half_y*2;
-					}else if(this.textBaseline == 'bottom'){
-						pos1y = this.start[1]-half_y*2;
-						pos2y = this.start[1]-half_y*2;
-						pos3y = this.start[1];
-						pos4y = this.start[1];
-					}
 
-					return [
-						{"x":pos1x,"y":pos1y},
-						{"x":pos2x,"y":pos2y},
-						{"x":pos3x,"y":pos3y},
-						{"x":pos4x,"y":pos4y}
+					// if(this.textAlign == 'center'){
+					// 	pos1x = this.start[0]-half_x;
+					// 	pos2x = this.start[0]+half_x;
+					// 	pos3x = this.start[0]+half_x;
+					// 	pos4x = this.start[0]-half_x;
+					// }else if(this.textAlign == 'left'){
+					// 	pos1x = this.start[0];
+					// 	pos2x = this.start[0]+half_x*2;
+					// 	pos3x = this.start[0];
+					// 	pos4x = this.start[0]+half_x*2;
+					// }else if(this.textAlign == 'right'){
+					// 	pos1x = this.start[0]-half_x*2;
+					// 	pos2x = this.start[0];
+					// 	pos3x = this.start[0];
+					// 	pos4x = this.start[0]-half_x*2;
+					// }
 
-					]
+					// if(this.textBaseline == 'middle'){
+					// 	pos1y = this.start[1]-half_y;
+					// 	pos2y = this.start[1]-half_y;
+					// 	pos3y = this.start[1]+half_y;
+					// 	pos4y = this.start[1]+half_y;
+					// }else if(this.textBaseline == 'top'){
+					// 	pos1y = this.start[1];
+					// 	pos2y = this.start[1];
+					// 	pos3y = this.start[1]+half_y*2;
+					// 	pos4y = this.start[1]+half_y*2;
+					// }else if(this.textBaseline == 'bottom'){
+					// 	pos1y = this.start[1]-half_y*2;
+					// 	pos2y = this.start[1]-half_y*2;
+					// 	pos3y = this.start[1];
+					// 	pos4y = this.start[1];
+					// }
+
+					// return [
+					// 	{"x":pos1x,"y":pos1y},
+					// 	{"x":pos2x,"y":pos2y},
+					// 	{"x":pos3x,"y":pos3y},
+					// 	{"x":pos4x,"y":pos4y}
+
+					// ]
 
 
 					// return [
@@ -493,6 +496,62 @@ Qtext.prototype.text = function(options){
 					// 	{"x":this.start[0]+half_x,"y":this.start[1]+half_y},
 					// 	{"x":this.start[0]-half_x,"y":this.start[1]+half_y},
 					// ]
+					var temp = 0;
+					if(this.degree <0){ 
+						temp = 360+this.degree;
+					}else{
+						temp = this.degree;
+					}
+					
+					
+					if((temp>0 && temp<=90) || (temp>180 && temp<=270)){
+
+						if(temp >180){
+							temp = temp-180;
+						}
+
+						var E_x = center.x-Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+						 
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						];
+
+
+
+					}else if((temp>90 && temp<180) || (temp>270 && temp<360)){
+
+						if(temp>270){
+							temp = temp-180;
+						}
+
+						temp = 180 - temp;
+						var E_x = center.x+Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+ 
+
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						]
+
+
+
+
+					}else{
+						return [
+							{"x":center.x-half_x,"y":center.y-half_y},
+							{"x":center.x+half_x,"y":center.y-half_y},
+							{"x":center.x+half_x,"y":center.y+half_y},
+							{"x":center.x-half_x,"y":center.y+half_y}
+						]
+					}
+					
 					
 			},	
 		}
@@ -508,14 +567,14 @@ Qtext.prototype.paintText = function(obj){
 							 height:parseInt(obj.fontSize)	
 							};
 		//有角度时 移动画布原点 旋转画布
-		// var centerPos = obj.centerPoints();
+		var centerPos = obj.centerPoints();
 		
-		// if(obj.degree != 0){
-		// 	this.qcanvas.context.translate(centerPos.x,centerPos.y);
-		// 	this.qcanvas.context.rotate(obj.degree*Math.PI/180);
-		// 	this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
 
-		// }					
+		}					
 							
 
 
@@ -537,11 +596,11 @@ Qtext.prototype.paintText = function(obj){
     	
 
 		// //重置画布原点 旋转复原
-		// if(obj.degree != 0){
-		// 	this.qcanvas.context.translate(centerPos.x,centerPos.y);
-		// 	this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
-		// 	this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-		// }
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+		}
 		
 
 		//重置
@@ -572,18 +631,86 @@ Qrect.prototype.rect = function(options){
 			borderColor:'#000', 
 			fillColor:'',
 			drag:true,
+			degree:0,
 			pointerEvent:'auto',
+			centerPoints:function(){ //元素中心点相对于整个画布的坐标
+					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+					var width = _this.qcanvas.isFun(this.width)?this.width():this.width;
+					var height = _this.qcanvas.isFun(this.height)?this.height():this.height;
+
+
+					return {
+						x:start[0]+width*0.5,
+						y:start[1]+height*0.5
+					}
+
+			},
 			polyPoints:function(){  //顶点坐标序列
 					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 					var width = _this.qcanvas.isFun(this.width)?this.width():this.width;
 					var height = _this.qcanvas.isFun(this.height)?this.height():this.height;
+
+					var half_x = width*0.5;
+					var half_y = height*0.5; 
+					var center = this.centerPoints();
+
+
+					var temp = 0;
+					if(this.degree <0){ 
+						temp = 360+this.degree;
+					}else{
+						temp = this.degree;
+					}
+					
+					
+					if((temp>0 && temp<=90) || (temp>180 && temp<=270)){
+
+						if(temp >180){
+							temp = temp-180;
+						}
+
+						var E_x = center.x-Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+						 
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						];
+
+
+
+					}else if((temp>90 && temp<180) || (temp>270 && temp<360)){
+
+						if(temp>270){
+							temp = temp-180;
+						}
+
+						temp = 180 - temp;
+						var E_x = center.x+Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+ 
+
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						]
+
+
+
+
+					}else{
 						
-					return [
-						{"x":start[0],"y":start[1]},
-						{"x":start[0]+width,"y":start[1]},
-						{"x":start[0]+width,"y":start[1]+height},
-						{"x":start[0],"y":start[1]+height},
-					]
+						return [
+							{"x":start[0],"y":start[1]},
+							{"x":start[0]+width,"y":start[1]},
+							{"x":start[0]+width,"y":start[1]+height},
+							{"x":start[0],"y":start[1]+height},
+						]
+					}
 					
 			},	
 			// mouseup:function(position){
@@ -608,6 +735,18 @@ Qrect.prototype.paintRect = function(obj){
 		var height = this.qcanvas.isFun(obj.height)?obj.height():obj.height;
 
 
+		//有角度时 移动画布原点 旋转画布
+		var centerPos = obj.centerPoints();
+		
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+
+		}
+
+
+
 		this.qcanvas.context.beginPath();
 		this.qcanvas.context.lineWidth=obj.lineWidth;
 		this.qcanvas.context.strokeStyle=obj.borderColor;
@@ -626,6 +765,14 @@ Qrect.prototype.paintRect = function(obj){
 	
 	
 		// (obj.fillColor!='') && (this.qcanvas.context.fillStyle = obj.fillColor) && this.qcanvas.context.fill();
+
+		// //重置画布原点 旋转复原
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+		}
+
 }
 
 		
@@ -1071,21 +1218,87 @@ Qimg.prototype.img = function(options){
 			size:"",
 			drag:true,
 			pointerEvent:'auto',
+			degree:0,
 			/*sStart:[0,0],
 			sWidth:options.width,
 			sHeight:options.height,
 			tStart:[0,0],
 			tWidth:options.width,
 			tHeight:options.height,*/
-		  polyPoints:function(){  //顶点坐标序列 
+			centerPoints:function(){ //元素中心点相对于整个画布的坐标
+					var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart; 
+
+					return {
+						x:tStart[0]+this.tWidth*0.5,
+						y:tStart[1]+this.tHeight*0.5
+					}
+
+			},
+			polyPoints:function(){  //顶点坐标序列 
 				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
+
+
+					var half_x = this.tWidth*0.5;
+					var half_y = this.tHeight*0.5; 
+					var center = this.centerPoints();
+
+
+					var temp = 0;
+					if(this.degree <0){ 
+						temp = 360+this.degree;
+					}else{
+						temp = this.degree;
+					}
+					
+					
+					if((temp>0 && temp<=90) || (temp>180 && temp<=270)){
+
+						if(temp >180){
+							temp = temp-180;
+						}
+
+						var E_x = center.x-Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+						 
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						];
+
+
+
+					}else if((temp>90 && temp<180) || (temp>270 && temp<360)){
+
+						if(temp>270){
+							temp = temp-180;
+						}
+
+						temp = 180 - temp;
+						var E_x = center.x+Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+ 
+
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						]
+
+
+
+
+					}else{
 						
-				return [
-					{"x":tStart[0],"y":tStart[1]},
-					{"x":tStart[0]+this.tWidth,"y":tStart[1]},
-					{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
-					{"x":tStart[0],"y":tStart[1]+this.tHeight},
-				]
+						return [
+							{"x":tStart[0],"y":tStart[1]},
+							{"x":tStart[0]+this.tWidth,"y":tStart[1]},
+							{"x":tStart[0]+this.tWidth,"y":tStart[1]+this.tHeight},
+							{"x":tStart[0],"y":tStart[1]+this.tHeight},
+						]
+					}
 					
 			},	
 		}
@@ -1122,9 +1335,28 @@ Qimg.prototype.img = function(options){
 }	
 Qimg.prototype.paintImg = function(obj){ 
 	
-	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;	 
+	var tStart = this.qcanvas.isFun(obj.tStart)?obj.tStart():obj.tStart;
+
+
+	//有角度时 移动画布原点 旋转画布
+	var centerPos = obj.centerPoints();
+	
+	if(obj.degree != 0){
+		this.qcanvas.context.translate(centerPos.x,centerPos.y);
+		this.qcanvas.context.rotate(obj.degree*Math.PI/180);
+		this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+
+	}
+
 	this.qcanvas.context.drawImage(obj.img,obj.sStart[0],obj.sStart[1],obj.sWidth,obj.sHeight,tStart[0],tStart[1],obj.tWidth,obj.tHeight);
 	
+
+	// //重置画布原点 旋转复原
+	if(obj.degree != 0){
+		this.qcanvas.context.translate(centerPos.x,centerPos.y);
+		this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
+		this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+	}
 }	
 	
 /*精灵类-------------------------*/
@@ -1139,21 +1371,85 @@ Qspirit.prototype.spirit = function(options){
 			play:function(){this.isLoop = true},
 		  	drag:true,
 		  	pointerEvent:'auto',
+			degree:0,
+
 			/*img:{},
 			row:0,
 			column:0,
 			frameIndex:[],
 			isLoop:true,
 			during:2*/
-			polyPoints:function(){  //顶点坐标序列
-						
-					return [
-						{"x":this.tStart[0],"y":this.tStart[1]},
-						{"x":this.tStart[0]+this.tWidth,"y":this.tStart[1]},
-						{"x":this.tStart[0]+this.tWidth,"y":this.tStart[1]+this.tHeight},
-						{"x":this.tStart[0],"y":this.tStart[1]+this.tHeight},
-					];
+			centerPoints:function(){ //元素中心点相对于整个画布的坐标
 					
+					return {
+						x:this.tStart[0]+this.tWidth*0.5,
+						y:this.tStart[1]+this.tHeight*0.5
+					}
+
+			},
+			polyPoints:function(){  //顶点坐标序列
+
+					var half_x = this.tWidth*0.5;
+					var half_y = this.tHeight*0.5; 
+					var center = this.centerPoints();
+
+
+					var temp = 0;
+					if(this.degree <0){ 
+						temp = 360+this.degree;
+					}else{
+						temp = this.degree;
+					}
+					
+					
+					if((temp>0 && temp<=90) || (temp>180 && temp<=270)){
+
+						if(temp >180){
+							temp = temp-180;
+						}
+
+						var E_x = center.x-Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+						 
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						];
+
+
+
+					}else if((temp>90 && temp<180) || (temp>270 && temp<360)){
+
+						if(temp>270){
+							temp = temp-180;
+						}
+
+						temp = 180 - temp;
+						var E_x = center.x+Math.cos(temp*Math.PI/180)*half_x;
+						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
+ 
+
+						return [
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
+							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
+							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y}
+						]
+
+
+
+
+					}else{
+						
+						return [
+							{"x":this.tStart[0],"y":this.tStart[1]},
+							{"x":this.tStart[0]+this.tWidth,"y":this.tStart[1]},
+							{"x":this.tStart[0]+this.tWidth,"y":this.tStart[1]+this.tHeight},
+							{"x":this.tStart[0],"y":this.tStart[1]+this.tHeight},
+						];
+					}
 			}
 			
 		}
@@ -1241,8 +1537,25 @@ Qspirit.prototype.paintSpirit = function(obj){
 		var sHeight = obj.img.height/obj.row;//obj.tHeight;
 	
 		//console.log(obj.frames[obj.framesIndex[1]][obj.framesIndex[0]]);
+		
+		//有角度时 移动画布原点 旋转画布
+		var centerPos = obj.centerPoints();
+		
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+
+		}
 	
 		this.qcanvas.context.drawImage(obj.img,sx,sy,sWidth,sHeight,obj.tStart[0],obj.tStart[1],obj.tWidth,obj.tHeight);
+
+		// //重置画布原点 旋转复原
+		if(obj.degree != 0){
+			this.qcanvas.context.translate(centerPos.x,centerPos.y);
+			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
+			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
+		}
 }	
 	
 
