@@ -567,9 +567,11 @@ Qtext.prototype.paintText = function(obj){
 							 height:parseInt(obj.fontSize)	
 							};
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = obj.centerPoints();
+		var centerPos = {};
 		
 		if(obj.degree != 0){
+			centerPos = obj.centerPoints();
+
 			this.qcanvas.context.translate(centerPos.x,centerPos.y);
 			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
 			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
@@ -736,9 +738,11 @@ Qrect.prototype.paintRect = function(obj){
 
 
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = obj.centerPoints();
+		var centerPos = {};
 		
 		if(obj.degree != 0){
+			centerPos = obj.centerPoints();
+
 			this.qcanvas.context.translate(centerPos.x,centerPos.y);
 			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
 			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
@@ -1339,9 +1343,11 @@ Qimg.prototype.paintImg = function(obj){
 
 
 	//有角度时 移动画布原点 旋转画布
-	var centerPos = obj.centerPoints();
+	var centerPos = {};
 	
 	if(obj.degree != 0){
+		centerPos = obj.centerPoints();
+
 		this.qcanvas.context.translate(centerPos.x,centerPos.y);
 		this.qcanvas.context.rotate(obj.degree*Math.PI/180);
 		this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
@@ -1539,9 +1545,11 @@ Qspirit.prototype.paintSpirit = function(obj){
 		//console.log(obj.frames[obj.framesIndex[1]][obj.framesIndex[0]]);
 		
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = obj.centerPoints();
+		var centerPos = {};
 		
 		if(obj.degree != 0){
+			centerPos = obj.centerPoints();
+
 			this.qcanvas.context.translate(centerPos.x,centerPos.y);
 			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
 			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
