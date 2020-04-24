@@ -155,8 +155,24 @@ var textfps = qcanvas.qtext.text({
 var rect = qcanvas.qrect.rect({
 	start:[160,100],
 	borderColor:'red',
-	fillColor:'blue'
+	fillColor:'',
+	degree:30,
+	radius:5,
+	mouseup:function(){
+		console.log('mouseup')
+	}
 })		
+
+var rect1 = qcanvas.qrect.rect({
+	start:[180,80],
+	width:200,
+	borderColor:'green',
+	fillColor:'blue',
+	pointerEvent:'none',
+	mouseup:function(){
+		console.log('rect1->mouseup')
+	}
+})
 
 		</code>
 <a onclick="document.getElementById('frm4').style.display='block'">查看示例</a>
