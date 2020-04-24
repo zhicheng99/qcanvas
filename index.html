@@ -54,7 +54,7 @@ code.has-numbering {
 	}
 
 	.frm{
-		display: none;
+		/*display: none;*/
 	}
 
 	a{
@@ -75,10 +75,10 @@ var qcanvas = new Qcanvas(["qcanvas",300,200]);
 
 		</code>
 
-		<a onclick="document.getElementById('frm1').style.display='block'">查看示例</a>
+		<a onclick="document.getElementById('frm1').innerHTML='<iframe src=template1.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
+
 	</pre>
 	<div class="frm" id="frm1">
-		<iframe src="template1.html" width="100%" height="200" frameborder="0"></iframe>
 	</div>
 
 	2、画线
@@ -118,12 +118,11 @@ var line4 = qcanvas.qline.line({
 
 		
 		</code>
-<a onclick="document.getElementById('frm2').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm2').innerHTML='<iframe src=template2.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm2">
-		<iframe src="template2.html" width="100%" height="200" frameborder="0"></iframe>
 	</div>
 	3、画文字
 	<pre>
@@ -142,11 +141,11 @@ var textfps = qcanvas.qtext.text({
 })	
 			
 		</code>
-<a onclick="document.getElementById('frm3').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm3').innerHTML='<iframe src=template3.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 <div class="frm" id="frm3">
-		<iframe src="template3.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 	4、画矩形
 	<pre>
@@ -175,12 +174,12 @@ var rect1 = qcanvas.qrect.rect({
 })
 
 		</code>
-<a onclick="document.getElementById('frm4').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm4').innerHTML='<iframe src=template4.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm4">
-		<iframe src="template4.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 	5、画圆
@@ -197,11 +196,11 @@ var arc = qcanvas.qarc.arc({
 });		
 
 		</code>
-<a onclick="document.getElementById('frm5').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm5').innerHTML='<iframe src=template5.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 	<div class="frm" id="frm5">
-		<iframe src="template5.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 	6、多边形
@@ -228,12 +227,12 @@ var shape = qcanvas.qshape.shape({
 			});
 
 		</code>
-<a onclick="document.getElementById('frm6').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm6').innerHTML='<iframe src=template6.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm6">
-		<iframe src="template6.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 	7、画图片
 	<pre>
@@ -265,12 +264,12 @@ qcanvas.load({
 });	
 
 		</code>
-<a onclick="document.getElementById('frm7').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm7').innerHTML='<iframe src=template7.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm7">
-		<iframe src="template7.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 	8、画精灵图
@@ -303,12 +302,12 @@ qcanvas.load({
 })		
 
 		</code>
-<a onclick="document.getElementById('frm8').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm8').innerHTML='<iframe src=template8.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm8">
-		<iframe src="template8.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 	9、动画
@@ -330,11 +329,11 @@ qcanvas.qanimation.animate(rect,{
 			
 
 		</code>
-<a onclick="document.getElementById('frm9').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm9').innerHTML='<iframe src=template9.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 	<div class="frm" id="frm9">
-		<iframe src="template9.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 	10、事件
@@ -368,12 +367,12 @@ qcanvas.qanimation.animate(rect,{
 
 
 		</code>
-	<a onclick="document.getElementById('frm10').style.display='block'">查看示例</a>
+	<a onclick="document.getElementById('frm10').innerHTML='<iframe src=template10.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 	</pre>
 
 
 		<div class="frm" id="frm10">
-		<iframe src="template10.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 	11、显示元素、隐藏元素、删除元素
 	<pre>
@@ -448,12 +447,12 @@ create();
 			
 
 		</code>
-<a onclick="document.getElementById('frm11').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm11').innerHTML='<iframe src=template11.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
 		
 	</pre>
 
 	<div class="frm" id="frm11">
-		<iframe src="template11.html" width="100%" height="200" frameborder="0"></iframe>
+		
 	</div>
 
 
@@ -549,12 +548,12 @@ create();
 			
 
 		</code>
-<a onclick="document.getElementById('frm12').style.display='block'">查看示例</a>
+<a onclick="document.getElementById('frm12').innerHTML='<iframe src=template12.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm12">
-		<iframe src="template12.html" width="100%" height="350" frameborder="0"></iframe>
+		
 	</div>
 
 	13、Qlayer元素容器类的使用及容器内元素层级调整<br><br>
@@ -709,12 +708,12 @@ Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调�
 		}
 	})
 		</code>
-	<a onclick="document.getElementById('frm13').style.display='block'">查看示例</a>
+	<a onclick="document.getElementById('frm13').innerHTML='<iframe src=template13.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
 
 	</pre>
 
 	<div class="frm" id="frm13">
-		<iframe src="template13.html" width="100%" height="350" frameborder="0"></iframe>
+		
 	</div>
 
 
