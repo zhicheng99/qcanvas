@@ -634,6 +634,7 @@ Qrect.prototype.rect = function(options){
 			fillColor:'',
 			drag:true,
 			degree:0,
+			radius:0,
 			pointerEvent:'auto',
 			centerPoints:function(){ //元素中心点相对于整个画布的坐标
 					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
@@ -729,6 +730,34 @@ Qrect.prototype.rect = function(options){
 	return OPTIONS;
 }
 
+Qrect.prototype.drawRoundedRect = function(ctx, x, y, width, height, obj) {
+			
+
+            ctx.beginPath(); // draw top and top right corner 
+
+            ctx.lineWidth=obj.lineWidth;
+            ctx.strokeStyle=obj.borderColor;
+           
+            ctx.moveTo(x + obj.radius, y);
+            ctx.arcTo(x + width, y, x + width, y + obj.radius, obj.radius); // draw right side and bottom right corner 
+            ctx.arcTo(x + width, y + height, x + width - obj.radius, y + height, obj.radius); // draw bottom and bottom left corner 
+            ctx.arcTo(x, y + height, x, y + height - obj.radius, obj.radius); // draw left and top left corner 
+            ctx.arcTo(x, y, x + obj.radius, y, obj.radius);
+            
+
+            ctx.stroke();
+
+
+            
+            var rgb = this.qcanvas.colorRgb(obj.fillColor).replace('RGB(','').replace(')','');
+
+		(obj.fillColor!='') && 
+			(obj.opacity && (ctx.fillStyle="rgba("+rgb+','+obj.opacity+")") ||
+			(ctx.fillStyle = obj.fillColor)) &&
+			ctx.fill();
+ 
+        }
+
 Qrect.prototype.paintRect = function(obj){
 		this.qcanvas.qanimation.createAnimation(obj);	
 
@@ -749,23 +778,28 @@ Qrect.prototype.paintRect = function(obj){
 
 		}
 
+		if(this.qcanvas.isNum(obj.radius) && (obj.radius>0)){  //圆角矩形
 
-
-		this.qcanvas.context.beginPath();
-		this.qcanvas.context.lineWidth=obj.lineWidth;
-		this.qcanvas.context.strokeStyle=obj.borderColor;
-	
+			this.drawRoundedRect(this.qcanvas.context,start[0],start[1],width,height,obj);
+		}else{
+			this.qcanvas.context.beginPath();
+			this.qcanvas.context.lineWidth=obj.lineWidth;
+			this.qcanvas.context.strokeStyle=obj.borderColor;
 		
-	
-		this.qcanvas.context.rect(start[0],start[1],width,height);
-		this.qcanvas.context.stroke();
+			
+		
+			this.qcanvas.context.rect(start[0],start[1],width,height);
+			this.qcanvas.context.stroke();
 
-		var rgb = this.qcanvas.colorRgb(obj.fillColor).replace('RGB(','').replace(')','');
-	
-	(obj.fillColor!='') && 
-		(obj.opacity && (this.qcanvas.context.fillStyle="rgba("+rgb+','+obj.opacity+")") ||
-		(this.qcanvas.context.fillStyle = obj.fillColor)) &&
-		this.qcanvas.context.fill();
+			var rgb = this.qcanvas.colorRgb(obj.fillColor).replace('RGB(','').replace(')','');
+		
+		(obj.fillColor!='') && 
+			(obj.opacity && (this.qcanvas.context.fillStyle="rgba("+rgb+','+obj.opacity+")") ||
+			(this.qcanvas.context.fillStyle = obj.fillColor)) &&
+			this.qcanvas.context.fill();
+		}
+
+		
 	
 	
 		// (obj.fillColor!='') && (this.qcanvas.context.fillStyle = obj.fillColor) && this.qcanvas.context.fill();
