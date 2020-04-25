@@ -567,18 +567,7 @@ Qtext.prototype.paintText = function(obj){
 							 height:parseInt(obj.fontSize)	
 							};
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = {};
-		
-		if(obj.degree != 0){
-			centerPos = obj.centerPoints();
-
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-
-		}					
-							
-
+		var centerPos = this.qcanvas.setDegree(obj);  
 
 		//设置字体颜色
     	// this.qcanvas.context.strokeStyle = obj.color;
@@ -598,11 +587,7 @@ Qtext.prototype.paintText = function(obj){
     	
 
 		// //重置画布原点 旋转复原
-		if(obj.degree != 0){
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-		}
+		this.qcanvas.resetDegree(obj,centerPos); 
 		
 
 		//重置
@@ -767,16 +752,7 @@ Qrect.prototype.paintRect = function(obj){
 
 
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = {};
-		
-		if(obj.degree != 0){
-			centerPos = obj.centerPoints();
-
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-
-		}
+		var centerPos = this.qcanvas.setDegree(obj);   
 
 		if(this.qcanvas.isNum(obj.radius) && (obj.radius>0)){  //圆角矩形
 
@@ -805,11 +781,7 @@ Qrect.prototype.paintRect = function(obj){
 		// (obj.fillColor!='') && (this.qcanvas.context.fillStyle = obj.fillColor) && this.qcanvas.context.fill();
 
 		// //重置画布原点 旋转复原
-		if(obj.degree != 0){
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-		}
+		this.qcanvas.resetDegree(obj,centerPos); 
 
 }
 
@@ -1377,26 +1349,14 @@ Qimg.prototype.paintImg = function(obj){
 
 
 	//有角度时 移动画布原点 旋转画布
-	var centerPos = {};
-	
-	if(obj.degree != 0){
-		centerPos = obj.centerPoints();
-
-		this.qcanvas.context.translate(centerPos.x,centerPos.y);
-		this.qcanvas.context.rotate(obj.degree*Math.PI/180);
-		this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-
-	}
+	var centerPos = this.qcanvas.setDegree(obj);   
+	 
 
 	this.qcanvas.context.drawImage(obj.img,obj.sStart[0],obj.sStart[1],obj.sWidth,obj.sHeight,tStart[0],tStart[1],obj.tWidth,obj.tHeight);
 	
 
 	// //重置画布原点 旋转复原
-	if(obj.degree != 0){
-		this.qcanvas.context.translate(centerPos.x,centerPos.y);
-		this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
-		this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-	}
+	this.qcanvas.resetDegree(obj,centerPos); 
 }	
 	
 /*精灵类-------------------------*/
@@ -1579,25 +1539,13 @@ Qspirit.prototype.paintSpirit = function(obj){
 		//console.log(obj.frames[obj.framesIndex[1]][obj.framesIndex[0]]);
 		
 		//有角度时 移动画布原点 旋转画布
-		var centerPos = {};
-		
-		if(obj.degree != 0){
-			centerPos = obj.centerPoints();
-
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-
-		}
+		var centerPos = this.qcanvas.setDegree(obj);   
+		 
 	
 		this.qcanvas.context.drawImage(obj.img,sx,sy,sWidth,sHeight,obj.tStart[0],obj.tStart[1],obj.tWidth,obj.tHeight);
 
 		// //重置画布原点 旋转复原
-		if(obj.degree != 0){
-			this.qcanvas.context.translate(centerPos.x,centerPos.y);
-			this.qcanvas.context.rotate(-obj.degree*Math.PI/180);
-			this.qcanvas.context.translate(-centerPos.x,-centerPos.y);
-		}
+		this.qcanvas.resetDegree(obj,centerPos);
 }	
 	
 
@@ -1773,8 +1721,6 @@ Qevent.prototype.executeMouseOut = function(aim,position){
 
 Qevent.prototype.eventCallback = function(e,position){
 
-		// console.log(this.qcanvas.moveAim);
-	
 	 	var aim = this.findElmByEventPosition(position);
 
 	 	//修复对象mouseout自定义事件不执行的问题
@@ -2037,9 +1983,8 @@ Qlayer.prototype.lower = function(el){
 }
 
 Qlayer.prototype.lowerToBottom = function(el){
-	var currIndex = this.getIndexById(el.id);
-	if(currIndex == 0){  //已经是最底层
 
+	if(this.getIndexById(el.id) == 0){  //已经是最底层
 		return false;
 	}
 
@@ -2061,10 +2006,8 @@ Qlayer.prototype.raise = function(el){
 }
 
 Qlayer.prototype.raiseToTop = function(el){
-
-	var currIndex = this.getIndexById(el.id);
-	if(currIndex == (this.elements.length-1)){  //已经是最顶层
-
+ 
+	if(this.getIndexById(el.id) == (this.elements.length-1)){  //已经是最顶层
 		return false;
 	}
 
@@ -2123,9 +2066,7 @@ function Qcanvas(c_p){
 	//分组对象（元素属于哪个组）
 	this.group = {};
 	
-	
-	
-	// console.log('主类构造函数执行');
+	 
 	
 	
 	this.qline = new Qline(this);
@@ -2472,17 +2413,11 @@ Qcanvas.prototype.appendSetFun = function(o){
 }
 
 Qcanvas.prototype.extend = function(o,n){
-	
-
-				
-	for(var i in n){
-		
-			(i != 'TYPE') && (o[i] = n[i]);
-				
+	 
+	for(var i in n){ 
+		(i != 'TYPE') && (o[i] = n[i]); 
 	}
-				
-		
-	
+				 
 	this.pushElements(o);
 }
 	
@@ -2549,10 +2484,9 @@ Qcanvas.prototype.lower = function(el){
 
 }
 
-Qcanvas.prototype.lowerToBottom = function(el){
-	var currIndex = this.getIndexById(el.id);
-	if(currIndex == 0){  //已经是最底层
+Qcanvas.prototype.lowerToBottom = function(el){ 
 
+	if(this.getIndexById(el.id) == 0){  //已经是最底层
 		return false;
 	}
 
@@ -2574,10 +2508,8 @@ Qcanvas.prototype.raise = function(el){
 }
 
 Qcanvas.prototype.raiseToTop = function(el){
-
-	var currIndex = this.getIndexById(el.id);
-	if(currIndex == (this.elements.length-1)){  //已经是最顶层
-
+ 
+	if(this.getIndexById(el.id) == (this.elements.length-1)){  //已经是最顶层
 		return false;
 	}
 
@@ -2777,6 +2709,29 @@ Qcanvas.prototype.requestNextAnimationFrame = function(){
                         self.timeout = 1000/self.fps - (finish - start);
                     } , self.timeout);
                };
+}
+
+Qcanvas.prototype.setDegree = function(obj){
+		var centerPos = {};
+		
+		if(obj.degree != 0){
+			centerPos = obj.centerPoints();
+
+			this.context.translate(centerPos.x,centerPos.y);
+			this.context.rotate(obj.degree*Math.PI/180);
+			this.context.translate(-centerPos.x,-centerPos.y);
+
+		}	
+
+		return centerPos;
+}
+
+Qcanvas.prototype.resetDegree = function(obj,centerPos){
+	if(obj.degree != 0){
+		this.context.translate(centerPos.x,centerPos.y);
+		this.context.rotate(-obj.degree*Math.PI/180);
+		this.context.translate(-centerPos.x,-centerPos.y);
+	}
 }
 
 typeof window.requestNextAnimationFrame =='undefined'
