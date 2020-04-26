@@ -1917,9 +1917,9 @@ Qlayer.prototype.paintLayer = function(obj){
 		this.qcanvas.TypeGroup[o.TYPE].call(this.qcanvas['q'+o.TYPE],o);
 
 	}
-
+	// console.log(this);
 	//把临时canvas直接绘到主canvas上
-	this.qcanvas.context.drawImage(obj.canvasEle.layerCanvas,0,0);
+	// this.qcanvas.context.drawImage(obj.canvasEle.layerCanvas,0,0);
 }
 Qlayer.prototype.push = function(ele){
 
