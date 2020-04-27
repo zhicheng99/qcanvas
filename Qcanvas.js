@@ -1870,7 +1870,7 @@ Qlayer.prototype.layer = function(options){
 			width:_this.qcanvas.stage.width,
 			height:_this.qcanvas.stage.height,
 			elements:[],   //容器里包含的元素
-			canvasEle:_this.createCanvas(),
+			// canvasEle:_this.createCanvas(),
 			push:this.push,
 			qcanvas:this.qcanvas,
 			getEleById:this.getEleById,
