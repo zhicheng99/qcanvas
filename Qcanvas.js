@@ -1919,8 +1919,8 @@ function Qlayer(p){
 	this.pcanvas = p;   //主canvas 
 
 	//实例属性覆盖原型Qcanvas继承过来的属性
-	var t = document.createElement('canvas');
-	// var t = document.getElementById('qcanvas1'); 
+	// var t = document.createElement('canvas');
+	var t = document.getElementById('qcanvas1'); 
 
 	t.width = this.pcanvas.stage.width;
 	t.height = this.pcanvas.stage.height;
@@ -1983,7 +1983,7 @@ function Qlayer(p){
 
 	}
 	this.clear = function(){
-		this.qcanvas.context.clearRect(0,0,this.stage.width,this.stage.height);
+		this.qcanvas.context.clearRect(0,0,t.width,t.height);
 	}
 
 	this.start = function(){
