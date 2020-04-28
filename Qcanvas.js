@@ -1919,8 +1919,8 @@ function Qlayer(p){
 	this.pcanvas = p;   //主canvas 
 
 	//实例属性覆盖原型Qcanvas继承过来的属性
-	// var t = document.createElement('canvas');
-	var t = document.getElementById('qcanvas1'); 
+	var t = document.createElement('canvas');
+	// var t = document.getElementById('qcanvas1'); 
 
 	t.width = this.pcanvas.stage.width;
 	t.height = this.pcanvas.stage.height;
