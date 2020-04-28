@@ -716,6 +716,155 @@ Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调�
 		
 	</div>
 
+	14、Ggroup使用
+
+	<pre>
+		
+		<code  class="js">
+			var greenRect = qcanvas.qrect.rect({
+		start:[0,0],
+		width:200,
+		height:200,
+		// drag:false,
+		borderColor:'green',
+		fillColor:'green', 
+	})
+
+	var redRect = qcanvas.qrect.rect({
+		start:[100,100],
+		width:50,
+		height:50,
+		borderColor:'red',
+		fillColor:'red', 
+		// drag:false
+	}) 
+
+	var blueRect = qcanvas.qrect.rect({
+		start:[120,140],
+		width:50,
+		height:50,
+		borderColor:'blue',
+		fillColor:'blue',
+		// drag:false
+	})
+
+ 
+
+
+
+
+ 
+
+
+	//layer元素
+	var layer = qcanvas.qlayer.layer();
+	console.log(layer);
+
+	layer.push(redRect);
+
+	layer.push(blueRect);
+
+
+
+
+	qcanvas.load({			
+		"person":"img/spirit1.png",
+	},function(){
+		
+			var spiritSource = qcanvas.getSourceByName("person"); 
+
+			var s = qcanvas.qspirit.spirit({
+				img:spiritSource,
+				row:1,
+				column:8,
+				framesIndex:[0,0],
+				tStart:[0,120],
+				tWidth:40,
+				tHeight:64,
+				isLoop:true,
+				during:1,
+				mouseup:function(){
+					console.log(this);
+					console.log('触发mouseup事件');
+				}
+			})
+
+			var t = qcanvas.qtext.text({
+				start:s.tStart,
+				text:'我是来自layer容器里spirit',
+				color:'#000',
+				pointerEvent:'none' 
+			})
+			
+
+
+			layer.push(t);
+			layer.push(s);
+					
+	})
+
+
+	qcanvas.qtext.text({
+		start:[200,20],
+		text:'greenRect上移一层',
+		drag:false,
+		mouseup:function(){
+			qcanvas.raise(greenRect);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,40],
+		text:'greenRect下移一层',
+		drag:false,
+		mouseup:function(){
+			qcanvas.lower(greenRect);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,60],
+		text:'redRect上移一层',
+		drag:false,
+		mouseup:function(){
+			layer.raise(redRect);
+		}
+	})
+	qcanvas.qtext.text({
+		start:[200,80],
+		text:'redRect下移一层',
+		drag:false,
+		mouseup:function(){
+			layer.lower(redRect);
+		}
+	})
+	qcanvas.qtext.text({
+		start:[200,100],
+		text:'layer下移一层',
+		drag:false,
+		mouseup:function(){
+			qcanvas.lower(layer);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,120],
+		text:'layer上移一层',
+		drag:false,
+		mouseup:function(){
+			qcanvas.raise(layer);
+		}
+	})
+		</code>
+	<a onclick="document.getElementById('frm14').innerHTML='<iframe src=template14.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
+
+	</pre>
+
+	<div class="frm" id="frm14">
+		
+	</div>
+
+
 
 
 

@@ -16,17 +16,23 @@
 	</style>
 </head>
 <body>
-blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】是layer元素容器里的元素<br>
-<canvas id="qcanvas"></canvas> 
-
-
+blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】是分组容器group里的元素<br>
+分组group实例是抽象出来的元素 只在逻辑上把一些元素集合到一块，元素还是一直重绘在主canvas上<br>
+<canvas id="qcanvas"></canvas>
 
 <script src='Qcanvas.js'></script>
 <script>
 
 	var qcanvas = new Qcanvas(["qcanvas",400,300]);
 
-	
+	var greenRect = qcanvas.qrect.rect({
+		start:[0,0],
+		width:200,
+		height:200,
+		// drag:false,
+		borderColor:'green',
+		fillColor:'green', 
+	})
 
 	var redRect = qcanvas.qrect.rect({
 		start:[100,100],
@@ -38,25 +44,12 @@ blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】
 		// drag:false
 	}) 
 
-
-var greenRect = qcanvas.qrect.rect({
-		start:[0,0],
-		width:200,
-		height:200,
-		// drag:false,
-		borderColor:'green',
-		fillColor:'green', 
-	})
-
-
-
-
 	var blueRect = qcanvas.qrect.rect({
 		start:[120,140],
 		width:50,
 		height:50,
 		borderColor:'blue',
-		fillColor:'blue'
+		fillColor:'blue',
 		// drag:false
 	})
 
@@ -69,17 +62,12 @@ var greenRect = qcanvas.qrect.rect({
 
 
 	//layer元素
-	var layer = qcanvas.qlayer.layer();
-	console.log(layer);
+	var group = qcanvas.qgroup.group();
+	console.log(group);
 
-	layer.push(redRect);
+	group.push(redRect);
 
-	layer.push(blueRect);
- 
-	
-
-	
-
+	group.push(blueRect);
 
 
 
@@ -108,15 +96,15 @@ var greenRect = qcanvas.qrect.rect({
 
 			var t = qcanvas.qtext.text({
 				start:s.tStart,
-				text:'我是来自layer容器里spirit',
+				text:'我是来自group容器里spirit',
 				color:'#000',
 				pointerEvent:'none' 
 			})
 			
 
 
-			layer.push(t);
-			layer.push(s);
+			group.push(t);
+			group.push(s);
 					
 	})
 

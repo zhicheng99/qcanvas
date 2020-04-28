@@ -744,6 +744,7 @@ Qrect.prototype.drawRoundedRect = function(ctx, x, y, width, height, obj) {
         }
 
 Qrect.prototype.paintRect = function(obj){
+		// console.log(this);
 		this.qcanvas.qanimation.createAnimation(obj);	
 
 		var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
@@ -1450,6 +1451,31 @@ Qspirit.prototype.spirit = function(options){
 							{"x":this.tStart[0],"y":this.tStart[1]+this.tHeight},
 						];
 					}
+			},
+			moveFrameIndex:function(obj){
+				obj.step = typeof obj.step !='undefined'?obj.step:1;//控制方向  
+						
+				var step = obj.step;
+				var max = obj.frames[obj.framesIndex[0]].length;
+				
+				obj.framesIndex[1] = obj.framesIndex[1]+step;
+			  	obj.framesIndex[1] = obj.framesIndex[1]<=0?0:obj.framesIndex[1];
+				obj.framesIndex[1] = obj.framesIndex[1]>=max?(max-1):obj.framesIndex[1];
+				
+				
+			
+				if(obj.isLoop){
+					
+					if(obj.framesIndex[1]==(max-1)){
+							//obj.step=-1;
+							obj.framesIndex[1] = 0;
+					}
+					
+					if(obj.framesIndex[1]==0){
+								obj.step = 1; 		
+					}
+			
+				}	
 			}
 			
 		}
@@ -1526,7 +1552,35 @@ Qspirit.prototype.moveFrameIndex = function(obj){
 	
 Qspirit.prototype.paintSpirit = function(obj){
 		this.qcanvas.qanimation.createAnimation(obj);
-		this.moveFrameIndex(obj);
+
+		var moveFrameIndex = function(obj){
+			obj.step = typeof obj.step !='undefined'?obj.step:1;//控制方向  
+					
+			var step = obj.step;
+			var max = obj.frames[obj.framesIndex[0]].length;
+			
+			obj.framesIndex[1] = obj.framesIndex[1]+step;
+		  	obj.framesIndex[1] = obj.framesIndex[1]<=0?0:obj.framesIndex[1];
+			obj.framesIndex[1] = obj.framesIndex[1]>=max?(max-1):obj.framesIndex[1];
+			
+			
+		
+			if(obj.isLoop){
+				
+				if(obj.framesIndex[1]==(max-1)){
+						//obj.step=-1;
+						obj.framesIndex[1] = 0;
+				}
+				
+				if(obj.framesIndex[1]==0){
+							obj.step = 1; 		
+				}
+		
+			}	
+		}
+		// this.moveFrameIndex(obj);
+		obj.moveFrameIndex(obj);
+
 		
 	//console.log(obj.framesIndex);
 	
@@ -1757,11 +1811,13 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				 || elements[i].TYPE=='arc'
 				 || elements[i].TYPE=='polygon'
 				 || elements[i].TYPE=='layer'
+				 || elements[i].TYPE=='group'
+
 				){
 
 
 				//如果是容器对象 要判断属于该容器里的元素
-				if(elements[i].TYPE == 'layer'){  
+				if((elements[i].TYPE == 'layer') || (elements[i].TYPE == 'group')){  
 					for (var j = 0; j < elements[i].elements.length; j++) {
 						
 						if(this.rayCasting(position,elements[i].elements[j].polyPoints())=='in'){
@@ -1772,7 +1828,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				}
 
 
-				if((aim === null) && (elements[i].TYPE !== 'layer')){
+				if((aim === null) && (elements[i].TYPE !== 'layer') && (elements[i].TYPE !== 'group')){
 					if(this.rayCasting(position,elements[i].polyPoints())=='in'){
 						aim = elements[i];
 						break;
@@ -1858,14 +1914,111 @@ Qevent.prototype.rayCasting = function(p, poly) {
 
 
 //元素容器类
-function Qlayer(qcanvas){
+function Qlayer(p){
 	this.qlayerVersion = '1.0';
+	this.pcanvas = p;   //主canvas 
+
+	//实例属性覆盖原型Qcanvas继承过来的属性
+	var t = document.createElement('canvas');
+	// var t = document.getElementById('qcanvas1'); 
+
+	t.width = this.pcanvas.stage.width;
+	t.height = this.pcanvas.stage.height;
+	t.id = "tmp";
+
+
+	//重写生成一个qcanvas属性
+	this.qcanvas = {}; 
+	
+	//把Qcanvas的属性都复制过来  通过原型继承的
+	for(var i in p){
+		this.qcanvas[i] = p[i];
+	}
+
+	// this.qcanvas = this.extend({},p);
+
+	this.qcanvas.context = t.getContext('2d');
+	this.qcanvas.elements = [];
+
+	
+
+	this.push = function(ele){
+
+		//核心Qcanvas类成员 elements中 删掉该元素
+		this.pcanvas.removeEle.call(this.pcanvas,ele);
+
+		//添加到Qlayer类成员elements中
+		this.qcanvas.elements.push(ele);
+	}
+
+	this.layer = function(){  
+		
+
+		this.pcanvas.elements.push({
+			TYPE:"layer",
+			elements:this.qcanvas.elements
+		});
+		// this.pcanvas.pushElements.call(this.pcanvas,this);
+		return this;
+	}
+
+	this.paintLayer = function(){
+
+		this.start();
+		this.pcanvas.context.drawImage(t,0,0);
+	}
+
+	this.paint = function(){ 
+		for(var i = 0; i<this.qcanvas.elements.length; i++){
+			var o = this.qcanvas.elements[i];
+
+			if(o.display=='none'){
+				continue;
+			}
+			this.TypeGroup[o.TYPE].call(this,o); 
+					
+		}
+
+		// this.pcanvas.context.drawImage(t,0,0);
+
+	}
+	this.clear = function(){
+		this.qcanvas.context.clearRect(0,0,this.stage.width,this.stage.height);
+	}
+
+	this.start = function(){
+		// console.log('ddd');
+		this.clear();
+		this.paint();			
+		
+		var currentLoop = (new Date()).getMilliseconds();
+	    if (this.lastLoop > currentLoop) {
+				this.currFps = this.count;
+	      this.count = 1;
+	    } else {
+				this.count  += 1;	
+	    }
+					
+		this.lastLoop = currentLoop;		
+		 
+		
+	}	 
+
+
+} 
+
+	
+/*-------end---------*/	
+
+//元素分组类
+function Qgroup(qcanvas){
+	this.qgroupVersion = '1.0';
 	this.qcanvas = qcanvas;
 }
-Qlayer.prototype.layer = function(options){
+Qgroup.prototype.group = function(options){
 	var _this = this;
 	var OPTIONS = {
-			TYPE:'layer',
+			TYPE:'group',
 			display:'block',
 			width:_this.qcanvas.stage.width,
 			height:_this.qcanvas.stage.height,
@@ -1889,22 +2042,9 @@ Qlayer.prototype.layer = function(options){
 
 	return OPTIONS;	
 
-}
-Qlayer.prototype.createCanvas = function(){
+} 
 
-	var t = document.createElement('canvas');
-	t.width = this.qcanvas.stage.width;
-	t.height = this.qcanvas.stage.height;
-
-
-	return {
-		layerCanvas:t,
-		context:t.getContext('2d')
-	}
-
-}
-
-Qlayer.prototype.paintLayer = function(obj){
+Qgroup.prototype.paintGroup = function(obj){
 
 	//把属于该容器的元素绘在layerCanvas
 	for(var i = 0; i<obj.elements.length; i++){
@@ -1916,12 +2056,9 @@ Qlayer.prototype.paintLayer = function(obj){
 
 		this.qcanvas.TypeGroup[o.TYPE].call(this.qcanvas['q'+o.TYPE],o);
 
-	}
-	// console.log(this);
-	//把临时canvas直接绘到主canvas上
-	// this.qcanvas.context.drawImage(obj.canvasEle.layerCanvas,0,0);
+	} 
 }
-Qlayer.prototype.push = function(ele){
+Qgroup.prototype.push = function(ele){
 
 	//核心Qcanvas类成员 elements中 删掉该元素
 	this.qcanvas.removeEle(ele);
@@ -1932,7 +2069,7 @@ Qlayer.prototype.push = function(ele){
 
 }
 
-Qlayer.prototype.getEleById = function(id){
+Qgroup.prototype.getEleById = function(id){
 	
 	for(var i=0;i<this.elements.length;i++){
 		if(this.elements[i].id == id){
@@ -1945,7 +2082,7 @@ Qlayer.prototype.getEleById = function(id){
 
 //从elements数组中删除 
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
-Qlayer.prototype.removeEle = function(obj){
+Qgroup.prototype.removeEle = function(obj){
 	
 	for(var i=0;i<this.elements.length;i++){
 		if(this.elements[i].id == obj.id){
@@ -1958,7 +2095,7 @@ Qlayer.prototype.removeEle = function(obj){
 }
 
 
-Qlayer.prototype.getIndexById = function(id){
+Qgroup.prototype.getIndexById = function(id){
 	
 	for(var i=0;i<this.elements.length;i++){
 		if(this.elements[i].id == id){
@@ -1970,7 +2107,7 @@ Qlayer.prototype.getIndexById = function(id){
 }
 
 
-Qlayer.prototype.lower = function(el){
+Qgroup.prototype.lower = function(el){
 
 	var currIndex = this.getIndexById(el.id); 
 	if((currIndex-1 < 0) || (typeof this.elements[currIndex-1] == 'undefined')){
@@ -1982,7 +2119,7 @@ Qlayer.prototype.lower = function(el){
 
 }
 
-Qlayer.prototype.lowerToBottom = function(el){
+Qgroup.prototype.lowerToBottom = function(el){
 
 	if(this.getIndexById(el.id) == 0){  //已经是最底层
 		return false;
@@ -1993,7 +2130,7 @@ Qlayer.prototype.lowerToBottom = function(el){
 
 }
 
-Qlayer.prototype.raise = function(el){ 
+Qgroup.prototype.raise = function(el){ 
 
 	var currIndex = this.getIndexById(el.id); 
 	if(typeof this.elements[currIndex+1] == 'undefined'){
@@ -2005,7 +2142,7 @@ Qlayer.prototype.raise = function(el){
 
 }
 
-Qlayer.prototype.raiseToTop = function(el){
+Qgroup.prototype.raiseToTop = function(el){
  
 	if(this.getIndexById(el.id) == (this.elements.length-1)){  //已经是最顶层
 		return false;
@@ -2078,7 +2215,11 @@ function Qcanvas(c_p){
 	this.qimg = new Qimg(this);
 	this.qspirit = new Qspirit(this);
 	this.qshape = new Qshape(this);
+
+	Qlayer.prototype = this;
 	this.qlayer = new Qlayer(this);
+	this.qgroup = new Qgroup(this);
+
 
 	
 	
@@ -2102,7 +2243,8 @@ function Qcanvas(c_p){
   		'img':this.qimg.paintImg,
   		'spirit':this.qspirit.paintSpirit,
   		'shape':this.qshape.paintShape,
-  		'layer':this.qlayer.paintLayer
+  		'layer':this.qlayer.paintLayer,  //还没有真正实现
+  		'group':this.qgroup.paintGroup
   	} 
 
 
