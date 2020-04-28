@@ -1818,7 +1818,8 @@ Qevent.prototype.findElmByEventPosition = function(position){
 
 				//如果是容器对象 要判断属于该容器里的元素
 				if((elements[i].TYPE == 'layer') || (elements[i].TYPE == 'group')){  
-					for (var j = 0; j < elements[i].elements.length; j++) {
+					
+					for (var j = elements[i].elements.length-1; j >= 0; j--) {
 						
 						if(this.rayCasting(position,elements[i].elements[j].polyPoints())=='in'){
 							aim = elements[i].elements[j];
@@ -1918,6 +1919,9 @@ function Qlayer(p){
 	this.qlayerVersion = '1.0';
 	this.pcanvas = p;   //主canvas 
 
+
+	
+
 	//实例属性覆盖原型Qcanvas继承过来的属性
 	var t = document.createElement('canvas');
 	// var t = document.getElementById('qcanvas1'); 
@@ -1937,8 +1941,20 @@ function Qlayer(p){
 
 	// this.qcanvas = this.extend({},p);
 
+	//重置context和elements属性
 	this.qcanvas.context = t.getContext('2d');
 	this.qcanvas.elements = [];
+
+
+
+	//以下Qcanvas方法得重置this 赋到Qlayer实例上
+	this.getEleById = this.pcanvas.getEleById.bind(this.qcanvas);
+	this.removeEle = this.pcanvas.removeEle.bind(this.qcanvas);
+	this.getIndexById = this.pcanvas.getIndexById.bind(this.qcanvas);
+	this.lower = this.pcanvas.lower.bind(this.qcanvas);
+	this.lowerToBottom = this.pcanvas.lowerToBottom.bind(this.qcanvas);
+	this.raise = this.pcanvas.raise.bind(this.qcanvas);
+	this.raiseToTop = this.pcanvas.raiseToTop.bind(this.qcanvas);
 
 	
 
@@ -1956,7 +1972,8 @@ function Qlayer(p){
 
 		this.pcanvas.elements.push({
 			TYPE:"layer",
-			elements:this.qcanvas.elements
+			elements:this.qcanvas.elements,
+
 		});
 		// this.pcanvas.pushElements.call(this.pcanvas,this);
 		return this;
@@ -2026,13 +2043,13 @@ Qgroup.prototype.group = function(options){
 			// canvasEle:_this.createCanvas(),
 			push:this.push,
 			qcanvas:this.qcanvas,
-			getEleById:this.getEleById,
-			removeEle:this.removeEle,
-			getIndexById:this.getIndexById,
-			lower:this.lower,
-			lowerToBottom:this.lowerToBottom,
-			raise:this.raise,
-			raiseToTop:this.raiseToTop
+			getEleById:this.qcanvas.getEleById,
+			removeEle:this.qcanvas.removeEle,
+			getIndexById:this.qcanvas.getIndexById,
+			lower:this.qcanvas.lower,
+			lowerToBottom:this.qcanvas.lowerToBottom,
+			raise:this.qcanvas.raise,
+			raiseToTop:this.qcanvas.raiseToTop
 
 		}
 
@@ -2067,92 +2084,8 @@ Qgroup.prototype.push = function(ele){
 	//添加到Qlayer类成员elements中
 	this.elements.push(ele);
 
-}
-
-Qgroup.prototype.getEleById = function(id){
-	
-	for(var i=0;i<this.elements.length;i++){
-		if(this.elements[i].id == id){
-				return this.elements[i];
-				break;
-		}	
-	}
-	
-}
-
-//从elements数组中删除 
-//该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
-Qgroup.prototype.removeEle = function(obj){
-	
-	for(var i=0;i<this.elements.length;i++){
-		if(this.elements[i].id == obj.id){
-				this.elements.splice(i,1);
-				//return this.elements[i];
-				break;
-		}	
-	}
-	
-}
-
-
-Qgroup.prototype.getIndexById = function(id){
-	
-	for(var i=0;i<this.elements.length;i++){
-		if(this.elements[i].id == id){
-				return i;
-				break;
-		}	
-	}
-	
-}
-
-
-Qgroup.prototype.lower = function(el){
-
-	var currIndex = this.getIndexById(el.id); 
-	if((currIndex-1 < 0) || (typeof this.elements[currIndex-1] == 'undefined')){
-		return false;
-	}
-
-	this.elements[currIndex] = this.elements.splice(currIndex-1,1,this.elements[currIndex])[0];
-
-
-}
-
-Qgroup.prototype.lowerToBottom = function(el){
-
-	if(this.getIndexById(el.id) == 0){  //已经是最底层
-		return false;
-	}
-
-	this.removeEle(el);
-	this.elements.unshift(el);
-
-}
-
-Qgroup.prototype.raise = function(el){ 
-
-	var currIndex = this.getIndexById(el.id); 
-	if(typeof this.elements[currIndex+1] == 'undefined'){
-		return false;
-	}
-
-	this.elements[currIndex] = this.elements.splice(currIndex+1,1,this.elements[currIndex])[0];
-
-
-}
-
-Qgroup.prototype.raiseToTop = function(el){
+} 
  
-	if(this.getIndexById(el.id) == (this.elements.length-1)){  //已经是最顶层
-		return false;
-	}
-
-	this.removeEle(el);
-	this.elements.push(el);
-}
-
-	
 /*-------end---------*/	
 	
 	
@@ -2603,14 +2536,14 @@ Qcanvas.prototype.removeEle = function(obj){
 
 
 Qcanvas.prototype.getIndexById = function(id){
-	
+	 
 	for(var i=0;i<this.elements.length;i++){
 		if(this.elements[i].id == id){
-				return i;
+				return i; 
 				break;
 		}	
 	}
-	
+ 
 }
 
 
@@ -2640,6 +2573,7 @@ Qcanvas.prototype.lowerToBottom = function(el){
 Qcanvas.prototype.raise = function(el){ 
 
 	var currIndex = this.getIndexById(el.id); 
+	console.log(currIndex);
 	if(typeof this.elements[currIndex+1] == 'undefined'){
 		return false;
 	}

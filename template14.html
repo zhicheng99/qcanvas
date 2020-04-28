@@ -18,7 +18,8 @@
 <body>
 blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】是分组容器group里的元素<br>
 分组group实例是抽象出来的元素 只在逻辑上把一些元素集合到一块，元素还是一直重绘在主canvas上<br>
-<canvas id="qcanvas"></canvas>
+<canvas id="qcanvas"></canvas> 
+
 
 <script src='Qcanvas.js'></script>
 <script>
@@ -112,6 +113,7 @@ blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】
 	qcanvas.qtext.text({
 		start:[200,20],
 		text:'greenRect上移一层',
+		color:"yellow",
 		drag:false,
 		mouseup:function(){
 			qcanvas.raise(greenRect);
@@ -121,6 +123,8 @@ blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】
 	qcanvas.qtext.text({
 		start:[200,40],
 		text:'greenRect下移一层',
+		color:"yellow",
+
 		drag:false,
 		mouseup:function(){
 			qcanvas.lower(greenRect);
@@ -130,35 +134,43 @@ blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】
 	qcanvas.qtext.text({
 		start:[200,60],
 		text:'redRect上移一层',
+		color:"yellow",
+
 		drag:false,
 		mouseup:function(){
-			layer.raise(redRect);
+			group.raise(redRect);
 		}
 	})
 	qcanvas.qtext.text({
 		start:[200,80],
 		text:'redRect下移一层',
+		color:"yellow",
+
 		drag:false,
 		mouseup:function(){
-			layer.lower(redRect);
+			group.lower(redRect);
 		}
 	})
 
 	qcanvas.qtext.text({
 		start:[200,100],
-		text:'layer下移一层',
+		text:'group下移一层',
+		color:"yellow",
+
 		drag:false,
 		mouseup:function(){
-			qcanvas.lower(layer);
+			qcanvas.lower(group);
 		}
 	})
 
 	qcanvas.qtext.text({
 		start:[200,120],
-		text:'layer上移一层',
+		text:'group上移一层',
+		color:"yellow",
+
 		drag:false,
 		mouseup:function(){
-			qcanvas.raise(layer);
+			qcanvas.raise(group);
 		}
 	})
 

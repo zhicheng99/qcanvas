@@ -559,16 +559,16 @@ create();
 	13、Qlayer元素容器类的使用及容器内元素层级调整<br><br>
 
 实质上是一个**抽象**的元素容器类 为了容纳其它元素。（宽高和主画布一样）<br>
-1、当我们不使用Qlayer时 元素直接画在主画布上；<br>
-2、当使用Qlayer时 先创建一个临时的canvas画布 <br>把指定要放到该容器内的元素先画这个临时canvas上，最后在requestNextAnimationFrame的下一个循环时再把这个画布画到主画布上 当然临时canvas也在requestNextAnimationFrame控制下不停的重绘 所以现在框架实现的这些元素都可以指定到一个Qlayer对象上 <br>
-3、使用Qlayer元素的好处：可以一次性控制一批元素的显示、隐藏、删除、层级关系等<br>
-4、删除Qlayer元素 会同时删除它所容纳的所有元素<br>
-5、在Qlayer里的所有元素层级关系都是基于该Qlayer实例的。<br>
-Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调整层级关系 需要调用Qlayer的相应方法<br>
+1、当我们不使用Qlayer时 元素直接画在主画布上； <br>
+2、当使用Qlayer时 先创建一个临时的canvas画布 把指定要放到该容器内的元素先画这个临时canvas上，最后在requestNextAnimationFrame的下一个循环时再把这个画布画到主画布上 当然临时canvas也在requestNextAnimationFrame控制下不停的重绘 所以现在框架实现的这些元素都可以指定到一个Qlayer对象上<br>
+3、使用Qlayer元素的好处：可以一次性控制一批元素的显示、隐藏、删除、层级关系等 <br>
+4、删除Qlayer元素 会同时删除它所容纳的所有元素 <br>
+5、注： 添加到同一个layer实例中的多元素 它们之间的层级关系是以该layer实例为基准的 所以Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调整层级关系 需要调用Qlayer的相应方法<br>
+
 |lower|把元素降低一个层级 (参数为元素对象) <br>
 |lowerToBottom|把元素层级置底(参数为元素对象)<br>
-|raise|把元素提高一个层级(参数为元素对象)<br>
-|raiseToTop|把元素层级置顶(参数为元素对象)<br>
+ |raise|把元素提高一个层级(参数为元素对象) <br>
+ |raiseToTop|把元素层级置顶(参数为元素对象)<br>
 
 <pre>
 		
