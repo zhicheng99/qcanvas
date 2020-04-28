@@ -2243,7 +2243,7 @@ function Qcanvas(c_p){
   		'img':this.qimg.paintImg,
   		'spirit':this.qspirit.paintSpirit,
   		'shape':this.qshape.paintShape,
-  		'layer':this.qlayer.paintLayer,  //还没有真正实现
+  		'layer':this.qlayer.paintLayer, 
   		'group':this.qgroup.paintGroup
   	} 
 
