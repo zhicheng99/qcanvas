@@ -1,3 +1,4 @@
+'use strict'
 /*
 * @Author: ZhiCheng
 * @Date:   2019-07-30 23:10:50

@@ -1943,40 +1943,42 @@ function Qlayer(p){
 
 	//重置context和elements属性
 	this.qcanvas.context = t.getContext('2d');
-	this.qcanvas.elements = [];
+	this.qcanvas.elements = []; 
+ 
 
-
-
-	//以下Qcanvas方法得重置this 赋到Qlayer实例上
-	this.getEleById = this.pcanvas.getEleById.bind(this.qcanvas);
-	this.removeEle = this.pcanvas.removeEle.bind(this.qcanvas);
-	this.getIndexById = this.pcanvas.getIndexById.bind(this.qcanvas);
-	this.lower = this.pcanvas.lower.bind(this.qcanvas);
-	this.lowerToBottom = this.pcanvas.lowerToBottom.bind(this.qcanvas);
-	this.raise = this.pcanvas.raise.bind(this.qcanvas);
-	this.raiseToTop = this.pcanvas.raiseToTop.bind(this.qcanvas);
-
-	
-
-	this.push = function(ele){
-
-		//核心Qcanvas类成员 elements中 删掉该元素
-		this.pcanvas.removeEle.call(this.pcanvas,ele);
-
-		//添加到Qlayer类成员elements中
-		this.qcanvas.elements.push(ele);
-	}
 
 	this.layer = function(){  
 		
-
-		this.pcanvas.elements.push({
+		var o = {
 			TYPE:"layer",
+			pcanvas:this.pcanvas,
 			elements:this.qcanvas.elements,
+			id: parseInt(Math.random()*10000),
+			display:'block', 
+			push:function(ele){
+				// this.pcanvas.removeEle(ele);
+				this.pcanvas.removeEle.call(this.pcanvas,ele);
+				this.elements.push(ele);
+			},
+			//以下Qcanvas方法得重置this 赋到Qlayer实例上
+			getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
+			removeEle: this.pcanvas.removeEle.bind(this.qcanvas),
+			getIndexById: this.pcanvas.getIndexById.bind(this.qcanvas),
+			lower: this.pcanvas.lower.bind(this.qcanvas),
+			lowerToBottom: this.pcanvas.lowerToBottom.bind(this.qcanvas),
+			raise: this.pcanvas.raise.bind(this.qcanvas),
+			raiseToTop: this.pcanvas.raiseToTop.bind(this.qcanvas),
 
-		});
+		}
+
+		this.pcanvas.appendSetFun(o);
+		this.pcanvas.elements.push(o);
+
+
+
 		// this.pcanvas.pushElements.call(this.pcanvas,this);
-		return this;
+		return o;
+
 	}
 
 	this.paintLayer = function(){
