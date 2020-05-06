@@ -760,12 +760,12 @@ create();
 	var layer = qcanvas.qlayer.layer();
 	console.log(layer);
 
-	layer.push(redRect);
-
-	layer.push(blueRect);
+	layer.push(redRect,blueRect); 
 
 
+	layer.raise(redRect);
 
+	
 
 	qcanvas.load({			
 		"person":"img/spirit1.png",

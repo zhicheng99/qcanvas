@@ -1956,9 +1956,20 @@ function Qlayer(p){
 			id: parseInt(Math.random()*10000),
 			display:'block', 
 			push:function(ele){
-				// this.pcanvas.removeEle(ele);
-				this.pcanvas.removeEle.call(this.pcanvas,ele);
-				this.elements.push(ele);
+
+				for (var i = 0; i < arguments.length; i++) {
+
+					//不支持layer对象上再放入layer
+					if(arguments[i].TYPE == 'layer'){   
+						continue;
+					}
+
+					if(this.pcanvas.isObj(arguments[i])){
+						this.pcanvas.removeEle.call(this.pcanvas,arguments[i]);
+						this.elements.push(arguments[i]);
+					} 
+				}
+				
 			},
 			//以下Qcanvas方法得重置this 赋到Qlayer实例上
 			getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
@@ -2574,8 +2585,7 @@ Qcanvas.prototype.lowerToBottom = function(el){
 
 Qcanvas.prototype.raise = function(el){ 
 
-	var currIndex = this.getIndexById(el.id); 
-	console.log(currIndex);
+	var currIndex = this.getIndexById(el.id);  
 	if(typeof this.elements[currIndex+1] == 'undefined'){
 		return false;
 	}
