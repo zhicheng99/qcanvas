@@ -1959,8 +1959,8 @@ function Qlayer(p){
 
 				for (var i = 0; i < arguments.length; i++) {
 
-					//不支持layer对象上再放入layer
-					if(arguments[i].TYPE == 'layer'){   
+					//不支持layer对象上再放入layer或group
+					if((arguments[i].TYPE == 'layer') || (arguments[i].TYPE == 'group')){   
 						continue;
 					}
 
@@ -2090,12 +2090,27 @@ Qgroup.prototype.paintGroup = function(obj){
 }
 Qgroup.prototype.push = function(ele){
 
+	for (var i = 0; i < arguments.length; i++) {
+
+		//不支持group对象上再放入group
+		if(arguments[i].TYPE == 'group'){   
+			continue;
+		}
+
+		if(this.qcanvas.isObj(arguments[i])){
+			this.qcanvas.removeEle(arguments[i]);
+			this.elements.push(arguments[i]);
+		} 
+	}
+
+
+
 	//核心Qcanvas类成员 elements中 删掉该元素
-	this.qcanvas.removeEle(ele);
+	// this.qcanvas.removeEle(ele);
 
 
 	//添加到Qlayer类成员elements中
-	this.elements.push(ele);
+	// this.elements.push(ele);
 
 } 
  
