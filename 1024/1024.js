@@ -104,6 +104,8 @@ Game.prototype.createGridByNum = function() {
  */
 Game.prototype.createGrid = function() {
 
+	var layer = this.qcanvas.qlayer.layer();
+
 	//每个格子的大小
 	this.options.perGridW = (this.options.gridAreaW - this.options.gap*(this.options.col+1))/this.options.col;
 	this.options.perGridH = (this.options.gridAreaH - this.options.gap*(this.options.row+1))/this.options.row;
@@ -127,12 +129,13 @@ Game.prototype.createGrid = function() {
 				height:this.options.perGridH,
 				fillColor:'#756940',
 				borderColor:'#534928',
-				pointerEvent:'none',
+				pointerEvent:'none', 
 				num:null,
 				space:0,
 
 			};
 			var obj = this.qcanvas.qrect.rect(p);
+			layer.push(obj);
 
 
 			this.options.gridCol[i].push(obj);
@@ -174,6 +177,10 @@ Game.prototype.createGrid = function() {
  * @return {[type]} [description]
  */
 Game.prototype.createPanel = function() {
+	var _this = this;
+	var layer = this.qcanvas.qlayer.layer();
+
+	layer.push(
 
 	this.qcanvas.qrect.rect({
 		start:[0,0],
@@ -182,7 +189,7 @@ Game.prototype.createPanel = function() {
 		borderColor:'#000',
 		fillColor:'#7d7d7d',
 		pointerEvent:'none'
-	})
+	}),
 
 	this.qcanvas.qtext.text({
 		start:[50,30],
@@ -192,7 +199,7 @@ Game.prototype.createPanel = function() {
 		// fontFamily:'Arial',
 		pointerEvent:'none'
 		
-	})
+	}),
 
 
 	this.qcanvas.qrect.rect({
@@ -202,7 +209,7 @@ Game.prototype.createPanel = function() {
 		fillColor:'#756940',
 		borderColor:'#534928',
 		pointerEvent:'none'
-	})
+	}),
 
 	this.qcanvas.qrect.rect({
 		start:[240,10],
@@ -211,7 +218,7 @@ Game.prototype.createPanel = function() {
 		fillColor:'#756940',
 		borderColor:'#534928',
 		pointerEvent:'none'
-	})
+	}),
 
 	this.qcanvas.qtext.text({
 		start:[205,20],
@@ -221,7 +228,7 @@ Game.prototype.createPanel = function() {
 		fontFamily:'Arial',
 		pointerEvent:'none'
 		
-	})
+	}),
 
 	this.qcanvas.qtext.text({
 		start:[265,20],
@@ -231,9 +238,8 @@ Game.prototype.createPanel = function() {
 		fontFamily:'Arial',
 		pointerEvent:'none'
 		
-	})
+	}),
 
-	var _this = this;
 	this.qcanvas.qtext.text({
 		start:[205,40],
 		color:'#c3c3c3',
@@ -242,7 +248,7 @@ Game.prototype.createPanel = function() {
 		fontFamily:'Arial',
 		pointerEvent:'none'
 		
-	})
+	}),
 	this.qcanvas.qtext.text({
 		start:[265,40],
 		color:'#c3c3c3',
@@ -251,7 +257,7 @@ Game.prototype.createPanel = function() {
 		fontFamily:'Arial',
 		pointerEvent:'none'
 		
-	})
+	}),
 
 	this.qcanvas.qrect.rect({
 		start:[240,60],
@@ -267,7 +273,7 @@ Game.prototype.createPanel = function() {
 			alert('touchend->restart');
 		}
 
-	})
+	}),
 
 	this.qcanvas.qtext.text({
 		start:[265,70],
@@ -279,6 +285,7 @@ Game.prototype.createPanel = function() {
 		
 		
 	})
+	);
 
 
 

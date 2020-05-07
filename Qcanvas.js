@@ -1799,7 +1799,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 		for(var i=elements.length-1;i>=0;i--){
 
 			//跳过不显示的元素和不响应事件的元素
-			if(elements[i].display=='none' || elements[i].pointerEvent == 'none'){
+			if(elements[i].display=='none' || (elements[i].pointerEvent == 'none')){
 				continue;
 			};
 			
@@ -1820,6 +1820,14 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				if((elements[i].TYPE == 'layer') || (elements[i].TYPE == 'group')){  
 					
 					for (var j = elements[i].elements.length-1; j >= 0; j--) {
+
+
+						//跳过不显示的元素和不响应事件的元素
+						if(elements[i].elements[j].display=='none' || (elements[i].elements[j].pointerEvent == 'none')){
+							continue;
+						};
+
+
 						
 						if(this.rayCasting(position,elements[i].elements[j].polyPoints())=='in'){
 							aim = elements[i].elements[j];
