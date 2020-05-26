@@ -2670,36 +2670,20 @@ Qcanvas.prototype.getSourceByName = function(name){
 }				
 
 Qcanvas.prototype.isObj = function(o){
-	if(Object.prototype.toString.call(o)=='[object Object]'){
-		return true;
-	}else{
-		return false;
-	}
+	return Object.prototype.toString.call(o)==='[object Object]';
 }			
 
 	
 Qcanvas.prototype.isFun = function(o){
-	if(Object.prototype.toString.call(o)=='[object Function]'){
-		return true;
-	}else{
-		return false;
-	}
+	return Object.prototype.toString.call(o)==='[object Function]'; 
 }
 				
 Qcanvas.prototype.isArr = function(o){
-	if(Object.prototype.toString.call(o)=='[object Array]'){
-		return true;
-	}else{
-		return false;
-	}
+	return Object.prototype.toString.call(o)==='[object Array]';
 }	
 				
 Qcanvas.prototype.isNum = function(o){
-	if(Object.prototype.toString.call(o)=='[object Number]'){
-		return true;
-	}else{
-		return false;
-	}
+	return Object.prototype.toString.call(o)==='[object Number]';
 }					
 				
 Qcanvas.prototype.colorRgb = function(color){

@@ -297,8 +297,10 @@ Game.prototype.createPanel = function() {
 Game.prototype.createBglayer = function(){
 
 	var _this = this;
+
+	var layer = this.qcanvas.qlayer.layer();
 	//格子区域矩形
-	this.qcanvas.qrect.rect({
+	layer.push(this.qcanvas.qrect.rect({
 		start:[0,100],
 		width:this.options.gridAreaW,
 		height:this.options.gridAreaH,
@@ -315,6 +317,7 @@ Game.prototype.createBglayer = function(){
 			_this.bgMouseUp.call(_this,e);
 		}
 	})
+	);
 
 
 
@@ -368,6 +371,8 @@ Game.prototype.bgMouseMove = function(e) {
 Game.prototype.bgMouseUp = function() {
 	delete this.options.mouseStart;
 	// this.options.moveing = false;
+	
+	console.log('划动完成');
 
 };
 
