@@ -23,7 +23,7 @@
 	var qcanvas = new Qcanvas(["qcanvas",300,200]);
 
 var line1 = qcanvas.qline.line({
-	start:function(){return [0,80];},
+	start:function(){return [50,150];},
 	end:[50,50],
 	color:'red',
 	like:'-',
@@ -34,7 +34,8 @@ var line2 = qcanvas.qline.line({
 	end:[150,50],
 	color:'blue',
 	like:'--',
-	withText:'line2'
+	withText:'line2',
+	drag:false
 });
 var line3 = qcanvas.qline.line({
 	start:function(){return [30,50];},
@@ -42,7 +43,9 @@ var line3 = qcanvas.qline.line({
 	width:1,
 	like:'->',
 	color:'gray',
-	withText:'line3'
+	withText:'line3',
+	drag:false
+
 });		
 
 var line4 = qcanvas.qline.line({
@@ -52,7 +55,9 @@ var line4 = qcanvas.qline.line({
 	like:'-->',
 	color:'gray',
 	withText:'line4',
-	withTextAlign:'left'
+	withTextAlign:'left',
+	drag:false
+	
 });
 
 

@@ -23,7 +23,7 @@ withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
 }
 */
 Qline.prototype.line = function(options){
-	
+	var _this = this;
 	var OPTIONS = {
 		TYPE:'line',
 		
@@ -32,8 +32,51 @@ Qline.prototype.line = function(options){
 		width:1,
 		start:[0,0],
 		end:[50,50],
+		drag:true,
+		pointerEvent:'auto',
 		//withText:'text', //带着的文本
 		//withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
+		centerPoints:function(){ //元素中心点相对于整个画布的坐标
+
+			var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+			var end = _this.qcanvas.isFun(this.end)?this.end():this.end;
+ 
+			return {
+				x:(start[0] < end[0] ? start[0]:end[0])+Math.abs(start[0]-end[0]) * 0.5,
+				y:(start[1] < end[1] ? start[1]:end[1])+Math.abs(start[1]-end[1]) * 0.5
+			}
+		},
+		polyPoints:function(){  //顶点坐标序列
+			var center = this.centerPoints();
+
+			var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+			var end = _this.qcanvas.isFun(this.end)?this.end():this.end;
+
+			//为增大选区 把线的上下各扩展15个像素 
+			//平行于x轴的线
+			var tmp,dis = 15;
+			if(start[1] == end[1]){
+				tmp = [
+					{x:start[0],y:start[1]-dis},
+					{x:end[0],y:end[1]-dis},
+					{x:end[0],y:end[1]+dis},
+					{x:start[0],y:start[1]+dis}
+				]
+			}
+			//平行于y轴的线
+			if(start[0] == end[0]){
+				tmp = [
+					{x:start[0]-dis,y:start[1]},
+					{x:start[0]+dis,y:start[1]},
+					{x:end[0]-dis,y:end[1]},
+					{x:end[0]+dis,y:end[1]}
+				]
+			}
+
+			// console.log(tmp);
+			return tmp;
+
+		}
 	}
 	
 	
@@ -1620,6 +1663,21 @@ function Qevent(qcanvas){
 				aim.dis = [position.x-start[0],position.y-start[1]];
 				_this.qcanvas.dragAim = aim;
 			}
+
+
+			//线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
+			if(aim!==null && aim.drag && 
+				(aim.TYPE == 'line')
+			 ){
+			 	var start = _this.qcanvas.isFun(aim.start)?aim.start():aim.start;
+			 	var end = _this.qcanvas.isFun(aim.end)?aim.end():aim.end; 
+				aim.dis = [position.x-start[0],position.y-start[1],position.x-end[0],position.y-end[1]];
+				_this.qcanvas.dragAim = aim;
+			}
+
+
+
+
 			
 			if(aim!==null && aim.drag && 
 				(aim.TYPE == 'img' || aim.TYPE == 'spirit')
@@ -1661,7 +1719,9 @@ function Qevent(qcanvas){
 					(_this.qcanvas.dragAim.TYPE=='rect' || 
 						_this.qcanvas.dragAim.TYPE=='text' || 
 						_this.qcanvas.dragAim.TYPE=='arc' ||
-						_this.qcanvas.dragAim.TYPE=='polygon')
+						_this.qcanvas.dragAim.TYPE=='polygon' ||
+						_this.qcanvas.dragAim.TYPE=='line'
+						)
 					){
 					var dis  =_this.qcanvas.dragAim.dis;
 					var start = _this.qcanvas.isFun(_this.qcanvas.dragAim.start)?_this.qcanvas.dragAim.start():_this.qcanvas.dragAim.start;
@@ -1671,6 +1731,17 @@ function Qevent(qcanvas){
 
 					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
 					_this.qcanvas.dragAim.start = start;
+
+
+					//重置线段的结束点坐标
+					 if(_this.qcanvas.dragAim.TYPE=='line'){
+					 	var end = _this.qcanvas.isFun(_this.qcanvas.dragAim.end)?_this.qcanvas.dragAim.end():_this.qcanvas.dragAim.end;
+					 	end[0] = position.x-dis[2];
+					 	end[1] = position.y-dis[3];
+					 	_this.qcanvas.dragAim.end = end;
+					 }
+
+
 				}
 			
 				if(_this.qcanvas.dragAim !== null && 
@@ -1812,6 +1883,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				 || elements[i].TYPE=='polygon'
 				 || elements[i].TYPE=='layer'
 				 || elements[i].TYPE=='group'
+				 || elements[i].TYPE=='line'
 
 				){
 
