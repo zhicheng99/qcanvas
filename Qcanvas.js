@@ -73,7 +73,62 @@ Qline.prototype.line = function(options){
 				]
 			}
 
-			// console.log(tmp);
+			
+			var A,B;
+			var oneOrThree = false;
+			var twoOrFour = false;
+			//start->end (一 三象限)
+			// A->B以下两种情况 
+			// d1-d4是扩展成矩形后的四个点
+			//       d1 B d2     A
+			//         /    	/
+			//      @1/   或 @2/  
+			//   	 /        / 
+			//      /	     /
+			//  d4 A d3	    B
+			if((start[0]<end[0]) && (start[1]>end[1])){
+				A = start;
+				B = end;
+				oneOrThree = true;
+			}
+			if((start[0]>end[0]) && (start[1]<end[1])){
+				A = end;
+				B = start;
+				oneOrThree = true;
+
+			}
+
+			if(oneOrThree){
+				tmp = _this.getOneOrThreeCoord(A,B);
+			}
+
+			
+			//start->end (二 四象限)
+			// A->B以下两种情况
+			// e1-e4是扩展成矩形后的四个点
+			//B     e1 A e2
+			// \        \
+			//@1\ 或@2   \   
+			//	 \        \ 
+			//    \	       \
+			//    A		 e4 B e3
+			if((start[0] < end[0]) && (start[1]<end[1])){
+				A = start;
+				B = end;
+				twoOrFour = true;
+			}
+
+			if((start[0]>end[0]) && (start[1]>end[1])){
+				A = end;
+				B = start;
+				twoOrFour = true;
+			}
+
+			if(twoOrFour){
+				tmp = _this.getTwoOrFourCoord(A,B);
+			}
+
+
 			return tmp;
 
 		}
@@ -94,6 +149,50 @@ Qline.prototype.line = function(options){
 	
 	return OPTIONS;
 }
+/**
+ * 取得扩展后的四个点 (一 三象限)
+ * @param  {[type]} A [description]
+ * @param  {[type]} B [description]
+ * @return {[type]}   [description]
+ */
+Qline.prototype.getOneOrThreeCoord = function(A,B) {
+	var dis = 15;
+	var l = Math.sqrt(Math.pow(Math.abs(A[0]-B[0]),2)+Math.pow(Math.abs(A[1]-B[1]),2));
+	var sinA = Math.abs(A[1]-B[1])/l;
+	var h = dis*sinA;
+
+	return [
+		{x:B[0]-Math.sqrt(Math.pow(dis,2)+Math.pow(h,2)),y:B[1]-h},
+		{x:B[0]+h,y:Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))+B[1]},
+		{x:A[0]+h,y:A[1]+Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
+		{x:A[0]-h,y:A[1]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
+
+	]
+
+};
+/**
+ * 取得扩展后的四个点 (二 四象限)
+ * @param  {[type]} A [description]
+ * @param  {[type]} B [description]
+ * @return {[type]}   [description]
+ */
+Qline.prototype.getTwoOrFourCoord = function(A,B) {
+	var dis = 15;
+	var l = Math.sqrt(Math.pow(Math.abs(A[0]-B[0]),2)+Math.pow(Math.abs(A[1]-B[1]),2));
+	var sinA = Math.abs(A[1]-B[1])/l;
+	var h = dis*sinA;
+
+	return [
+		{x:A[0]-h,y:A[1]+Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
+		{x:A[0]+h,y:A[1]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
+		{x:B[0]+h,y:B[1]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
+		{x:B[0]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2)),y:B[1]-h},
+
+	]
+
+};
+
+
 
 Qline.prototype.getMiddleCoordinates = function(obj){
 

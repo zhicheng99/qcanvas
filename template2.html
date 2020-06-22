@@ -23,20 +23,31 @@
 	var qcanvas = new Qcanvas(["qcanvas",300,200]);
 
 var line1 = qcanvas.qline.line({
-	start:function(){return [50,150];},
-	end:[50,50],
+	start:function(){return [100,50];},
+	end:[50,150],
 	color:'red',
 	like:'-',
-	withText:'动画'
+	withText:'可拖动'
 });
+
+
+
+
 var line2 = qcanvas.qline.line({
-	start:function(){return [0,20];},
-	end:[150,50],
+	start:function(){return [150,50];},
+	end:[0,20],
 	color:'blue',
 	like:'--',
-	withText:'line2',
-	drag:false
+	withText:'可拖动',
+	mousemove:function(){
+		console.log('dddd');
+	}
+	// drag:false
 });
+
+
+
+
 var line3 = qcanvas.qline.line({
 	start:function(){return [30,50];},
 	end:[150,60],
