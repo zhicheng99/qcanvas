@@ -186,7 +186,7 @@ Qline.prototype.getTwoOrFourCoord = function(A,B) {
 		{x:A[0]-h,y:A[1]+Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
 		{x:A[0]+h,y:A[1]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
 		{x:B[0]+h,y:B[1]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2))},
-		{x:B[0]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2)),y:B[1]-h},
+		{x:B[0]-Math.sqrt(Math.pow(dis,2)-Math.pow(h,2)),y:B[1]+h},
 
 	]
 
