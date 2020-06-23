@@ -1822,10 +1822,19 @@ function Qevent(qcanvas){
 						_this.qcanvas.dragAim.TYPE=='line'
 						)
 					){
+					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
 					var dis  =_this.qcanvas.dragAim.dis;
 					var start = _this.qcanvas.isFun(_this.qcanvas.dragAim.start)?_this.qcanvas.dragAim.start():_this.qcanvas.dragAim.start;
-					 start[0] = position.x-dis[0];
-					 start[1] = position.y-dis[1];
+
+					if(dragIsBool){
+						 start[0] = position.x-dis[0];
+						 start[1] = position.y-dis[1];
+					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+						 start[1] = position.y-dis[1];
+
+					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+						 start[0] = position.x-dis[0];
+					}
 
 
 					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
@@ -1835,8 +1844,17 @@ function Qevent(qcanvas){
 					//重置线段的结束点坐标
 					 if(_this.qcanvas.dragAim.TYPE=='line'){
 					 	var end = _this.qcanvas.isFun(_this.qcanvas.dragAim.end)?_this.qcanvas.dragAim.end():_this.qcanvas.dragAim.end;
-					 	end[0] = position.x-dis[2];
-					 	end[1] = position.y-dis[3];
+					 	 
+					 	if(dragIsBool){
+							 end[0] = position.x-dis[2];
+							 end[1] = position.y-dis[3];
+						}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+							 end[1] = position.y-dis[3];
+
+						}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+							 end[0] = position.x-dis[2];
+						}
+
 					 	_this.qcanvas.dragAim.end = end;
 					 }
 
@@ -1845,22 +1863,56 @@ function Qevent(qcanvas){
 			
 				if(_this.qcanvas.dragAim !== null && 
 					(_this.qcanvas.dragAim.TYPE=='img' || _this.qcanvas.dragAim.TYPE=='spirit')){
+					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
 					var dis  =_this.qcanvas.dragAim.dis;
-					_this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
-					_this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
+					// _this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
+					// _this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
+
+					if(dragIsBool){
+						_this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
+						_this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
+					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+						 _this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
+
+					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+						 _this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
+					}
+
 				}
 				
 			
 			
 				if(_this.qcanvas.dragAim !== null && _this.qcanvas.dragAim.TYPE=='shape'){
+					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
 					var dis  =_this.qcanvas.dragAim.dis;
 					var points = _this.qcanvas.isFun(_this.qcanvas.dragAim.points)?_this.qcanvas.dragAim.points():_this.qcanvas.dragAim.points;
-					
 					points.forEach(function(v,index){
 							points[index][0] = position.x- dis[index][0];
 							points[index][1] = position.y- dis[index][1];
 						
 					})
+					
+					if(dragIsBool){
+						points.forEach(function(v,index){
+								points[index][0] = position.x- dis[index][0];
+								points[index][1] = position.y- dis[index][1];
+							
+						})
+					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+						 points.forEach(function(v,index){
+								// points[index][0] = position.x- dis[index][0];
+								points[index][1] = position.y- dis[index][1];
+							
+						})
+
+					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+						 points.forEach(function(v,index){
+								points[index][0] = position.x- dis[index][0];
+								// points[index][1] = position.y- dis[index][1];
+							
+						})
+					}
+
 
 					_this.qcanvas.dragAim.points = points;
 					
@@ -2855,7 +2907,16 @@ Qcanvas.prototype.isArr = function(o){
 				
 Qcanvas.prototype.isNum = function(o){
 	return Object.prototype.toString.call(o)==='[object Number]';
-}					
+}	
+
+Qcanvas.prototype.isBool = function(o){
+	return Object.prototype.toString.call(o)==='[object Boolean]';
+}		
+
+Qcanvas.prototype.isString = function(o){
+	return Object.prototype.toString.call(o)==='[object String]';
+}				
+
 				
 Qcanvas.prototype.colorRgb = function(color){
 

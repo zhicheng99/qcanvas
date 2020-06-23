@@ -27,7 +27,8 @@ var line1 = qcanvas.qline.line({
 	end:[50,150],
 	color:'red',
 	like:'-',
-	withText:'可拖动'
+	withText:'可拖动',
+	drag:'vertical'
 });
 
 
@@ -40,7 +41,7 @@ var line2 = qcanvas.qline.line({
 	like:'-',
 	withText:'可拖动',
 	mousemove:function(){
-		console.log('dddd');
+		// console.log('dddd');
 	}
 	// drag:false
 });
