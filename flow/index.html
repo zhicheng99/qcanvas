@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+			height: 100%;
+		}
+		canvas{
+			background:#ccc;
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+
+</body>
+<script src='../Qcanvas.js'></script>
+<script src='js/Qflow.js'></script>
+<script>
+	console.log(document.body.offsetWidth);
+	console.log(document.body.offsetHeight);
+
+	new Qflow(['qcanvas',document.body.offsetWidth,document.body.offsetHeight]);
+</script>
+
+
+</html>
