@@ -33,10 +33,30 @@ Qflow.prototype.initTool = function() {
 			drag:false
 		})
 	var diamond = this.qcanvas.qshape.shape({
-		points:[[80,10],[80,50],[150,70],[160,20]]
+
+		// points:[[80,10],[80,50],[150,70],[160,20]],
+		fillColor:'',
+		points:function(){
+			return [
+				[tool.start[0]+rect.width+30,tool.start[1]+45],
+				[tool.start[0]+rect.width+70,tool.start[1]+20],
+				[tool.start[0]+rect.width+110,tool.start[1]+45], 
+				[tool.start[0]+rect.width+70,tool.start[1]+70],  
+				
+			]
+		},
+		drag:false
 	})
 
-	this.toolLayer.push(tool,rect,diamond);
+	var arc = this.qcanvas.qarc.arc({
+		start:[300,100],
+		sAngle:0,
+		eAngle:200,
+		fillColor:'',
+		r:10
+	})
+
+	this.toolLayer.push(tool,rect,diamond,arc);
 	
 
 
