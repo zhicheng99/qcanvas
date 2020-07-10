@@ -2076,7 +2076,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 		}
 
 		//如果aim == null那么点中的目标就是主canvas
-		aim = aim === null? this.qcanvas:aim;
+		aim === null && (aim = this.qcanvas);
 	
 		
 		return aim;
