@@ -33,7 +33,8 @@ Qflow.prototype.initTool = function() {
 			drag:false
 		})
 	var diamond = this.qcanvas.qshape.shape({
-		points:[[80,10],[80,50],[150,70],[160,20]]
+		points:[[80,10],[80,50],[150,70],[160,20]],
+		fillColor:''
 	})
 
 	this.toolLayer.push(tool,rect,diamond);
