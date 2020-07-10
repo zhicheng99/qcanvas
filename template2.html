@@ -20,7 +20,25 @@
 </body>
 <script src='Qcanvas.js'></script>
 <script>
-	var qcanvas = new Qcanvas(["qcanvas",300,200]);
+	// var qcanvas = new Qcanvas(["qcanvas",300,200]);
+	var qcanvas = new Qcanvas({
+		id:'qcanvas',
+		width:300,
+		height:200,
+		mousedown:function(e){ 
+			console.log('canvas mousedown');
+		},
+		mousemove:function(){  
+			console.log('canvas mousemove');
+		},
+		mouseup:function(){
+			console.log('canvas mouseup');
+		},
+		mouseout:function(){
+			console.log('canvas mouseout');
+		}
+	});
+
 
 var line1 = qcanvas.qline.line({
 	start:function(){return [100,50];},
@@ -28,7 +46,11 @@ var line1 = qcanvas.qline.line({
 	color:'red',
 	like:'-',
 	withText:'可拖动',
-	drag:'vertical'
+	drag:'vertical',
+	mouseout:function(){
+		console.log('line1 mouseout');
+	}
+	
 });
 
 

@@ -1917,7 +1917,9 @@ function Qevent(qcanvas){
 
 					_this.qcanvas.dragAim.points = points;
 					
-				} 
+				}
+
+
 		},
 		'mouseup_or_mouseout_or_touchend':function(position){
 			_this.qcanvas.dragAim = null;
@@ -2072,6 +2074,9 @@ Qevent.prototype.findElmByEventPosition = function(position){
 					
 			}
 		}
+
+		//如果aim == null那么点中的目标就是主canvas
+		aim = aim === null? this.qcanvas:aim;
 	
 		
 		return aim;
@@ -2359,21 +2364,76 @@ Qgroup.prototype.push = function(ele){
 /*
 c_p:初始化canvas参数数组
 */	
-function Qcanvas(c_p){
+function Qcanvas(options){
 	
 	var doc = document;
-	if(c_p.length<3 ){
-		// console.log('Qcanvas 初始化参数不正确');
-		return false;
+
+	if(this.isArr(options)){
+		if(options.length<3 ){
+			console.log('初始化参数不正确');
+			return false;
+		}
+		
+		var c_obj = doc.getElementById(options[0]);
+		c_obj.width = options[1];
+		c_obj.height = options[2];
+		
+		//舞台对象
+		this.stage = {
+			"id":options[0],
+			"width":options[1],
+			"height":options[2]
+		};
 	}
+
+
+	if(this.isObj(options)){
+
+		if((typeof options.id =='undefined') 
+			|| (typeof options.height =='undefined')
+			|| (typeof options.height =='undefined')){
+			console.log('初始化参数不正确');
+			return false;
+		}
+ 
+		var c_obj = doc.getElementById(options.id);
+		c_obj.width = options.width;
+		c_obj.height = options.height;
+		
+		//舞台对象
+		this.stage = {
+			"id":options.id,
+			"width":options.width,
+			"height":options.height
+		};
+
+		this.mousedown = options.mousedown || function(){};
+		this.mousemove = options.mousemove || function(){};
+		this.mouseup = options.mouseup || function(){};
+		this.mouseout = options.mouseout || function(){};
+
+	}
+
+
+	// if(options.length<3 ){
+	// 	// console.log('Qcanvas 初始化参数不正确');
+	// 	return false;
+	// }
 	
-	var c_obj = doc.getElementById(c_p[0]);
-	c_obj.width = c_p[1];
-	c_obj.height = c_p[2];
+	// var c_obj = doc.getElementById(options[0]);
+	// c_obj.width = options[1];
+	// c_obj.height = options[2];
 	
-	
+	// //舞台对象
+	// this.stage = {
+	// 	"id":options[0],
+	// 	"width":options[1],
+	// 	"height":options[2]
+	// };
 	
 	this.qcanvasVersion = '1.0';
+	this.type = 'canvas';
+	this.id="canvas_id";
 	this.context = c_obj.getContext('2d');
 	this.canvas = c_obj;
 	this.fps = 60;
@@ -2381,12 +2441,7 @@ function Qcanvas(c_p){
 	this.moveAim = null;  //当前鼠标划过的对象
 	
 	
-	//舞台对象
-	this.stage = {
-		"id":c_p[0],
-		"width":c_p[1],
-		"height":c_p[2]
-	};
+	
 	
 	
 	
@@ -2914,7 +2969,7 @@ Qcanvas.prototype.isBool = function(o){
 	return Object.prototype.toString.call(o)==='[object Boolean]';
 }		
 
-Qcanvas.prototype.isString = function(o){
+Qcanvas.prototype.isStr = function(o){
 	return Object.prototype.toString.call(o)==='[object String]';
 }				
 
