@@ -1006,8 +1006,7 @@ Qshape.prototype.paintShape = function(obj){
 /*圆类--------------------*/
 function Qarc(qcanvas){
 	this.qarcVersion = '1.0';
-	this.qcanvas = qcanvas;
-  this.unit = Math.PI / 180;
+	this.qcanvas = qcanvas; 
 }
 
 Qarc.prototype.arc = function(options){
@@ -1056,12 +1055,14 @@ Qarc.prototype.arc = function(options){
 }	
 	
 Qarc.prototype.paintArc = function(obj){
+	var unit = Math.PI / 180;
 	this.qcanvas.qanimation.createAnimation(obj);
 	this.qcanvas.context.beginPath();
 	this.qcanvas.context.lineWidth=obj.lineWidth;
 	this.qcanvas.context.strokeStyle=obj.borderColor;
 	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
-	this.qcanvas.context.arc(start[0],start[1],obj.r,obj.sAngle*this.unit,obj.eAngle*this.unit);
+	this.qcanvas.context.arc(start[0],start[1],obj.r,obj.sAngle*unit,obj.eAngle*unit);
+
 	this.qcanvas.context.stroke();
 	
 	var rgb = this.qcanvas.colorRgb(obj.fillColor).replace('RGB(','').replace(')','');
