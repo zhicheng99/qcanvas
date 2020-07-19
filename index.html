@@ -864,6 +864,71 @@ create();
 		
 	</div>
 
+	15、缩放控件和角度控件 (现只支持rect元素)
+
+	<pre>
+		
+		<code>
+			var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500,
+			mousedown:function(){
+				console.log('canvas mousedown')
+				console.log(qcanvas);
+				if(qcanvas.qresize !== null){
+
+					qcanvas.qresize.resizeLayer.setDisplay('none');
+
+				}
+
+				if(qcanvas.qrotate !== null){
+
+					qcanvas.qrotate.rotateLayer.setDisplay('none');
+
+				}
+			}
+		});
+
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	borderColor:'red',
+	// display:'none',
+	fillColor:'',
+	degree:20,
+	// radius:5,
+	resize:true,
+	rotate:false,
+
+	mouseup:function(){
+		console.log('mouseup')
+	}
+})		
+
+
+var rect = qcanvas.qrect.rect({
+	start:[60,60],
+	borderColor:'red',
+	// display:'none',
+	fillColor:'',
+	degree:90,
+	// radius:5,
+	resize:true,
+	rotate:true,
+	mouseup:function(){
+		console.log('mouseup')
+	}
+})	
+		</code>
+<a onclick="document.getElementById('frm15').innerHTML='<iframe src=template15.html width=100% height=500 frameborder=0></iframe>'">查看示例</a>
+	</pre>
+
+	<div class="frm" id="frm15">
+		
+	</div>
+
+
 
 
 

@@ -321,7 +321,10 @@ Qline.prototype.paintLine  = function(obj){
 			
 
 			break;
-	}	
+	}
+
+	//可能路径是虚线形式的 设置成实线
+	this.qcanvas.context.setLineDash([]);	
 	
 }	
 
@@ -763,6 +766,7 @@ Qrect.prototype.rect = function(options){
 			degree:0,
 			radius:0,
 			pointerEvent:'auto',
+			resize:false,
 			centerPoints:function(){ //元素中心点相对于整个画布的坐标
 					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 					var width = _this.qcanvas.isFun(this.width)?this.width():this.width;
@@ -1023,6 +1027,7 @@ Qarc.prototype.arc = function(options){
 			counterclockwise:false,
 		  drag:true,
 		  pointerEvent:'auto',
+		  like:'-',
 			polyPoints:function(){  //顶点坐标序列 (注意顺序 要形成一个闭合的区域)
 				
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
@@ -1055,6 +1060,11 @@ Qarc.prototype.arc = function(options){
 }	
 	
 Qarc.prototype.paintArc = function(obj){
+
+	if(obj.like=='--'){
+		this.qcanvas.context.setLineDash([3]);
+	}
+
 	var unit = Math.PI / 180;
 	this.qcanvas.qanimation.createAnimation(obj);
 	this.qcanvas.context.beginPath();
@@ -1071,6 +1081,8 @@ Qarc.prototype.paintArc = function(obj){
 		(obj.opacity && (this.qcanvas.context.fillStyle="rgba("+rgb+','+obj.opacity+")") ||
 		(this.qcanvas.context.fillStyle = obj.fillColor)) &&
 		this.qcanvas.context.fill();
+
+	this.qcanvas.context.setLineDash([]);
 	
 }	
 	
@@ -1751,6 +1763,25 @@ function Qevent(qcanvas){
 	this.qeventVersion = '1.0';
 	this.qcanvas = qcanvas;
 	var _this = this;
+
+
+	var initResizeLayer = function(id){
+		if(_this.qcanvas.qresize === null){  
+			_this.qcanvas.qresize = new Qresize(qcanvas,id);
+		}else{
+			_this.qcanvas.qresize.showHandler(_this.qcanvas.dragAim);
+		}
+	}
+
+	var initRotateLayer = function(id){
+		if(_this.qcanvas.qrotate === null){  
+			_this.qcanvas.qrotate = new Qrotate(qcanvas,id);
+		}else{
+			_this.qcanvas.qrotate.showHandler(_this.qcanvas.dragAim);
+		}
+	}
+
+
 	var eventCallback = {
 		'mousedown_or_touchstart':function(position){
 			// var position = _this.getEventPosition(e);
@@ -1762,6 +1793,10 @@ function Qevent(qcanvas){
 			 	var start = _this.qcanvas.isFun(aim.start)?aim.start():aim.start;
 				aim.dis = [position.x-start[0],position.y-start[1]];
 				_this.qcanvas.dragAim = aim;
+
+				aim.resize && initResizeLayer(aim.id);
+				aim.rotate && initRotateLayer(aim.id);
+
 			}
 
 
@@ -1811,6 +1846,54 @@ function Qevent(qcanvas){
 			
 		},
 		'mousemove_or_touchmove':function(position){
+
+
+				// if(_this.qcanvas.qresize !== null 
+				// && (_this.qcanvas.dragAim !== null)
+				// ){  
+
+				// 	//如果拖动不是resize或rotate句柄 那么拖动的同时需要 更新句柄坐标 
+
+				// 	!_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
+				// 	&& _this.qcanvas.qresize.hideHandler();
+ 
+				// }
+
+
+				if(_this.qcanvas.qrotate !== null 
+					&& (_this.qcanvas.qresize !== null)
+					&& (_this.qcanvas.dragAim !== null)
+				){  
+
+					//如果拖动不是resize或rotate句柄 那么拖动的同时需要 更新句柄坐标 
+					!_this.qcanvas.qrotate.rotateLayer.hasOwnEle(_this.qcanvas.dragAim) 
+					&& !_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
+					&& (function(){
+
+						_this.qcanvas.qrotate.hideHandler()
+						_this.qcanvas.qresize.hideHandler();
+
+					})()
+
+					
+				}else if((_this.qcanvas.qresize !== null)
+					&& (_this.qcanvas.dragAim !== null)){
+
+					!_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
+					&& _this.qcanvas.qresize.hideHandler();
+
+				}else if(_this.qcanvas.qrotate !== null
+					&& (_this.qcanvas.dragAim !== null)){
+
+					!_this.qcanvas.qrotate.rotateLayer.hasOwnEle(_this.qcanvas.dragAim) 
+					&& _this.qcanvas.qrotate.hideHandler();
+					 
+
+				}
+
+
+
+
 
 				//处理拖动的元素
 				// var position = _this.getEventPosition(e);
@@ -2005,8 +2088,9 @@ Qevent.prototype.eventCallback = function(e,position){
 	 	//修复对象mouseout自定义事件不执行的问题
 	  	this.executeMouseOut(aim,position);
 
-	  	//触发aim的事件(调用配置好的事件)
-	  	(aim !== null) && (typeof aim[e.type] !='undefined') && aim[e.type](position);
+
+	  	//触发aim的事件(调用配置好的事件) 
+	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](position);
 
 	  
 }	
@@ -2165,7 +2249,7 @@ function Qlayer(p){
 
 	t.width = this.pcanvas.stage.width;
 	t.height = this.pcanvas.stage.height;
-	t.id = "tmp";
+	t.id = parseInt(Math.random()*10000);
 
 
 	//重写生成一个qcanvas属性
@@ -2183,13 +2267,14 @@ function Qlayer(p){
 	this.qcanvas.elements = []; 
  
 
+	this.layer = function(){ 
 
-	this.layer = function(){  
 		
-		var o = {
+		var o = { 
 			TYPE:"layer",
 			pcanvas:this.pcanvas,
-			elements:this.qcanvas.elements,
+			// elements:this.qcanvas.elements,
+			elements:[],
 			id: parseInt(Math.random()*10000),
 			display:'block', 
 			push:function(ele){
@@ -2201,12 +2286,24 @@ function Qlayer(p){
 						continue;
 					}
 
+					var tmp = [];
 					if(this.pcanvas.isObj(arguments[i])){
 						this.pcanvas.removeEle.call(this.pcanvas,arguments[i]);
 						this.elements.push(arguments[i]);
-					} 
+						// this.qcanvas.elements.push(arguments[i]);
+					}
+
 				}
+
+				// this.elements = this.elements.concat(tmp);
 				
+			},
+			hasOwnEle:function(ele){  //当前layer对象里是存在ele元素
+				var tmp = this.elements.filter(function(item){
+					return item.id == ele.id;
+				})
+
+				return tmp.length>0;
 			},
 			//以下Qcanvas方法得重置this 赋到Qlayer实例上
 			getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
@@ -2218,6 +2315,10 @@ function Qlayer(p){
 			raiseToTop: this.pcanvas.raiseToTop.bind(this.qcanvas),
 
 		}
+		
+		
+		// var o = new f();
+		
 
 		this.pcanvas.appendSetFun(o);
 		this.pcanvas.elements.push(o);
@@ -2229,22 +2330,22 @@ function Qlayer(p){
 
 	}
 
-	this.paintLayer = function(){
-
-		this.start();
+	this.paintLayer = function(o){
+		this.start(o);
 		this.pcanvas.context.drawImage(t,0,0);
 	}
 
-	this.paint = function(){ 
-		for(var i = 0; i<this.qcanvas.elements.length; i++){
-			var o = this.qcanvas.elements[i];
+	this.paint = function(layer){ 
+			for(var i = 0; i<layer.elements.length; i++){
+				var o = layer.elements[i];
 
-			if(o.display=='none'){
-				continue;
+				if(o.display=='none'){
+					continue;
+				}
+				this.TypeGroup[o.TYPE].call(this,o); 
+						
 			}
-			this.TypeGroup[o.TYPE].call(this,o); 
-					
-		}
+
 
 		// this.pcanvas.context.drawImage(t,0,0);
 
@@ -2253,10 +2354,9 @@ function Qlayer(p){
 		this.qcanvas.context.clearRect(0,0,t.width,t.height);
 	}
 
-	this.start = function(){
-		// console.log('ddd');
+	this.start = function(o){
 		this.clear();
-		this.paint();			
+		this.paint(o);			
 		
 		var currentLoop = (new Date()).getMilliseconds();
 	    if (this.lastLoop > currentLoop) {
@@ -2270,6 +2370,8 @@ function Qlayer(p){
 		 
 		
 	}	 
+
+	// window.requestNextAnimationFrame(this.start.bind(this));
 
 
 } 
@@ -2352,9 +2454,340 @@ Qgroup.prototype.push = function(ele){
 } 
  
 /*-------end---------*/	
+
+/**
+ * 角度控件类
+ * @param {[type]} qcanvas [description]
+ * @param {[type]} id      [description]
+ */
+function Qrotate(qcanvas,id){
+	this.qrotateVersion = '1.0';
+	this.qcanvas = qcanvas;
+	this.rotateLayer = null;
+	this.rotateObj = null;
+
+	this.init(id);
+}
+
+//取得顶点坐标中 以元素中心点判断 （右边且靠下的一个点）
+Qrotate.prototype.rightBottomPoint = function(obj){
+	var polyPoints = obj.polyPoints();
+	var xArr = polyPoints.map(function(item){return item.x});
+	var yArr = polyPoints.map(function(item){return item.y});
+ 
+	var maxX = Math.max.apply({},xArr);
+	var maxY = Math.max.apply({},yArr);
+ 
+	return [
+		[Math.min.apply({},xArr),Math.min.apply({},yArr)],
+		[Math.max.apply({},xArr),Math.max.apply({},yArr)],
+
+	]
+
+
+}
+ 
+
+Qrotate.prototype.rectRotate = function(obj) {
+	var _this = this;
+	var obj = this.rotateObj;
+	var c = obj.centerPoints();
+	// var startAndEndPosition = _this.rightBottomPoint(obj);
+	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
+	var r = Math.sqrt(Math.pow(Math.abs(c.x-start[0]),2)+Math.pow(Math.abs(c.y-start[1]),2));
+
+	var down = false;
+	this.bg = this.qcanvas.qrect.rect({
+		start:[c.x+r+10,c.y-18],
+		width:10,
+		height:36,
+		borderColor:'red',
+		// display:'none',
+		fillColor:'green',
+		title:'rotate背景',
+		drag:false,
+		// mousedown:function(pos){
+		// 	_this.handler.setStart([this.start[0]+5,pos.y]);
+		// 	var dis = pos.y - this.start[1];
+
+		// 	obj.setDegree(dis*10);
+
+		// 	var down = true;
+
+		// },
+		// mousemove:function(pos){
+
+		// 	if(down){
+		// 		_this.handler.setStart([this.start[0]+5,pos.y]);
+		// 		var dis = pos.y - this.start[1];
+
+		// 		obj.setDegree(dis*10);
+
+		// 	}
+		// },
+		// mouseup:function(){
+		// 	var down = false;
+
+		// }
+	})	
+
+	this.handler = this.qcanvas.qarc.arc({
+				start:[c.x+r+10+5,c.y-18+obj.degree/10],
+				sAngle:0,
+				eAngle:360,
+				fillColor:'red',
+				opacity:0.2, 
+				r:10,
+				title:'rotate句柄',
+				drag:'vertical',
+				// pointerEvent:'none',
+				mousemove:function(){
+					var dis = this.start[1] - _this.bg.start[1];
+
+					dis = dis<0?0:dis;
+					dis = dis>36?36:dis;
+
+					obj.setDegree(dis*10);
+				},
+				mouseup:function(){
+					var y = this.start[1] <= _this.bg.start[1]?_this.bg.start[1]:this.start[1];
+					y = this.start[1] >= (_this.bg.start[1]+36)?(_this.bg.start[1]+36):y;
+
+					this.setStart([this.start[0],y]);
+				}
+			})
+
 	
+	this.rotateLayer.push(this.bg,this.handler);	 
+}
+
+Qrotate.prototype.init = function(id) {
+	this.rotateLayer = this.qcanvas.qlayer.layer();
+	this.rotateObj = this.qcanvas.getEleById(id);
+
+
+	switch(this.rotateObj.TYPE){
+		case 'rect':
+			this.rectRotate();
+		break;
+	}
+
+
+
+	this.rotateLayer.setDisplay('block');
+};
+
+Qrotate.prototype.updateElePosition = function(obj) {
+	// var obj = this.qcanvas.dragAim;
+	var obj = this.rotateObj;
+	var c =  obj.centerPoints();
+	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
+
+	var r = Math.sqrt(Math.pow(Math.abs(c.x-start[0]),2)+Math.pow(Math.abs(c.y-start[1]),2));
+	 
+	this.bg.setStart([c.x+r+10,c.y-18]);
+	this.handler.setStart([c.x+r+10+5,c.y-18+obj.degree/10]);
+
+
+}
+
+Qrotate.prototype.showHandler = function(obj) {
+	this.rotateObj = obj;
+	this.updateElePosition(obj);
+	this.rotateLayer.setDisplay('block');
 	
+};
+
+Qrotate.prototype.hideHandler = function() {
+	this.rotateLayer.setDisplay('none');
+}
+
+/**
+ * 缩放控件类
+ * @param {[type]} qcanvas [description]
+ * @param {[type]} id      [description]
+ */
+function Qresize(qcanvas,id){
+	this.qrotateVersion = '1.0';
+	this.qcanvas = qcanvas;
+	this.resizeLayer = null;
+	this.resizeObj = null;
+
+	this.init(id);
+}
+
+//取得顶点坐标中 以元素中心点判断 （右边且靠下的一个点）
+Qresize.prototype.rightBottomPoint = function(obj){
+	var polyPoints = obj.polyPoints();
+	var xArr = polyPoints.map(function(item){return item.x});
+	var yArr = polyPoints.map(function(item){return item.y});
+ 
+	var maxX = Math.max.apply({},xArr);
+	var maxY = Math.max.apply({},yArr);
+ 
+	return [
+		[Math.min.apply({},xArr),Math.min.apply({},yArr)],
+		[Math.max.apply({},xArr),Math.max.apply({},yArr)],
+
+	]
+
+
+}
+ 
+
+Qresize.prototype.rectResize = function(obj) {
+	var _this = this;
+	// var startAndEndPosition = this.rightBottomPoint(obj);
+	var c = this.resizeObj.centerPoints();
+	var start = this.qcanvas.isFun(this.resizeObj.start)?this.resizeObj.start():this.resizeObj.start;
+
+	var oldHeight = null;
+	var oldWidth = null;
+	var rate = null; //宽高比
+
+	//矩形中心点到开始坐标点的距离（两点之的距离做为一个圆的半径）
+	var r = Math.sqrt(Math.pow(Math.abs(c.x-start[0]),2)+Math.pow(Math.abs(c.y-start[1]),2));
+
+
+	this.cover = this.qcanvas.qarc.arc({
+				start:[c.x,c.y],
+				sAngle:0,
+				eAngle:360,
+				fillColor:'',
+				// opacity:0.2,
+				borderColor:'green',
+				pointerEvent:'none',
+				like:'--',
+				title:'resize覆盖元素',
+				r:r
+			})
+
+	var polyPoints = this.resizeObj.polyPoints(); 
+	var position = this.cover.polyPoints();
+
+	this.handler = this.qcanvas.qarc.arc({
+				start:[position[7].x,position[7].y],
+			
+				sAngle:0,
+				eAngle:360,
+				fillColor:'red',
+				opacity:0.2, 
+				title:'resize操作句柄',
+				r:10,
+				mousedown:function(){ 
+
+					oldHeight = _this.resizeObj.height;
+					oldWidth = _this.resizeObj.width;
+
+
+					rate = _this.resizeObj.width/_this.resizeObj.height;
+
+
+				},
+				mousemove:function(){ 
+
+					if(rate !== null){ 
+						var c = _this.resizeObj.centerPoints();
+
+
+						//重置this.point的半径
+						var R = Math.sqrt(Math.pow(Math.abs(c.x-this.start[0]),2)+Math.pow(Math.abs(c.y-this.start[1]),2));
+						_this.cover.setR(R);
+
+
+						var newH = Math.sqrt(4*R*R/(rate*rate+1));
+						var newW = rate*newH;
+						var start = [c.x-newW*0.5,c.y-newH*0.5];
+
+						_this.resizeObj.setStart(start);
+						_this.resizeObj.setHeight(newH);
+						_this.resizeObj.setWidth(newW);
+
+
+						// if(_this.qcanvas.qrotate !== null
+						// 	&& _this.qcanvas.qrotate.rotateObj.rotate){
+						if(_this.resizeObj.rotate){	
+ 
+							_this.qcanvas.qrotate.rotateLayer.elements[0].setStart([c.x+R+10,c.y-18]);
+							_this.qcanvas.qrotate.showHandler(_this.resizeObj);
+
+						}else if(_this.qcanvas.qrotate !==null){ 
+							_this.qcanvas.qrotate.rotateLayer.setDisplay('none');
+						}	
+
+
+					}
+
+
+				},
+				mouseup:function(){
+					oldHeight = null;
+					oldWidth = null;
+
+					rate = null;
+				}
+	})
+
+
+ 
 	
+	this.resizeLayer.push(this.cover,this.handler);
+}
+
+Qresize.prototype.init = function(id) {
+	this.resizeLayer = this.qcanvas.qlayer.layer();
+	this.resizeObj = this.qcanvas.getEleById(id);
+	// console.log(obj);
+
+
+	switch(this.resizeObj.TYPE){
+		case 'rect':
+			this.rectResize();
+		break;
+	}
+
+
+
+	this.resizeLayer.setDisplay('block');
+};
+
+Qresize.prototype.updateElePosition = function(obj) {
+	// var obj = this.qcanvas.dragAim;
+	var obj = this.resizeObj;
+	var c =  obj.centerPoints();
+	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
+
+	var r = Math.sqrt(Math.pow(Math.abs(c.x-start[0]),2)+Math.pow(Math.abs(c.y-start[1]),2));
+	 
+	this.cover.setStart([c.x,c.y]);
+	this.cover.setR(r);
+
+
+	var position = this.cover.polyPoints();
+	this.handler.setStart([position[7].x,position[7].y]);
+
+}
+
+Qresize.prototype.showHandler = function(obj) {
+
+	if(obj.id != this.resizeObj.id){ //切换不同的元素时 缩放和角度控件都隐藏
+		this.resizeObj.rotate &&  this.qcanvas.qrotate.rotateLayer.setDisplay('none');
+		this.resizeObj.resize &&  this.qcanvas.qresize.resizeLayer.setDisplay('none');
+	}	
+
+	this.resizeObj = obj;
+
+
+	this.updateElePosition();
+	this.resizeLayer.setDisplay('block');
+
+ 
+	
+};
+
+Qresize.prototype.hideHandler = function() {
+	this.resizeLayer.setDisplay('none');
+}
 	
 
 /*
@@ -2391,7 +2824,7 @@ function Qcanvas(options){
 
 		if((typeof options.id =='undefined') 
 			|| (typeof options.height =='undefined')
-			|| (typeof options.height =='undefined')){
+			|| (typeof options.width =='undefined')){
 			console.log('初始化参数不正确');
 			return false;
 		}
@@ -2433,14 +2866,26 @@ function Qcanvas(options){
 	
 	this.qcanvasVersion = '1.0';
 	this.type = 'canvas';
-	this.id="canvas_id";
+	this.id = parseInt(Math.random()*10000);
 	this.context = c_obj.getContext('2d');
 	this.canvas = c_obj;
 	this.fps = 60;
 	this.dragAim = null;  //当前拖动的对象
 	this.moveAim = null;  //当前鼠标划过的对象
-	
-	
+
+	//当有元素有配置了resize时 才会创建qresize实例
+	//qresize = {
+	//	resizeLayer:{} //是一个layer对象 保存有一组缩放大小的操作点
+	//}
+	this.qresize = null;  
+
+
+	//当元素配置了rotate时 才会创建qrotate实例
+	//qrotate = {
+	//	rotateLayer:{} //是一个layer对象 保存有一组角度的操作点
+	//}
+	this.qrotate = null;  
+
 	
 	
 	
@@ -2836,13 +3281,18 @@ Qcanvas.prototype.getEleById = function(id){
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
 Qcanvas.prototype.removeEle = function(obj){
 	
+	var index = -1;
 	for(var i=0;i<this.elements.length;i++){
 		if(this.elements[i].id == obj.id){
-				this.elements.splice(i,1);
+				index = i;
+				// this.elements.splice(i,1);
 				//return this.elements[i];
 				break;
 		}	
 	}
+
+	console.log(index);
+	index != -1 && this.elements.splice(index,1);
 	
 }
 
