@@ -2789,7 +2789,7 @@ Qresize.prototype.showHandler = function(obj) {
 	this.updateElePosition();
 	this.resizeLayer.setDisplay('block');
 	this.qcanvas.raiseToTop(this.resizeLayer);
-	
+
 
  
 	
@@ -3290,19 +3290,14 @@ Qcanvas.prototype.getEleById = function(id){
 //从elements数组中删除 
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
 Qcanvas.prototype.removeEle = function(obj){
-	
-	var index = -1;
+	 
 	for(var i=0;i<this.elements.length;i++){
-		if(this.elements[i].id == obj.id){
-				index = i;
-				// this.elements.splice(i,1);
-				//return this.elements[i];
+		if(this.elements[i].id == obj.id){ 
+				this.elements.splice(i,1);
 				break;
 		}	
 	}
-
-	console.log(index);
-	index != -1 && this.elements.splice(index,1);
+ 
 	
 }
 
