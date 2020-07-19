@@ -767,6 +767,7 @@ Qrect.prototype.rect = function(options){
 			radius:0,
 			pointerEvent:'auto',
 			resize:false,
+			rotate:false,
 			centerPoints:function(){ //元素中心点相对于整个画布的坐标
 					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 					var width = _this.qcanvas.isFun(this.width)?this.width():this.width;
@@ -2575,6 +2576,9 @@ Qrotate.prototype.init = function(id) {
 
 
 	this.rotateLayer.setDisplay('block');
+
+	this.qcanvas.raiseToTop(this.rotateLayer);
+
 };
 
 Qrotate.prototype.updateElePosition = function(obj) {
@@ -2595,6 +2599,8 @@ Qrotate.prototype.showHandler = function(obj) {
 	this.rotateObj = obj;
 	this.updateElePosition(obj);
 	this.rotateLayer.setDisplay('block');
+	this.qcanvas.raiseToTop(this.rotateLayer);
+
 	
 };
 
@@ -2749,6 +2755,8 @@ Qresize.prototype.init = function(id) {
 
 
 	this.resizeLayer.setDisplay('block');
+
+	this.qcanvas.raiseToTop(this.resizeLayer);
 };
 
 Qresize.prototype.updateElePosition = function(obj) {
@@ -2780,6 +2788,8 @@ Qresize.prototype.showHandler = function(obj) {
 
 	this.updateElePosition();
 	this.resizeLayer.setDisplay('block');
+	this.qcanvas.raiseToTop(this.resizeLayer);
+	
 
  
 	
