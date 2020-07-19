@@ -2500,11 +2500,11 @@ Qrotate.prototype.rectRotate = function(obj) {
 	var down = false;
 	this.bg = this.qcanvas.qrect.rect({
 		start:[c.x+r+10,c.y-18],
-		width:10,
+		width:4,
 		height:36,
-		borderColor:'red',
+		borderColor:'blue',
 		// display:'none',
-		fillColor:'green',
+		fillColor:'blue',
 		title:'rotate背景',
 		drag:false,
 		// mousedown:function(pos){
@@ -2533,7 +2533,7 @@ Qrotate.prototype.rectRotate = function(obj) {
 	})	
 
 	this.handler = this.qcanvas.qarc.arc({
-				start:[c.x+r+10+5,c.y-18+obj.degree/10],
+				start:[c.x+r+10+2,c.y-18+(obj.degree<0?(obj.degree+360):obj.degree)/10],
 				sAngle:0,
 				eAngle:360,
 				fillColor:'red',
@@ -2557,9 +2557,20 @@ Qrotate.prototype.rectRotate = function(obj) {
 					this.setStart([this.start[0],y]);
 				}
 			})
+	
+	this.text = this.qcanvas.qtext.text({
+		start:function(){
+			var c = _this.rotateObj.centerPoints();
+			return [c.x,c.y];
+		},
+		// [c.x,c.y],
+		text:function(){
+			return (_this.rotateObj.degree<0?(_this.rotateObj.degree+360):_this.rotateObj.degree)+'˚';
+		}
+	})	
 
 	
-	this.rotateLayer.push(this.bg,this.handler);	 
+	this.rotateLayer.push(this.bg,this.handler,this.text);	 
 }
 
 Qrotate.prototype.init = function(id) {
@@ -2590,8 +2601,7 @@ Qrotate.prototype.updateElePosition = function(obj) {
 	var r = Math.sqrt(Math.pow(Math.abs(c.x-start[0]),2)+Math.pow(Math.abs(c.y-start[1]),2));
 	 
 	this.bg.setStart([c.x+r+10,c.y-18]);
-	this.handler.setStart([c.x+r+10+5,c.y-18+obj.degree/10]);
-
+	this.handler.setStart([c.x+r+10+2,c.y-18+(obj.degree<0?(obj.degree+360):obj.degree)/10]);
 
 }
 
@@ -2661,7 +2671,7 @@ Qresize.prototype.rectResize = function(obj) {
 				eAngle:360,
 				fillColor:'',
 				// opacity:0.2,
-				borderColor:'green',
+				borderColor:'blue',
 				pointerEvent:'none',
 				like:'--',
 				title:'resize覆盖元素',
