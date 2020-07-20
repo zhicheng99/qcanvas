@@ -928,8 +928,53 @@ var rect = qcanvas.qrect.rect({
 		
 	</div>
 
+16、拖动限制范围 (现只支持Qarc和Qpolygon实例)
 
+<pre>
+	<code>
+		var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500,
+			 
+		});
 
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	width:100,
+	height:100,
+	borderColor:'red', 
+	fillColor:'', 
+	// degree:50,
+	drag:false 
+})		
+ 
+var arc = qcanvas.qarc.arc({
+	start:[200,120],
+	sAngle:0,
+	eAngle:360,
+	borderColor:'blue',
+	fillColor:'',
+	r:10, 
+	// drag:'vertical',
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+
+})
+
+var polygon = qcanvas.qpolygon.polygon({
+	r:15,
+	num:6,
+	start:[180,120],
+	opacity:0.4,
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+})
+	</code>
+<a onclick="document.getElementById('frm16').innerHTML='<iframe src=template16.html width=100% height=500 frameborder=0></iframe>'">查看示例</a>
+</pre>
+<div class="frm" id="frm16">
+		
+	</div>
 
 
 

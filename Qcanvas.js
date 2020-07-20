@@ -131,7 +131,53 @@ Qline.prototype.line = function(options){
 
 			return tmp;
 
-		}
+		},
+		downFun:function(position){
+			//线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
+			var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+		 	var end = _this.qcanvas.isFun(this.end)?this.end():this.end; 
+			this.dis = [position.x-start[0],position.y-start[1],position.x-end[0],position.y-end[1]];
+		},
+		moveFun:function(position){  //当配置drageRange时  开始限制坐标
+
+
+			var dragIsBool = _this.qcanvas.isBool(this.drag);
+					var dis  =this.dis;
+					var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				 	var end = _this.qcanvas.isFun(this.end)?this.end():this.end;
+
+ 					
+ 					var x1,y1,x2,y2;
+						 
+						if(dragIsBool){
+							 x1 = position.x-dis[0];
+							 y1 = position.y-dis[1];
+
+							 x2 = position.x-dis[2];
+							 y2 = position.y-dis[3];
+
+						}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+							 x1 = start[0];
+							 y1 = position.y-dis[1];
+							 x2 = end[0];
+							 y2 = position.y-dis[3];
+
+
+						}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+							 x1 = position.x-dis[0];
+							 y1 = start[1];
+							 x2 = position.x-dis[2];
+							 y2 = end[1];
+
+						} 
+ 
+
+
+					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+					this.start = [x1,y1];
+					this.end = [x2,y2] 
+
+			}
 	}
 	
 	
@@ -541,6 +587,7 @@ function Qtext(qcanvas){
 }	
 
 Qtext.prototype.text = function(options){
+		var _this = this;
 		var OPTIONS = {
 			TYPE:'text',
 			text:'Qcanvas Text',
@@ -699,6 +746,56 @@ Qtext.prototype.text = function(options){
 					
 					
 			},	
+			downFun:function(position){
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				this.dis = [position.x-start[0],position.y-start[1]];
+			},
+			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+
+				var dragIsBool = _this.qcanvas.isBool(this.drag);
+				var dis  = this.dis;
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				// var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
+
+
+				var x,y;
+				if(dragIsBool){
+					 x = position.x-dis[0];
+					 y = position.y-dis[1];
+
+					//  if(range.length == 2){  
+					// 	x = x>=range[1][0]?range[1][0]:x;
+					// 	x = x<=range[0][0]?range[0][0]:x;
+
+					// 	y = y>=range[1][1]?range[1][1]:y;
+					// 	y = y<=range[0][1]?range[0][1]:y;
+					// }
+
+				}else if(this.drag == 'vertical'){
+					 x = this.start[0];
+					 y = position.y-dis[1];
+
+
+					//  if(range.length == 2){   
+
+					// 	y = y>=range[1][1]?range[1][1]:y;
+					// 	y = y<=range[0][1]?range[0][1]:y;
+					// }
+
+
+				}else if(this.drag == 'horizontal'){
+					 x = position.x-dis[0];
+					 y = this.start[1]; 
+
+
+					//  if(range.length == 2){  
+					// 	x = x>=range[1][0]?range[1][0]:x;
+					// 	x = x<=range[0][0]?range[0][0]:x; 
+					// }
+				} 
+			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+				this.start = [x,y];
+			}
 		}
 			
 	this.qcanvas.extend(OPTIONS,options);
@@ -763,6 +860,7 @@ Qrect.prototype.rect = function(options){
 			borderColor:'#000', 
 			fillColor:'',
 			drag:true,
+			dragRange:[],
 			degree:0,
 			radius:0,
 			pointerEvent:'auto',
@@ -848,6 +946,56 @@ Qrect.prototype.rect = function(options){
 					}
 					
 			},	
+			downFun:function(position){
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				this.dis = [position.x-start[0],position.y-start[1]];
+			},
+			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+
+				var dragIsBool = _this.qcanvas.isBool(this.drag);
+				var dis  = this.dis;
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				// var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
+
+
+				var x,y;
+				if(dragIsBool){
+					 x = position.x-dis[0];
+					 y = position.y-dis[1];
+
+					//  if(range.length == 2){  
+					// 	x = x>=range[1][0]?range[1][0]:x;
+					// 	x = x<=range[0][0]?range[0][0]:x;
+
+					// 	y = y>=range[1][1]?range[1][1]:y;
+					// 	y = y<=range[0][1]?range[0][1]:y;
+					// }
+
+				}else if(this.drag == 'vertical'){
+					 x = this.start[0];
+					 y = position.y-dis[1];
+
+
+					//  if(range.length == 2){   
+
+					// 	y = y>=range[1][1]?range[1][1]:y;
+					// 	y = y<=range[0][1]?range[0][1]:y;
+					// }
+
+
+				}else if(this.drag == 'horizontal'){
+					 x = position.x-dis[0];
+					 y = this.start[1]; 
+
+
+					//  if(range.length == 2){  
+					// 	x = x>=range[1][0]?range[1][0]:x;
+					// 	x = x<=range[0][0]?range[0][0]:x; 
+					// }
+				} 
+			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+				this.start = [x,y];
+			}
 			// mouseup:function(position){
 			// 		console.log('添加一些点击的事件');
 			// }			
@@ -969,6 +1117,51 @@ Qshape.prototype.shape = function(options){
 				return temp;
 					
 			},	
+			downFun:function(position){
+				var _self = this;
+				this.dis = [];
+				var points = _this.qcanvas.isFun(this.points)?this.points():this.points;
+				points.forEach(function(v,index){
+						_self.dis.push([
+							position.x-points[index][0],
+							position.y-points[index][1]
+						])				
+				})
+			},
+			moveFun:function(position){
+				var dragIsBool = _this.qcanvas.isBool(this.drag);
+				var dis  =this.dis;
+				var points = _this.qcanvas.isFun(this.points)?this.points():this.points;
+				points.forEach(function(v,index){
+						points[index][0] = position.x- dis[index][0];
+						points[index][1] = position.y- dis[index][1];
+					
+				})
+				
+				if(dragIsBool){
+					points.forEach(function(v,index){
+							points[index][0] = position.x- dis[index][0];
+							points[index][1] = position.y- dis[index][1];
+						
+					})
+				}else if(this.drag == 'vertical'){
+					 points.forEach(function(v,index){
+							// points[index][0] = position.x- dis[index][0];
+							points[index][1] = position.y- dis[index][1];
+						
+					})
+
+				}else if(this.drag == 'horizontal'){
+					 points.forEach(function(v,index){
+							points[index][0] = position.x- dis[index][0];
+							// points[index][1] = position.y- dis[index][1];
+						
+					})
+				}
+
+
+				this.points = points;
+			}
 			
 		}
 			
@@ -1027,6 +1220,7 @@ Qarc.prototype.arc = function(options){
 			eAngle:0,
 			counterclockwise:false,
 		  drag:true,
+		  dragRange:[],  //限制拖动的区域 必须为两个坐标点[[左上角x,左上角y]，[右下角x,右下角y]]
 		  pointerEvent:'auto',
 		  like:'-',
 			polyPoints:function(){  //顶点坐标序列 (注意顺序 要形成一个闭合的区域)
@@ -1052,6 +1246,56 @@ Qarc.prototype.arc = function(options){
 				return temp;	
 					
 			},	
+			downFun:function(position){
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start; 
+				this.dis = [position.x-start[0],position.y-start[1]];
+			},
+			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+
+				var dragIsBool = _this.qcanvas.isBool(this.drag);
+				var dis  = this.dis;
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
+
+
+				var x,y;
+				if(dragIsBool){
+					 x = position.x-dis[0];
+					 y = position.y-dis[1];
+
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x;
+
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
+
+				}else if(this.drag == 'vertical'){
+					 x = this.start[0];
+					 y = position.y-dis[1];
+
+
+					 if(range.length == 2){   
+
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
+
+
+				}else if(this.drag == 'horizontal'){
+					 x = position.x-dis[0];
+					 y = this.start[1]; 
+
+
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x; 
+					}
+				} 
+			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+				this.start = [x,y];
+			}
 		}
 			
 	this.qcanvas.extend(OPTIONS,options);
@@ -1088,12 +1332,13 @@ Qarc.prototype.paintArc = function(obj){
 }	
 	
 	
-/*多边形类----------------*/
+/*正多边形类----------------*/
 function Qpolygon(qcanvas){
 	this.qpolygonVersion = '1.0';
 	this.qcanvas = qcanvas;
 }
 Qpolygon.prototype.polygon = function(options){
+	var _this = this;
 	var OPTIONS = {
 			TYPE:'polygon',
 			lineWidth:1,
@@ -1103,7 +1348,59 @@ Qpolygon.prototype.polygon = function(options){
 			r:20,
 			num:4,
 			drag:true,
-			pointerEvent:'auto'
+			dragRange:[],
+			opacity:1,
+			pointerEvent:'auto',
+			downFun:function(position){
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				this.dis = [position.x-start[0],position.y-start[1]];
+			},
+			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+
+				var dragIsBool = _this.qcanvas.isBool(this.drag);
+				var dis  = this.dis;
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
+				var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
+
+
+				var x,y;
+				if(dragIsBool){
+					 x = position.x-dis[0];
+					 y = position.y-dis[1];
+
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x;
+
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
+
+				}else if(this.drag == 'vertical'){
+					 x = this.start[0];
+					 y = position.y-dis[1];
+
+
+					 if(range.length == 2){   
+
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
+
+
+				}else if(this.drag == 'horizontal'){
+					 x = position.x-dis[0];
+					 y = this.start[1]; 
+
+
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x; 
+					}
+				} 
+			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+				this.start = [x,y];
+			}
 		}
 			
 	this.qcanvas.extend(OPTIONS,options);
@@ -1123,6 +1420,7 @@ Qpolygon.prototype.paintPolygon = function(obj){
     var width = obj && obj.lineWidth || 1;
     var strokeStyle = obj && obj.borderColor;
     var fillStyle = obj && obj.fillColor;
+    var opacity = obj && obj.opacity;
     //开始路径
     ctx.beginPath();
     var points = [];
@@ -1154,9 +1452,16 @@ Qpolygon.prototype.paintPolygon = function(obj){
         ctx.stroke();
     }
     if(fillStyle) {
-        ctx.fillStyle = fillStyle;
+
+		var rgb = this.qcanvas.colorRgb(fillStyle).replace('RGB(','').replace(')','');
+ 
+	    ctx.fillStyle = "rgba("+rgb+','+obj.opacity+")";
+		
+
         ctx.fill();
     }
+
+ 
 	
 }		
 
@@ -1468,6 +1773,24 @@ Qimg.prototype.img = function(options){
 					}
 					
 			},	
+			downFun:function(position){
+				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
+				this.dis = [position.x-tStart[0],position.y-tStart[1]];
+			},
+			moveFun:function(position){
+					var dragIsBool = _this.qcanvas.isBool(this.drag);
+					var dis  = this.dis; 
+
+					if(dragIsBool){
+						this.tStart[0] = position.x-dis[0];
+						this.tStart[1] = position.y-dis[1];
+					}else if(this.drag == 'vertical'){
+						 this.tStart[1] = position.y-dis[1];
+
+					}else if(this.drag == 'horizontal'){
+						 this.tStart[0] = position.x-dis[0];
+					}
+			}
 		}
 			
 	this.qcanvas.extend(OPTIONS,options);
@@ -1522,6 +1845,7 @@ function Qspirit(qcanvas){
 	this.qcanvas = qcanvas;
 }
 Qspirit.prototype.spirit = function(options){
+	var _this = this;
 	var OPTIONS = {
 			TYPE:'spirit',
 			stop:function(){this.isLoop = false},
@@ -1632,7 +1956,26 @@ Qspirit.prototype.spirit = function(options){
 					}
 			
 				}	
+			},
+			downFun:function(position){
+				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
+				this.dis = [position.x-tStart[0],position.y-tStart[1]];
+			},
+			moveFun:function(position){
+					var dragIsBool = _this.qcanvas.isBool(this.drag);
+					var dis  = this.dis; 
+
+					if(dragIsBool){
+						this.tStart[0] = position.x-dis[0];
+						this.tStart[1] = position.y-dis[1];
+					}else if(this.drag == 'vertical'){
+						 this.tStart[1] = position.y-dis[1];
+
+					}else if(this.drag == 'horizontal'){
+						 this.tStart[0] = position.x-dis[0];
+					}
 			}
+
 			
 		}
 			
@@ -1787,78 +2130,30 @@ function Qevent(qcanvas){
 		'mousedown_or_touchstart':function(position){
 			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
-			
-			if(aim!==null && aim.drag && 
-				(aim.TYPE == 'rect' || aim.TYPE == 'text' || aim.TYPE == 'arc' || aim.TYPE == 'polygon')
-			 ){
-			 	var start = _this.qcanvas.isFun(aim.start)?aim.start():aim.start;
-				aim.dis = [position.x-start[0],position.y-start[1]];
+
+			aim!==null && aim.drag && 
+			(aim.TYPE == 'rect' || 
+				aim.TYPE == 'text' || 
+				aim.TYPE == 'arc' ||
+				aim.TYPE == 'polygon' ||
+				aim.TYPE == 'line' || 
+				aim.TYPE == 'img' || 
+				aim.TYPE == 'spirit' || 
+				aim.TYPE == 'shape'
+				)  && 
+			(function(){
+				aim.downFun(position);
 				_this.qcanvas.dragAim = aim;
 
+			})();
+  
+			if(aim !== null){
 				aim.resize && initResizeLayer(aim.id);
 				aim.rotate && initRotateLayer(aim.id);
-
-			}
-
-
-			//线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
-			if(aim!==null && aim.drag && 
-				(aim.TYPE == 'line')
-			 ){
-			 	var start = _this.qcanvas.isFun(aim.start)?aim.start():aim.start;
-			 	var end = _this.qcanvas.isFun(aim.end)?aim.end():aim.end; 
-				aim.dis = [position.x-start[0],position.y-start[1],position.x-end[0],position.y-end[1]];
-				_this.qcanvas.dragAim = aim;
-			}
-
-
-
-
-			
-			if(aim!==null && aim.drag && 
-				(aim.TYPE == 'img' || aim.TYPE == 'spirit')
-				){
-				var tStart = _this.qcanvas.isFun(aim.tStart)?aim.tStart():aim.tStart;
-				aim.dis = [position.x-tStart[0],position.y-tStart[1]];
-				_this.qcanvas.dragAim = aim;
-			}
-			
-			
-			
-			if(aim!==null && aim.TYPE == 'shape' && aim.drag){
-				
-				
-				aim.dis = [
-					//position.x-aim.points[0][0],position.y-aim.points[0][1]
-				];
-
-				var points = _this.qcanvas.isFun(aim.points)?aim.points():aim.points;
-				points.forEach(function(v,index){
-						aim.dis.push([
-							position.x-points[index][0],
-							position.y-points[index][1]
-						])				
-				})
-				
-				
-				
-				_this.qcanvas.dragAim = aim;
 			}
 			
 		},
 		'mousemove_or_touchmove':function(position){
-
-
-				// if(_this.qcanvas.qresize !== null 
-				// && (_this.qcanvas.dragAim !== null)
-				// ){  
-
-				// 	//如果拖动不是resize或rotate句柄 那么拖动的同时需要 更新句柄坐标 
-
-				// 	!_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
-				// 	&& _this.qcanvas.qresize.hideHandler();
- 
-				// }
 
 
 				if(_this.qcanvas.qrotate !== null 
@@ -1889,120 +2184,22 @@ function Qevent(qcanvas){
 					!_this.qcanvas.qrotate.rotateLayer.hasOwnEle(_this.qcanvas.dragAim) 
 					&& _this.qcanvas.qrotate.hideHandler();
 					 
-
 				}
 
 
+				if(_this.qcanvas.dragAim !== null){
 
-
-
-				//处理拖动的元素
-				// var position = _this.getEventPosition(e);
-			
-				if(_this.qcanvas.dragAim !== null && 
-					(_this.qcanvas.dragAim.TYPE=='rect' || 
-						_this.qcanvas.dragAim.TYPE=='text' || 
-						_this.qcanvas.dragAim.TYPE=='arc' ||
-						_this.qcanvas.dragAim.TYPE=='polygon' ||
-						_this.qcanvas.dragAim.TYPE=='line'
-						)
-					){
-					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
-					var dis  =_this.qcanvas.dragAim.dis;
-					var start = _this.qcanvas.isFun(_this.qcanvas.dragAim.start)?_this.qcanvas.dragAim.start():_this.qcanvas.dragAim.start;
-
-					if(dragIsBool){
-						 start[0] = position.x-dis[0];
-						 start[1] = position.y-dis[1];
-					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
-						 start[1] = position.y-dis[1];
-
-					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
-						 start[0] = position.x-dis[0];
-					}
-
-
-					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
-					_this.qcanvas.dragAim.start = start;
-
-
-					//重置线段的结束点坐标
-					 if(_this.qcanvas.dragAim.TYPE=='line'){
-					 	var end = _this.qcanvas.isFun(_this.qcanvas.dragAim.end)?_this.qcanvas.dragAim.end():_this.qcanvas.dragAim.end;
-					 	 
-					 	if(dragIsBool){
-							 end[0] = position.x-dis[2];
-							 end[1] = position.y-dis[3];
-						}else if(_this.qcanvas.dragAim.drag == 'vertical'){
-							 end[1] = position.y-dis[3];
-
-						}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
-							 end[0] = position.x-dis[2];
-						}
-
-					 	_this.qcanvas.dragAim.end = end;
-					 }
-
+					((_this.qcanvas.dragAim.TYPE=='arc') || 
+					(_this.qcanvas.dragAim.TYPE=='rect') ||
+					(_this.qcanvas.dragAim.TYPE=='text') ||
+					(_this.qcanvas.dragAim.TYPE=='polygon') ||
+					(_this.qcanvas.dragAim.TYPE=='line') ||
+					(_this.qcanvas.dragAim.TYPE=='img') ||
+					(_this.qcanvas.dragAim.TYPE=='spirit') ||
+					(_this.qcanvas.dragAim.TYPE=='shape' )) && 
+					_this.qcanvas.dragAim.moveFun(position);
 
 				}
-			
-				if(_this.qcanvas.dragAim !== null && 
-					(_this.qcanvas.dragAim.TYPE=='img' || _this.qcanvas.dragAim.TYPE=='spirit')){
-					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
-					var dis  =_this.qcanvas.dragAim.dis;
-					// _this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
-					// _this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
-
-					if(dragIsBool){
-						_this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
-						_this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
-					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
-						 _this.qcanvas.dragAim.tStart[1] = position.y-dis[1];
-
-					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
-						 _this.qcanvas.dragAim.tStart[0] = position.x-dis[0];
-					}
-
-				}
-				
-			
-			
-				if(_this.qcanvas.dragAim !== null && _this.qcanvas.dragAim.TYPE=='shape'){
-					var dragIsBool = _this.qcanvas.isBool(_this.qcanvas.dragAim.drag);
-					var dis  =_this.qcanvas.dragAim.dis;
-					var points = _this.qcanvas.isFun(_this.qcanvas.dragAim.points)?_this.qcanvas.dragAim.points():_this.qcanvas.dragAim.points;
-					points.forEach(function(v,index){
-							points[index][0] = position.x- dis[index][0];
-							points[index][1] = position.y- dis[index][1];
-						
-					})
-					
-					if(dragIsBool){
-						points.forEach(function(v,index){
-								points[index][0] = position.x- dis[index][0];
-								points[index][1] = position.y- dis[index][1];
-							
-						})
-					}else if(_this.qcanvas.dragAim.drag == 'vertical'){
-						 points.forEach(function(v,index){
-								// points[index][0] = position.x- dis[index][0];
-								points[index][1] = position.y- dis[index][1];
-							
-						})
-
-					}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
-						 points.forEach(function(v,index){
-								points[index][0] = position.x- dis[index][0];
-								// points[index][1] = position.y- dis[index][1];
-							
-						})
-					}
-
-
-					_this.qcanvas.dragAim.points = points;
-					
-				}
-
 
 		},
 		'mouseup_or_mouseout_or_touchend':function(position){
@@ -2542,6 +2739,11 @@ Qrotate.prototype.rectRotate = function(obj) {
 				title:'rotate句柄',
 				drag:'vertical',
 				// pointerEvent:'none',
+				dragRange:function(){
+
+					return [_this.bg.start,[_this.bg.start[0]+_this.bg.width,_this.bg.start[1]+_this.bg.height]];
+
+				},
 				mousemove:function(){
 					var dis = this.start[1] - _this.bg.start[1];
 

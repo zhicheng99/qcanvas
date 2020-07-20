@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style>
+		html,body{
+			padding: 0;
+			margin: 0;
+			overflow: hidden;
+		}
+		canvas{
+			background:#ccc; 
+		}
+	</style>
+</head>
+<body>
+<canvas id="qcanvas"></canvas>
+
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500, 
+		});
+
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	width:100,
+	height:100,
+	borderColor:'red', 
+	fillColor:'', 
+	// degree:50,
+	drag:false 
+})		
+ 
+var arc = qcanvas.qarc.arc({
+	start:[200,120],
+	sAngle:0,
+	eAngle:360,
+	borderColor:'blue',
+	fillColor:'',
+	r:10, 
+	// drag:'vertical',
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+
+})
+
+var polygon = qcanvas.qpolygon.polygon({
+	r:15,
+	num:6,
+	start:[180,120],
+	opacity:0.4,
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+})
+
+ 
+ 	
+
+
+
+</script>
+
+</html>
