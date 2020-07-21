@@ -2189,14 +2189,14 @@ function Qevent(qcanvas){
 
 				if(_this.qcanvas.dragAim !== null){
 
-					((_this.qcanvas.dragAim.TYPE=='arc') || 
-					(_this.qcanvas.dragAim.TYPE=='rect') ||
-					(_this.qcanvas.dragAim.TYPE=='text') ||
-					(_this.qcanvas.dragAim.TYPE=='polygon') ||
-					(_this.qcanvas.dragAim.TYPE=='line') ||
-					(_this.qcanvas.dragAim.TYPE=='img') ||
-					(_this.qcanvas.dragAim.TYPE=='spirit') ||
-					(_this.qcanvas.dragAim.TYPE=='shape' )) && 
+					(_this.qcanvas.dragAim.TYPE=='arc' || 
+					_this.qcanvas.dragAim.TYPE=='rect' ||
+					_this.qcanvas.dragAim.TYPE=='text' ||
+					_this.qcanvas.dragAim.TYPE=='polygon' ||
+					_this.qcanvas.dragAim.TYPE=='line' ||
+					_this.qcanvas.dragAim.TYPE=='img' ||
+					_this.qcanvas.dragAim.TYPE=='spirit' ||
+					_this.qcanvas.dragAim.TYPE=='shape' ) && 
 					_this.qcanvas.dragAim.moveFun(position);
 
 				}
