@@ -2148,17 +2148,19 @@ function Qevent(qcanvas){
 			})();
   
 			if(aim !== null){
-				aim.resize && initResizeLayer(aim.id);
-				aim.rotate && initRotateLayer(aim.id);
+				aim.TYPE == 'rect' && aim.resize && initResizeLayer(aim.id);
+				aim.TYPE == 'rect' && aim.rotate && initRotateLayer(aim.id);
 			}
 			
 		},
 		'mousemove_or_touchmove':function(position){
 
 
-				if(_this.qcanvas.qrotate !== null 
+				if(    
+					  (_this.qcanvas.dragAim !== null)
 					&& (_this.qcanvas.qresize !== null)
-					&& (_this.qcanvas.dragAim !== null)
+					&& (_this.qcanvas.qrotate !== null)
+
 				){  
 
 					//如果拖动不是resize或rotate句柄 那么拖动的同时需要 更新句柄坐标 
@@ -2171,19 +2173,25 @@ function Qevent(qcanvas){
 
 					})()
 
-					
-				}else if((_this.qcanvas.qresize !== null)
+				}else{
+
+					if((_this.qcanvas.qresize !== null) 
 					&& (_this.qcanvas.dragAim !== null)){
 
-					!_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
-					&& _this.qcanvas.qresize.hideHandler();
+						!_this.qcanvas.qresize.resizeLayer.hasOwnEle(_this.qcanvas.dragAim)
+						&& _this.qcanvas.qresize.hideHandler();
 
-				}else if(_this.qcanvas.qrotate !== null
+					}
+
+					if(_this.qcanvas.qrotate !== null 
 					&& (_this.qcanvas.dragAim !== null)){
 
-					!_this.qcanvas.qrotate.rotateLayer.hasOwnEle(_this.qcanvas.dragAim) 
-					&& _this.qcanvas.qrotate.hideHandler();
-					 
+						!_this.qcanvas.qrotate.rotateLayer.hasOwnEle(_this.qcanvas.dragAim) 
+						&& _this.qcanvas.qrotate.hideHandler();
+						 
+					}
+
+						
 				}
 
 
