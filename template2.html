@@ -47,7 +47,8 @@ var line1 = qcanvas.qline.line({
 	like:'-',
 	withText:'可拖动',
 	drag:'vertical',
-	mouseout:function(){
+	mouseout:function(e,position){
+		console.log(e);
 		console.log('line1 mouseout');
 	}
 	

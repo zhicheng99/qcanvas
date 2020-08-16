@@ -33,9 +33,14 @@ var text = qcanvas.qtext.text({
 	degree:290,
 	// textAlign:'left',
 	textBaseline:'top',
-	mouseup:function(pos){
+	mouseup:function(e,pos){
+		console.log(e)
 		console.log(pos);
 		// qcanvas.destroy();
+	},
+	mousedown:function(e,position){
+		console.log(e);
+		console.log(position)
 	}
 })		
 

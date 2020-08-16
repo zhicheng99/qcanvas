@@ -28,7 +28,8 @@ var rect = qcanvas.qrect.rect({
 	fillColor:'',
 	degree:30,
 	radius:5,
-	mouseup:function(){
+	mouseup:function(e,pos){
+		console.log(pos);
 		console.log('mouseup')
 	}
 })		

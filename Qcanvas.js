@@ -132,13 +132,13 @@ Qline.prototype.line = function(options){
 			return tmp;
 
 		},
-		downFun:function(position){
+		downFun:function(e,position){
 			//线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
 			var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 		 	var end = _this.qcanvas.isFun(this.end)?this.end():this.end; 
 			this.dis = [position.x-start[0],position.y-start[1],position.x-end[0],position.y-end[1]];
 		},
-		moveFun:function(position){  //当配置drageRange时  开始限制坐标
+		moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 
 			var dragIsBool = _this.qcanvas.isBool(this.drag);
@@ -746,11 +746,11 @@ Qtext.prototype.text = function(options){
 					
 					
 			},	
-			downFun:function(position){
+			downFun:function(e,position){
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 				this.dis = [position.x-start[0],position.y-start[1]];
 			},
-			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+			moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  = this.dis;
@@ -946,11 +946,11 @@ Qrect.prototype.rect = function(options){
 					}
 					
 			},	
-			downFun:function(position){
+			downFun:function(e,position){
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 				this.dis = [position.x-start[0],position.y-start[1]];
 			},
-			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+			moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  = this.dis;
@@ -1117,7 +1117,7 @@ Qshape.prototype.shape = function(options){
 				return temp;
 					
 			},	
-			downFun:function(position){
+			downFun:function(e,position){
 				var _self = this;
 				this.dis = [];
 				var points = _this.qcanvas.isFun(this.points)?this.points():this.points;
@@ -1128,7 +1128,7 @@ Qshape.prototype.shape = function(options){
 						])				
 				})
 			},
-			moveFun:function(position){
+			moveFun:function(e,position){
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  =this.dis;
 				var points = _this.qcanvas.isFun(this.points)?this.points():this.points;
@@ -1246,11 +1246,11 @@ Qarc.prototype.arc = function(options){
 				return temp;	
 					
 			},	
-			downFun:function(position){
+			downFun:function(e,position){
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start; 
 				this.dis = [position.x-start[0],position.y-start[1]];
 			},
-			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+			moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  = this.dis;
@@ -1351,11 +1351,11 @@ Qpolygon.prototype.polygon = function(options){
 			dragRange:[],
 			opacity:1,
 			pointerEvent:'auto',
-			downFun:function(position){
+			downFun:function(e,position){
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 				this.dis = [position.x-start[0],position.y-start[1]];
 			},
-			moveFun:function(position){  //当配置drageRange时  开始限制坐标
+			moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  = this.dis;
@@ -1773,11 +1773,11 @@ Qimg.prototype.img = function(options){
 					}
 					
 			},	
-			downFun:function(position){
+			downFun:function(e,position){
 				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
 				this.dis = [position.x-tStart[0],position.y-tStart[1]];
 			},
-			moveFun:function(position){
+			moveFun:function(e,position){
 					var dragIsBool = _this.qcanvas.isBool(this.drag);
 					var dis  = this.dis; 
 
@@ -1957,11 +1957,11 @@ Qspirit.prototype.spirit = function(options){
 			
 				}	
 			},
-			downFun:function(position){
+			downFun:function(e,position){
 				var tStart = _this.qcanvas.isFun(this.tStart)?this.tStart():this.tStart;
 				this.dis = [position.x-tStart[0],position.y-tStart[1]];
 			},
-			moveFun:function(position){
+			moveFun:function(e,position){
 					var dragIsBool = _this.qcanvas.isBool(this.drag);
 					var dis  = this.dis; 
 
@@ -2127,7 +2127,7 @@ function Qevent(qcanvas){
 
 
 	var eventCallback = {
-		'mousedown_or_touchstart':function(position){
+		'mousedown_or_touchstart':function(e,position){
 			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
 
@@ -2142,7 +2142,7 @@ function Qevent(qcanvas){
 				aim.TYPE == 'shape'
 				)  && 
 			(function(){
-				aim.downFun(position);
+				aim.downFun(e,position);
 				_this.qcanvas.dragAim = aim;
 
 			})();
@@ -2153,7 +2153,7 @@ function Qevent(qcanvas){
 			}
 			
 		},
-		'mousemove_or_touchmove':function(position){
+		'mousemove_or_touchmove':function(e,position){
 
 
 				if(    
@@ -2205,12 +2205,12 @@ function Qevent(qcanvas){
 					_this.qcanvas.dragAim.TYPE=='img' ||
 					_this.qcanvas.dragAim.TYPE=='spirit' ||
 					_this.qcanvas.dragAim.TYPE=='shape' ) && 
-					_this.qcanvas.dragAim.moveFun(position);
+					_this.qcanvas.dragAim.moveFun(e,position);
 
 				}
 
 		},
-		'mouseup_or_mouseout_or_touchend':function(position){
+		'mouseup_or_mouseout_or_touchend':function(e,position){
 			_this.qcanvas.dragAim = null;
 		}
 	};
@@ -2242,7 +2242,7 @@ Qevent.prototype.init = function(){
 			canvas.addEventListener(i,function(e){
 				var position = _this.getEventPosition(e);
 				_this.eventCallback(e,position);	//用户定义的回调函数
-				_this.MOBILE_Event[e.type](position); //系统定义的回调函数
+				_this.MOBILE_Event[e.type](e,position); //系统定义的回调函数
 			},false);		
 
 		}
@@ -2252,7 +2252,7 @@ Qevent.prototype.init = function(){
 			canvas.addEventListener(i,function(e){
 				var position = _this.getEventPosition(e);
 				_this.eventCallback(e,position);	 //用户定义的回调函数
-				_this.PC_Event[e.type](position);  //系统定义的回调函数
+				_this.PC_Event[e.type](e,position);  //系统定义的回调函数
 			},false);		
 		}
 		
@@ -2269,7 +2269,7 @@ Qevent.prototype.executeMouseOut = function(aim,position){
 
 		}else if(this.qcanvas.moveAim.id !== aim.id){ //划过了不同的对象 需要执行上一个对象的moveout事件
 				// console.log('划过了不同的对象');
-				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](position);
+				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.qcanvas.moveAim,position);
 				this.qcanvas.moveAim = aim;
 			}
 
@@ -2277,7 +2277,7 @@ Qevent.prototype.executeMouseOut = function(aim,position){
 
 
 		if(this.qcanvas.isObj(this.qcanvas.moveAim)){
-			this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](position);
+			this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.qcanvas.moveAim,position);
 			this.qcanvas.moveAim = null;
 		}
 	}
@@ -2296,7 +2296,7 @@ Qevent.prototype.eventCallback = function(e,position){
 
 
 	  	//触发aim的事件(调用配置好的事件) 
-	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](position);
+	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](aim,position);
 
 	  
 }	
