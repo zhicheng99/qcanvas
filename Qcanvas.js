@@ -290,6 +290,18 @@ Qline.prototype.paintLine  = function(obj){
 			
 			
 			break;
+		case '--':
+			this.qcanvas.context.strokeStyle = obj.color;
+			this.qcanvas.context.beginPath();
+			this.qcanvas.context.lineWidth=obj.width; 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+			// this.paintDashLine(obj);
+			break;
 		case '->':
 			this.qcanvas.context.strokeStyle = obj.color;
 			this.qcanvas.context.beginPath();
@@ -316,20 +328,33 @@ Qline.prototype.paintLine  = function(obj){
 
 			
 			break;
-
-		case '--':
+		case '<->':
 			this.qcanvas.context.strokeStyle = obj.color;
 			this.qcanvas.context.beginPath();
-			this.qcanvas.context.lineWidth=obj.width; 
-
-			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.lineWidth=obj.width;
+			//if(obj.like == '--'){
+			//	this.qcanvas.context.setLineDash([2, 4]);
+			//}
+			
 			this.qcanvas.context.moveTo(start[0],start[1]);
 			this.qcanvas.context.lineTo(end[0],end[1]);
 			this.qcanvas.context.stroke();
+			
+			//分解出两条实线 生成箭头效果
+			// if(this.lineIsChange(obj)){
+			// 		this.appendArrow(obj);
+			// }
 
-			// this.paintDashLine(obj);
-			break;
-		
+			// //画箭头			
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			
+			
+			break;	
 		case '-->':
 			this.qcanvas.context.strokeStyle = obj.color;
 			this.qcanvas.context.beginPath();
@@ -361,10 +386,39 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
 			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			break;
+		case '<-->':
+			this.qcanvas.context.strokeStyle = obj.color;
+			this.qcanvas.context.beginPath();
+			this.qcanvas.context.lineWidth=obj.width; 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+
+			//分解出两条实线 生成箭头效果
+			// if(this.lineIsChange(obj)){
+			// 		this.appendArrow(obj);
+			// }
+
+			// //画箭头 虚线加箭头 线段可以能比较短  后期修复			
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
+
+			// this.paintDashLine(obj);
+
 			
-			
-			
-			
+			//画箭头
+			// if(typeof obj.arrow !='undefined'){ 
+			// 		arguments.callee.call(this,obj.arrow[0]);
+			// 		arguments.callee.call(this,obj.arrow[1]);
+			// }
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
 
 			break;
 	}
