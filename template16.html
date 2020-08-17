@@ -3,19 +3,59 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc; 
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		拖动限制范围 (现只支持Qarc和Qpolygon实例)<br>
+dragRange格式 [[左上角x,左上角y]，[右下角x,右下角y]]
+		<canvas id="qcanvas"></canvas> 
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500, 
+		});
+
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	width:100,
+	height:100,
+	borderColor:'red', 
+	fillColor:'', 
+	// degree:50,
+	drag:false 
+})		
+ 
+var arc = qcanvas.qarc.arc({
+	start:[200,120],
+	sAngle:0,
+	eAngle:360,
+	borderColor:'blue',
+	fillColor:'',
+	r:10, 
+	// drag:'vertical',
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+
+})
+
+var polygon = qcanvas.qpolygon.polygon({
+	r:15,
+	num:6,
+	start:[180,120],
+	opacity:0.4,
+	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
+})
+		</code>
+	</pre>
+</div>
 
 
 </body>

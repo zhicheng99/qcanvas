@@ -2,22 +2,113 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-			font-size: 14px;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<title></title> 
+
+<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
 </head>
 <body>
+	<div class="qcanvas_lay">
 	注：文字也是有层级关系的<br>
-<canvas id="qcanvas"></canvas>
+		
+		<canvas id="qcanvas"></canvas> 
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",400,300]);
+
+	var redRect = qcanvas.qrect.rect({
+		start:[0,0],
+		width:200,
+		height:200,
+		drag:false,
+		borderColor:'red',
+		fillColor:'red',
+	})
+
+	var greenRect = qcanvas.qrect.rect({
+		start:[50,50],
+		width:170,
+		height:170,
+		drag:false,
+
+		borderColor:'green',
+		fillColor:'green',
+	})
+	var blueRect = qcanvas.qrect.rect({
+		start:[100,100],
+		width:120,
+		height:120,
+		drag:false,
+		borderColor:'blue',
+		fillColor:'blue',
+	})
+ 
+
+	qcanvas.qtext.text({
+		start:[200,40],
+		text:'redRect上移一层',
+		color:'blue',
+		fontSize:'16px',
+		drag:false,
+		mouseup:function(pos){
+
+			qcanvas.raise(redRect);
+			
+
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,60],
+		text:'redRect下移一层',
+		color:'blue',
+		fontSize:'16px',
+		drag:false,
+		mouseup:function(pos){
+
+			qcanvas.lower(redRect);
+			
+
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,80],
+		text:'redRect置顶',
+		color:'blue',
+		fontSize:'16px',
+		drag:false,
+		mouseup:function(pos){
+
+			qcanvas.raiseToTop(redRect);
+			
+
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,100],
+		text:'redRect置底',
+		color:'yellow',
+		fontSize:'16px',
+		drag:false,
+		mouseup:function(pos){
+
+			qcanvas.lowerToBottom(redRect);
+			
+
+		}
+	})
+		</code>
+	</pre>
+</div>
+
+
+
 
 <script src='Qcanvas.js'></script>
 <script>

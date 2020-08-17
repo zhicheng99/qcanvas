@@ -3,19 +3,43 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script>
+	 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas>
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var polygon = qcanvas.qpolygon.polygon({
+	r:30,
+	num:6,
+	start:[100,100]
+})
+
+	var shape = qcanvas.qshape.shape({
+				fillColor:'#999',
+				opacity:0.3,
+				points:function(){
+					return [
+						[80,10],
+						[80,50],
+						[150,70],
+						[160,20],
+					]
+				}
+			});
+		</code>
+	</pre>
+</div>
 
 </body>
 <script src='Qcanvas.js'></script>

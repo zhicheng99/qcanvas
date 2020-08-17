@@ -3,19 +3,48 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script>
+	 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas>
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	borderColor:'red',
+	fillColor:'',
+	degree:30,
+	radius:5,
+	mouseup:function(e,pos){
+		console.log(pos);
+		console.log('mouseup')
+	}
+})		
+
+var rect1 = qcanvas.qrect.rect({
+	start:[180,80],
+	width:200,
+	borderColor:'green',
+	fillColor:'blue',
+	pointerEvent:'none',
+	mouseup:function(){
+		console.log('rect1->mouseup')
+	}
+})	
+			
+		</code>
+	</pre>
+</div>
 
 </body>
 <script src='Qcanvas.js'></script>

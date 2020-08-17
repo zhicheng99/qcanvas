@@ -5,19 +5,36 @@
 
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script>
+	 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas>
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">
+var text = qcanvas.qtext.text({
+	start:[100,100],
+	color:'blue',
+	fontSize:'20px'
+})		
+var textfps = qcanvas.qtext.text({
+	start:[20,20],
+		text:function(){ return qcanvas.currFps},
+	color:'blue',
+	fontSize:'20px'
+})	
+		</code>
+	</pre>
+	</pre>
+</div>
 
 </body>
 <script src='Qcanvas.js'></script>

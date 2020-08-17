@@ -9,18 +9,42 @@ function Qflow(options){
 
 Qflow.prototype.init = function() {
  
-	this.qcanvas = new Qcanvas(this.options);
+	this.qcanvas = new Qcanvas({
+		id:this.options[0],
+		width:this.options[1],
+		height:this.options[2],
+		mousedown:this.canvasDownFun,
+		mousemove:this.canvasMoveFun,
+		mouseup:this.canvasUpFun
+
+
+	});
 	this.toolLayer = this.qcanvas.qlayer.layer();
 
 	this.initTool();
 
 };
+Qflow.prototype.canvasUpFun = function() {
+	console.log('canvasUpFun');
+};
+Qflow.prototype.canvasMoveFun = function() {
+	console.log('canvasMoveFun');
+};
+Qflow.prototype.canvasDownFun = function() {
+	console.log('canvasDownFun');
+};
+
+Qflow.prototype.rectDown = function(pos) {
+	console.log(pos);
+	console.log(this);
+};
+
 
 Qflow.prototype.initTool = function() {
 
-	var h = this.options[2]-100;
+	var h = this.options[2];
 	var tool = this.qcanvas.qrect.rect({  //工具栏外边框
-				start:[50,50],
+				start:[0,0],
 				width:200,
 				lineWidth:0.5,
 				height:h,
@@ -30,7 +54,8 @@ Qflow.prototype.initTool = function() {
 			start:function(){return [tool.start[0]+20,tool.start[1]+20]},
 			width:70,
 			height:50,
-			drag:false
+			drag:false,
+			mousedown:this.rectDown
 		})
 	var diamond = this.qcanvas.qshape.shape({
 
@@ -42,7 +67,6 @@ Qflow.prototype.initTool = function() {
 				[tool.start[0]+rect.width+70,tool.start[1]+20],
 				[tool.start[0]+rect.width+110,tool.start[1]+45], 
 				[tool.start[0]+rect.width+70,tool.start[1]+70],  
-				
 			]
 		},
 		drag:false

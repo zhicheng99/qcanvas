@@ -3,19 +3,91 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas> 
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var rect;
+
+var create = function(){
+	rect = qcanvas.qrect.rect({
+		start:[0,10],
+		borderColor:'red',
+		fillColor:'blue',
+	})	
+
+	createWord.setDisplay('none');	
+}
+
+
+	
+
+qcanvas.qtext.text({
+	start:[50,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'显示',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('block');
+
+	}
+
+})
+
+qcanvas.qtext.text({
+	start:[100,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'隐藏',
+	drag:false,
+	mouseup:function(){
+		rect.setDisplay('none');
+
+	}
+})
+
+qcanvas.qtext.text({
+	start:[150,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'删除',
+	drag:false,
+	mouseup:function(){
+		qcanvas.removeEle(rect);
+
+		createWord.setDisplay('block');
+	}
+})
+
+var createWord = qcanvas.qtext.text({
+	start:[200,150],
+	color:'blue',
+	fontSize:'14px',
+	text:'创建',
+	display:"none",
+	drag:false,
+	mouseup:function(){
+		create();
+
+	}
+})
+
+create();
+		</code>
+	</pre>
+</div>
 
 </body>
 <script src='Qcanvas.js'></script>

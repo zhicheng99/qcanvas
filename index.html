@@ -11,8 +11,13 @@
 		
 		html,body{
 			font-size: 14px;
-
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
 		}
+
+
 
 		pre {
     position: relative;
@@ -60,954 +65,103 @@ code.has-numbering {
 	a{
 		background: #fff
 	}
+	ul{
+		margin:0;
+		padding: 0;
+	}
+	li{
+		list-style-type: none
+	}
+	.main{
+		height: 100%;
+		font-size: 12px;
+	}
+
+	.main_left{
+		float: left;
+		width: 200px;
+	}
+	.main_left ul li a:hover{
+		background: #ddd;
+	}
+
+	.main_left a{
+		display: block;
+		width: 100%;
+		font-size: 14px;
+		text-decoration: none;
+		color: #333;
+	}
+
+	.main_right{
+		padding-left: 220px;
+		height: 100%;
+	}
 
 	</style>
 </head>
-<body>
-
-	Qcanvas框架用法示例
-	 <!-- <a href="game.html" target="_blank">小游戏正在开发中...</a> -->
-	<hr>
-	1、初始化
-	   <pre><code class="js">
-var qcanvas = new Qcanvas(["qcanvas",300,200]);
-<br>
-或
-<br>
-var qcanvas = new Qcanvas({
-	id:'qcanvas',
-	width:300,
-	height:200
-})
-
-
-		</code>
-
-		<a onclick="document.getElementById('frm1').innerHTML='<iframe src=template1.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-	<div class="frm" id="frm1">
-	</div>
-
-	2、画线
-	<pre><code class="js">
-var line1 = qcanvas.qline.line({
-	start:[0,80],
-	end:[50,50],
-	color:'red',
-	like:'-',
-	withText:'动画'
-});
-var line2 = qcanvas.qline.line({
-	start:[0,20],
-	end:[150,50],
-	color:'blue',
-	like:'--',
-	withText:'line2'
-});
-var line3 = qcanvas.qline.line({
-	start:[30,50],
-	end:[150,60],
-	width:1,
-	like:'->',
-	color:'gray',
-	withText:'line3'
-});		
-
-var line4 = qcanvas.qline.line({
-	start:[100,123],
-	end:[150,180],
-	width:1,
-	like:'-->',
-	color:'gray',
-	withText:'line4',
-	withTextAlign:'left'
-});
-
-		
-		</code>
-<a onclick="document.getElementById('frm2').innerHTML='<iframe src=template2.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm2">
-	</div>
-	3、画文字
-	<pre>
-		<code class="js">
-
-var text = qcanvas.qtext.text({
-	start:[100,100],
-	color:'blue',
-	fontSize:'20px'
-})		
-var textfps = qcanvas.qtext.text({
-	start:[20,20],
-		text:function(){ return qcanvas.currFps},
-	color:'blue',
-	fontSize:'20px'
-})	
-			
-		</code>
-<a onclick="document.getElementById('frm3').innerHTML='<iframe src=template3.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-<div class="frm" id="frm3">
-		
-	</div>
-	4、画矩形
-	<pre>
-		<code class="js">
-			
-var rect = qcanvas.qrect.rect({
-	start:[160,100],
-	borderColor:'red',
-	fillColor:'',
-	degree:30,
-	radius:5,
-	mouseup:function(){
-		console.log('mouseup')
-	}
-})		
-
-var rect1 = qcanvas.qrect.rect({
-	start:[180,80],
-	width:200,
-	borderColor:'green',
-	fillColor:'blue',
-	pointerEvent:'none',
-	mouseup:function(){
-		console.log('rect1->mouseup')
-	}
-})
-
-		</code>
-<a onclick="document.getElementById('frm4').innerHTML='<iframe src=template4.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm4">
-		
-	</div>
-
-	5、画圆
-	<pre>
-		<code class="js">
-			
-var arc = qcanvas.qarc.arc({
-	start:[100,100],
-	sAngle:0,
-	eAngle:360,
-	fillColor:'#fff',
-	opacity:0.2,
-	r:20
-});		
-
-		</code>
-<a onclick="document.getElementById('frm5').innerHTML='<iframe src=template5.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-	<div class="frm" id="frm5">
-		
-	</div>
-
-	6、多边形
-	<pre>
-		<code class="js">
-//正多边形
-var polygon = qcanvas.qpolygon.polygon({
-	r:30,
-	num:6,
-	start:[350,200]
-})
-
-//不规则图形
-
-var shape = qcanvas.qshape.shape({
-				fillColor:'#999',
-				opacity:0.3,
-				points:[
-					[80,10],
-					[80,50],
-					[150,70],
-					[160,20],
-				]
-			});
-
-		</code>
-<a onclick="document.getElementById('frm6').innerHTML='<iframe src=template6.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm6">
-		
-	</div>
-	7、画图片
-	<pre>
-		<code class="js">
-			
-qcanvas.load({
-	"b":"http://sandbox.runjs.cn/uploads/rs/475/t0qpfflr/hand.png"
-},function(){ 
-	var b = qcanvas.getSourceByName("b");
-	
-	
-	qcanvas.qimg.img({
-		img:b,
-		sStart:[0,0],
-		sWidth:b.width,
-		sHeight:b.height,
-		size:"cover",
-		tStart:[100,0],
-		tWidth:80,
-		tHeight:70,
-		mousemove:function(position){
-			console.log(position);
-		}
-		
-		
-	});
-	
-	
-});	
-
-		</code>
-<a onclick="document.getElementById('frm7').innerHTML='<iframe src=template7.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm7">
-		
-	</div>
-
-	8、画精灵图
-	<pre>
-		<code class="js">
-			
-qcanvas.load({			
-	"person":"http://sandbox.runjs.cn/uploads/rs/475/t0qpfflr/spirit.png"
-},function(){
-	
-		var spiritSource = qcanvas.getSourceByName("person");
-	
-		qcanvas.qspirit.spirit({
-			img:spiritSource,
-			row:2,
-			column:10,
-			framesIndex:[0,0],
-			tStart:[100,120],
-			tWidth:50,
-			tHeight:50,
-			isLoop:true,
-			during:1,
-			mouseup:function(){
-				console.log(this);
-				console.log('触发mouseup事件');
-			}
-		})
-			
-				
-})		
-
-		</code>
-<a onclick="document.getElementById('frm8').innerHTML='<iframe src=template8.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm8">
-		
-	</div>
-
-	9、动画
-	<pre>
-		<code class="js">
-
-var rect = qcanvas.qrect.rect({
-	start:[0,10],
-	borderColor:'red',
-	fillColor:'blue',
-	drag:false
-})		
-
-qcanvas.qanimation.animate(rect,{
-	start:[0,10],
-},{
-	start:[200,10],
-},2,true,'Back.easeInOut');
-			
-
-		</code>
-<a onclick="document.getElementById('frm9').innerHTML='<iframe src=template9.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-	<div class="frm" id="frm9">
-		
-	</div>
-
-	10、事件
-	<pre>
-		<code class="js"> 
-		var rect = qcanvas.qrect.rect({
-		start:[0,10],
-		borderColor:'red',
-		fillColor:'blue',
-		drag:false,
-		mouseup:function(){
-			console.log('蓝色块mouseup事件');
-			tip.innerHTML ='蓝色块mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
-		},
-		mousedown:function(){
-			console.log('蓝色块mousedown事件');
-			tip.innerHTML ='蓝色块mousedown事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
-		},
-		mousemove:function(){
-			console.log('蓝色块mousemove事件');
-			tip.innerHTML ='蓝色块mousemove事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
-		},
-		mouseout:function(){
-			console.log('蓝色块mouseout事件');
-			tip.innerHTML ='蓝色块mouseout事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
-		}
-	});
-    
-
-		
-
-
-		</code>
-	<a onclick="document.getElementById('frm10').innerHTML='<iframe src=template10.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-	</pre>
-
-
-		<div class="frm" id="frm10">
-		
-	</div>
-	11、显示元素、隐藏元素、删除元素
-	<pre>
-		<code class="js">
-var rect;
-
-var create = function(){
-	rect = qcanvas.qrect.rect({
-		start:[0,10],
-		borderColor:'red',
-		fillColor:'blue',
-	})	
-
-	createWord.setDisplay('none');	
-}
-
-
-	
-
-qcanvas.qtext.text({
-	start:[50,150],
-	color:'blue',
-	fontSize:'14px',
-	text:'显示',
-	drag:false,
-	mouseup:function(){
-		rect.setDisplay('block');
-
-	}
-
-})
-
-qcanvas.qtext.text({
-	start:[100,150],
-	color:'blue',
-	fontSize:'14px',
-	text:'隐藏',
-	drag:false,
-	mouseup:function(){
-		rect.setDisplay('none');
-
-	}
-})
-
-qcanvas.qtext.text({
-	start:[150,150],
-	color:'blue',
-	fontSize:'14px',
-	text:'删除',
-	drag:false,
-	mouseup:function(){
-		qcanvas.removeById(rect.id);
-
-		createWord.setDisplay('block');
-	}
-})
-
-var createWord = qcanvas.qtext.text({
-	start:[200,150],
-	color:'blue',
-	fontSize:'14px',
-	text:'创建',
-	display:"none",
-	drag:false,
-	mouseup:function(){
-		create();
-
-	}
-})
-
-create();
-			
-
-		</code>
-<a onclick="document.getElementById('frm11').innerHTML='<iframe src=template11.html width=100% height=200 frameborder=0></iframe>'">查看示例</a>
-		
-	</pre>
-
-	<div class="frm" id="frm11">
-		
-	</div>
-
-
-	12、元素层级调整 （lower，lowerToBottom，raise，raiseToTop）
-
-	<pre>
-		
-		<code  class="js">
-
-	var redRect = qcanvas.qrect.rect({
-		start:[0,0],
-		width:200,
-		height:200,
-		drag:false,
-		borderColor:'red',
-		fillColor:'red',
-	})
-
-	var greenRect = qcanvas.qrect.rect({
-		start:[50,50],
-		width:170,
-		height:170,
-		drag:false,
-
-		borderColor:'green',
-		fillColor:'green',
-	})
-	var blueRect = qcanvas.qrect.rect({
-		start:[100,100],
-		width:120,
-		height:120,
-		drag:false,
-		borderColor:'blue',
-		fillColor:'blue',
-	})
- 
-
-	qcanvas.qtext.text({
-		start:[200,40],
-		text:'redRect上移一层',
-		color:'blue',
-		fontSize:'16px',
-		drag:false,
-		mouseup:function(pos){
-
-			qcanvas.raise(redRect);
-			
-
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,60],
-		text:'redRect下移一层',
-		color:'blue',
-		fontSize:'16px',
-		drag:false,
-		mouseup:function(pos){
-
-			qcanvas.lower(redRect);
-			
-
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,80],
-		text:'redRect置顶',
-		color:'blue',
-		fontSize:'16px',
-		drag:false,
-		mouseup:function(pos){
-
-			qcanvas.raiseToTop(redRect);
-			
-
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,100],
-		text:'redRect置底',
-		color:'yellow',
-		fontSize:'16px',
-		drag:false,
-		mouseup:function(pos){
-
-			qcanvas.lowerToBottom(redRect);
-			
-
-		}
-	})
-			
-
-		</code>
-<a onclick="document.getElementById('frm12').innerHTML='<iframe src=template12.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm12">
-		
-	</div>
-
-	13、Qlayer元素容器类的使用及容器内元素层级调整<br><br>
-
-实质上是一个**抽象**的元素容器类 为了容纳其它元素。（宽高和主画布一样）<br>
-1、当我们不使用Qlayer时 元素直接画在主画布上； <br>
-2、当使用Qlayer时 先创建一个临时的canvas画布 把指定要放到该容器内的元素先画这个临时canvas上，最后在requestNextAnimationFrame的下一个循环时再把这个画布画到主画布上 当然临时canvas也在requestNextAnimationFrame控制下不停的重绘 所以现在框架实现的这些元素都可以指定到一个Qlayer对象上<br>
-3、使用Qlayer元素的好处：可以一次性控制一批元素的显示、隐藏、删除、层级关系等 <br>
-4、删除Qlayer元素 会同时删除它所容纳的所有元素 <br>
-5、注： 添加到同一个layer实例中的多元素 它们之间的层级关系是以该layer实例为基准的 所以Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调整层级关系 需要调用Qlayer的相应方法<br>
-
-|lower|把元素降低一个层级 (参数为元素对象) <br>
-|lowerToBottom|把元素层级置底(参数为元素对象)<br>
- |raise|把元素提高一个层级(参数为元素对象) <br>
- |raiseToTop|把元素层级置顶(参数为元素对象)<br>
-
-<pre>
-		
-		<code  class="js">
-			var greenRect = qcanvas.qrect.rect({
-		start:[0,0],
-		width:200,
-		height:200,
-		// drag:false,
-		borderColor:'green',
-		fillColor:'green', 
-	})
-
-	var redRect = qcanvas.qrect.rect({
-		start:[100,100],
-		width:50,
-		height:50,
-		borderColor:'red',
-		fillColor:'red', 
-		// drag:false
-	}) 
-
-	var blueRect = qcanvas.qrect.rect({
-		start:[120,140],
-		width:50,
-		height:50,
-		borderColor:'blue',
-		fillColor:'blue',
-		// drag:false
-	})
-
- 
-
-
-
-
- 
-
-
-	//layer元素
-	var layer = qcanvas.qlayer.layer();
-	console.log(layer);
-
-	layer.push(redRect);
-
-	layer.push(blueRect);
-
-
-
-
-	qcanvas.load({			
-		"person":"img/spirit1.png",
-	},function(){
-		
-			var spiritSource = qcanvas.getSourceByName("person"); 
-
-			var s = qcanvas.qspirit.spirit({
-				img:spiritSource,
-				row:1,
-				column:8,
-				framesIndex:[0,0],
-				tStart:[0,120],
-				tWidth:40,
-				tHeight:64,
-				isLoop:true,
-				during:1,
-				mouseup:function(){
-					console.log(this);
-					console.log('触发mouseup事件');
-				}
-			})
-
-			var t = qcanvas.qtext.text({
-				start:s.tStart,
-				text:'我是来自layer容器里spirit',
-				color:'#000',
-				pointerEvent:'none' 
-			})
-			
-
-
-			layer.push(t);
-			layer.push(s);
-					
-	})
-
-
-	qcanvas.qtext.text({
-		start:[200,20],
-		text:'greenRect上移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.raise(greenRect);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,40],
-		text:'greenRect下移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.lower(greenRect);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,60],
-		text:'redRect上移一层',
-		drag:false,
-		mouseup:function(){
-			layer.raise(redRect);
-		}
-	})
-	qcanvas.qtext.text({
-		start:[200,80],
-		text:'redRect下移一层',
-		drag:false,
-		mouseup:function(){
-			layer.lower(redRect);
-		}
-	})
-	qcanvas.qtext.text({
-		start:[200,100],
-		text:'layer下移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.lower(layer);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,120],
-		text:'layer上移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.raise(layer);
-		}
-	})
-		</code>
-	<a onclick="document.getElementById('frm13').innerHTML='<iframe src=template13.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm13">
-		
-	</div>
-
-	14、Ggroup使用
-
-	<pre>
-		
-		<code  class="js">
-			var greenRect = qcanvas.qrect.rect({
-		start:[0,0],
-		width:200,
-		height:200,
-		// drag:false,
-		borderColor:'green',
-		fillColor:'green', 
-	})
-
-	var redRect = qcanvas.qrect.rect({
-		start:[100,100],
-		width:50,
-		height:50,
-		borderColor:'red',
-		fillColor:'red', 
-		// drag:false
-	}) 
-
-	var blueRect = qcanvas.qrect.rect({
-		start:[120,140],
-		width:50,
-		height:50,
-		borderColor:'blue',
-		fillColor:'blue',
-		// drag:false
-	})
-
- 
-
-
-
-
- 
-
-
-	//layer元素
-	var layer = qcanvas.qlayer.layer();
-	console.log(layer);
-
-	layer.push(redRect,blueRect); 
-
-
-	layer.raise(redRect);
-
-	
-
-	qcanvas.load({			
-		"person":"img/spirit1.png",
-	},function(){
-		
-			var spiritSource = qcanvas.getSourceByName("person"); 
-
-			var s = qcanvas.qspirit.spirit({
-				img:spiritSource,
-				row:1,
-				column:8,
-				framesIndex:[0,0],
-				tStart:[0,120],
-				tWidth:40,
-				tHeight:64,
-				isLoop:true,
-				during:1,
-				mouseup:function(){
-					console.log(this);
-					console.log('触发mouseup事件');
-				}
-			})
-
-			var t = qcanvas.qtext.text({
-				start:s.tStart,
-				text:'我是来自layer容器里spirit',
-				color:'#000',
-				pointerEvent:'none' 
-			})
-			
-
-
-			layer.push(t);
-			layer.push(s);
-					
-	})
-
-
-	qcanvas.qtext.text({
-		start:[200,20],
-		text:'greenRect上移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.raise(greenRect);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,40],
-		text:'greenRect下移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.lower(greenRect);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,60],
-		text:'redRect上移一层',
-		drag:false,
-		mouseup:function(){
-			layer.raise(redRect);
-		}
-	})
-	qcanvas.qtext.text({
-		start:[200,80],
-		text:'redRect下移一层',
-		drag:false,
-		mouseup:function(){
-			layer.lower(redRect);
-		}
-	})
-	qcanvas.qtext.text({
-		start:[200,100],
-		text:'layer下移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.lower(layer);
-		}
-	})
-
-	qcanvas.qtext.text({
-		start:[200,120],
-		text:'layer上移一层',
-		drag:false,
-		mouseup:function(){
-			qcanvas.raise(layer);
-		}
-	})
-		</code>
-	<a onclick="document.getElementById('frm14').innerHTML='<iframe src=template14.html width=100% height=350 frameborder=0></iframe>'">查看示例</a>
-
-	</pre>
-
-	<div class="frm" id="frm14">
-		
-	</div>
-
-	15、缩放控件和角度控件 (现只支持rect元素)
-
-	<pre>
-		
-		<code>
-			var qcanvas = new Qcanvas(
-		{
-			id:'qcanvas',
-			width:500,
-			height:500,
-			mousedown:function(){
-				console.log('canvas mousedown')
-				console.log(qcanvas);
-				if(qcanvas.qresize !== null){
-
-					qcanvas.qresize.resizeLayer.setDisplay('none');
-
-				}
-
-				if(qcanvas.qrotate !== null){
-
-					qcanvas.qrotate.rotateLayer.setDisplay('none');
-
-				}
-			}
-		});
-
-var rect = qcanvas.qrect.rect({
-	start:[160,100],
-	borderColor:'red',
-	// display:'none',
-	fillColor:'',
-	degree:20,
-	// radius:5,
-	resize:true,
-	rotate:false,
-
-	mouseup:function(){
-		console.log('mouseup')
-	}
-})		
-
-
-var rect = qcanvas.qrect.rect({
-	start:[60,60],
-	borderColor:'red',
-	// display:'none',
-	fillColor:'',
-	degree:90,
-	// radius:5,
-	resize:true,
-	rotate:true,
-	mouseup:function(){
-		console.log('mouseup')
-	}
-})	
-		</code>
-<a onclick="document.getElementById('frm15').innerHTML='<iframe src=template15.html width=100% height=500 frameborder=0></iframe>'">查看示例</a>
-	</pre>
-
-	<div class="frm" id="frm15">
-		
-	</div>
-
-16、拖动限制范围 (现只支持Qarc和Qpolygon实例)<br>
-dragRange格式 [[左上角x,左上角y]，[右下角x,右下角y]]
-
-<pre>
-	<code>
-		var qcanvas = new Qcanvas(
-		{
-			id:'qcanvas',
-			width:500,
-			height:500,
-			 
-		});
-
-var rect = qcanvas.qrect.rect({
-	start:[160,100],
-	width:100,
-	height:100,
-	borderColor:'red', 
-	fillColor:'', 
-	// degree:50,
-	drag:false 
-})		
- 
-var arc = qcanvas.qarc.arc({
-	start:[200,120],
-	sAngle:0,
-	eAngle:360,
-	borderColor:'blue',
-	fillColor:'',
-	r:10, 
-	// drag:'vertical',
-	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
-
-})
-
-var polygon = qcanvas.qpolygon.polygon({
-	r:15,
-	num:6,
-	start:[180,120],
-	opacity:0.4,
-	dragRange:[rect.start,[rect.start[0]+rect.width,rect.start[1]+rect.height]]
-})
-	</code>
-<a onclick="document.getElementById('frm16').innerHTML='<iframe src=template16.html width=100% height=500 frameborder=0></iframe>'">查看示例</a>
-</pre>
-<div class="frm" id="frm16">
-		
-	</div>
-
-
-
-
-
-
-<script>
-$(function(){
-    $('pre code').each(function(){
-        var lines = $(this).text().split('\n').length - 1;
-        var $numbering = $('<ul/>').addClass('pre-numbering');
-        $(this)
-            .addClass('has-numbering')
-            .parent()
-            .append($numbering);
-        for(i=1;i<=lines;i++){
-            $numbering.append($('<li/>').text(i));
-        }
-    });
-});
-
-
-</script>
-
+<body> 
+
+	<div class="main">
+		<div class="main_left">
+			<ul>
+				<li>
+					<a href="template1.html" target="frm">1、初始化</a>
+				</li> 
+				<li>
+					<a href="template2.html" target="frm">2、画线</a>
+				</li> 
+				<li>
+					<a href="template3.html" target="frm">3、画文字</a>
+				</li> 
+				<li>
+					<a href="template4.html" target="frm">4、画矩形</a>
+				</li> 
+				<li>
+					<a href="template5.html" target="frm">5、画圆</a>
+				</li> 
+				<li>
+					<a href="template6.html" target="frm">6、多边形</a>
+				</li> 
+				<li>
+					<a href="template7.html" target="frm">7、画图片</a>
+				</li> 
+				<li>
+					<a href="template8.html" target="frm">8、画精灵图</a>
+				</li> 
+				<li>
+					<a href="template9.html" target="frm">9、动画</a>
+				</li> 
+				<li>
+					<a href="template10.html" target="frm">10、事件</a>
+				</li> 
+				<li>
+					<a href="template11.html" target="frm">11、显示元素、隐藏元素、删除元素</a>
+				</li> <li>
+					<a href="template12.html" target="frm">12、元素层级调整 （lower，lowerToBottom，raise，raiseToTop）</a>
+				</li> 
+				<li>
+					<a href="template13.html" target="frm">13、Qlayer元素容器类的使用及容器内元素层级调整</a>
+				</li> 
+				<li>
+					<a href="template14.html" target="frm">14、Ggroup使用</a>
+				</li> 
+
+				<li>
+					<a href="template15.html" target="frm">15、缩放控件和角度控件 (现只支持rect元素)</a>
+				</li> 
+				<li>
+					<a href="template16.html" target="frm">16、拖动限制范围</a>
+				</li>  
+
+			</ul>
+
+		</div>
+		<div class="main_right">
+			<iframe name="frm" src="template1.html" width=100% height=100% frameborder=0></iframe>
+		</div>
+
+	</div> 
 
 </body>
 </html>

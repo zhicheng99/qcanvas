@@ -3,20 +3,83 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script>
+	 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas>
 <canvas id="qcanvas1"></canvas>
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">(function(){
+		var qcanvas = new Qcanvas(["qcanvas",300,200]);
+			qcanvas.load({			
+				"person":"img/spirit1.png",
+			},function(){
+				
+					var spiritSource = qcanvas.getSourceByName("person"); 
+
+					qcanvas.qspirit.spirit({
+						img:spiritSource,
+						row:1,
+						column:8,
+						framesIndex:[0,0],
+						tStart:[0,120],
+						tWidth:40,
+						tHeight:64,
+						isLoop:true,
+						during:1,
+						degree:30,
+						mouseup:function(){
+							console.log(this);
+							console.log('触发mouseup事件');
+						}
+					})
+						
+							
+			})
+
+
+	})();
+
+	(function(){
+		var qcanvas = new Qcanvas(["qcanvas1",300,200]);
+			qcanvas.load({			
+				"person":"img/spirit1.png",
+			},function(){
+				
+					var spiritSource = qcanvas.getSourceByName("person"); 
+
+					qcanvas.qspirit.spirit({
+						img:spiritSource,
+						row:1,
+						column:8,
+						framesIndex:[0,0],
+						tStart:[0,120],
+						tWidth:40,
+						tHeight:64,
+						isLoop:true,
+						during:1,
+						mouseup:function(){
+							console.log(this);
+							console.log('触发mouseup事件');
+						}
+					})
+						
+							
+			})
+
+	})()
+		</code>
+	</pre>
+</div>
 
 
 

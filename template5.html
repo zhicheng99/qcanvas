@@ -2,20 +2,33 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script>
+	 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		
+		<canvas id="qcanvas"></canvas>
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+var arc = qcanvas.qarc.arc({
+	start:function(){return [100,100];},
+	sAngle:0,
+	eAngle:360,
+	fillColor:'#fff',
+	opacity:0.2,
+	r:20
+});		
+		</code>
+	</pre>
+</div>
 
 </body>
 <script src='Qcanvas.js'></script>

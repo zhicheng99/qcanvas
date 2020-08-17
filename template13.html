@@ -2,22 +2,201 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-			font-size: 14px;
-		}
-		canvas{
-			background:#ccc;
-		}
-	</style>
+	<title></title> 
+
+<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
 </head>
 <body>
+	<div class="qcanvas_lay">
+
+实质上是一个**抽象**的元素容器类 为了容纳其它元素。（宽高和主画布一样）<br>
+1、当我们不使用Qlayer时 元素直接画在主画布上； <br>
+2、当使用Qlayer时 先创建一个临时的canvas画布 把指定要放到该容器内的元素先画这个临时canvas上，最后在requestNextAnimationFrame的下一个循环时再把这个画布画到主画布上 当然临时canvas也在requestNextAnimationFrame控制下不停的重绘 所以现在框架实现的这些元素都可以指定到一个Qlayer对象上<br>
+3、使用Qlayer元素的好处：可以一次性控制一批元素的显示、隐藏、删除、层级关系等 <br>
+4、删除Qlayer元素 会同时删除它所容纳的所有元素 <br>
+5、注： 添加到同一个layer实例中的多元素 它们之间的层级关系是以该layer实例为基准的 所以Qcanvas的以下方法 对Qlayer元素容器内的元素无效 如果需要调整层级关系 需要调用Qlayer的相应方法<br>
+
+|lower|把元素降低一个层级 (参数为元素对象) <br>
+|lowerToBottom|把元素层级置底(参数为元素对象)<br>
+ |raise|把元素提高一个层级(参数为元素对象) <br>
+ |raiseToTop|把元素层级置顶(参数为元素对象)<br>
+ 
+
 blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】是layer元素容器里的元素<br>
-<canvas id="qcanvas"></canvas> 
+	
+		
+		<canvas id="qcanvas"></canvas> 
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",400,300]);
+
+	var greenRect = qcanvas.qrect.rect({
+		start:[0,0],
+		width:200,
+		height:200,
+		// drag:false,
+		borderColor:'green',
+		fillColor:'green', 
+	})
+
+	var redRect = qcanvas.qrect.rect({
+		start:[100,100],
+		width:50,
+		height:50,
+		borderColor:'red',
+		fillColor:'red', 
+		// degree:30
+		// drag:false
+	}) 
+
+
+
+
+
+
+
+	var blueRect = qcanvas.qrect.rect({
+		start:[120,140],
+		width:50,
+		height:50,
+		borderColor:'blue',
+		fillColor:'blue',
+		degree:30
+		// drag:false
+	})
+
+ 
+
+
+
+
+ 
+
+
+	//layer元素
+	var layer = qcanvas.qlayer.layer(); 
+
+	layer.push(redRect,blueRect);
+
+	// layer.push(blueRect);
+ 
+	
+	layer.raise(redRect);
+
+
+
+
+	qcanvas.load({			
+		"person":"img/spirit1.png",
+	},function(){
+		
+			var spiritSource = qcanvas.getSourceByName("person"); 
+
+			var s = qcanvas.qspirit.spirit({
+				img:spiritSource,
+				row:1,
+				column:8,
+				framesIndex:[0,0],
+				tStart:[0,120],
+				tWidth:40,
+				tHeight:64,
+				isLoop:true,
+				during:1,
+				mouseup:function(){
+					console.log(this);
+					console.log('触发mouseup事件');
+				}
+			})
+
+			var t = qcanvas.qtext.text({
+				start:s.tStart,
+				text:'我是来自layer容器里spirit',
+				color:'#000',
+				pointerEvent:'none' 
+			})
+			
+
+
+			layer.push(t);
+			layer.push(s);
+					
+	})
+ 
+
+ console.log(layer)
+
+
+	qcanvas.qtext.text({
+		start:[200,20],
+		text:'greenRect上移一层',
+		color:"yellow",
+		drag:false,
+		mouseup:function(){
+			qcanvas.raise(greenRect);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,40],
+		text:'greenRect下移一层',
+		color:"yellow",
+
+		drag:false,
+		mouseup:function(){
+			qcanvas.lower(greenRect);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,60],
+		text:'redRect上移一层',
+		color:"yellow",
+
+		drag:false,
+		mouseup:function(){
+			layer.raise(redRect);
+		}
+	})
+	qcanvas.qtext.text({
+		start:[200,80],
+		text:'redRect下移一层',
+		color:"yellow",
+
+		drag:false,
+		mouseup:function(){
+			layer.lower(redRect);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,100],
+		text:'layer下移一层',
+		color:"yellow",
+
+		drag:false,
+		mouseup:function(){
+			qcanvas.lower(layer);
+		}
+	})
+
+	qcanvas.qtext.text({
+		start:[200,120],
+		text:'layer上移一层',
+		color:"yellow",
+
+		drag:false,
+		mouseup:function(){
+			qcanvas.raise(layer); 
+		}
+	})
+		</code>
+	</pre>
+</div>
 
 
 

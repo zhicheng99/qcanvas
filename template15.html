@@ -3,19 +3,72 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<style>
-		html,body{
-			padding: 0;
-			margin: 0;
-			overflow: hidden;
-		}
-		canvas{
-			background:#ccc; 
-		}
-	</style>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="qcanvas_lay">
+		<canvas id="qcanvas"></canvas> 
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500,
+			mousedown:function(){
+				console.log('canvas mousedown')
+				console.log(qcanvas);
+				if(qcanvas.qresize !== null){
+
+					qcanvas.qresize.resizeLayer.setDisplay('none');
+
+				}
+
+				if(qcanvas.qrotate !== null){
+
+					qcanvas.qrotate.rotateLayer.setDisplay('none');
+
+				}
+			}
+		});
+
+var rect = qcanvas.qrect.rect({
+	start:[160,100],
+	borderColor:'red',
+	// display:'none',
+	fillColor:'',
+	degree:20,
+	// radius:5,
+	resize:true,
+	rotate:false,
+
+	mouseup:function(){
+		console.log('mouseup')
+	}
+})		
+
+
+var rect = qcanvas.qrect.rect({
+	start:[60,60],
+	borderColor:'red',
+	// display:'none',
+	fillColor:'',
+	degree:90,
+	// radius:5,
+	resize:true,
+	rotate:true,
+	mouseup:function(){
+		console.log('mouseup')
+	}
+})	
+		</code>
+	</pre>
+</div>
 
 
 </body>
