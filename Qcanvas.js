@@ -2346,11 +2346,11 @@ Qevent.prototype.eventCallback = function(e,position){
 	 	var aim = this.findElmByEventPosition(position);
 
 	 	//修复对象mouseout自定义事件不执行的问题
-	  	this.executeMouseOut(aim,position);
+	  	this.executeMouseOut(e,position);
 
 
 	  	//触发aim的事件(调用配置好的事件) 
-	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](aim,position);
+	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](e,position);
 
 	  
 }	
