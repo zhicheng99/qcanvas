@@ -10,6 +10,8 @@ html,body{
     }
     .qcanvas_lay{
       height: 50%;
+      position: relative;
+      overflow: scroll;
     }
     .code_lay{
       height: 50%;

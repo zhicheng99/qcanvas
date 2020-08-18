@@ -2309,6 +2309,11 @@ Qevent.prototype.init = function(){
 				_this.PC_Event[e.type](e,position);  //系统定义的回调函数
 			},false);		
 		}
+
+
+		canvas.oncontextmenu=function(ev){  
+	        ev.preventDefault();
+	    }
 		
 	}
 	
