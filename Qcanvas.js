@@ -1846,9 +1846,61 @@ Qimg.prototype.img = function(options){
 					}
 			}
 		}
+
+	//占位图替换掉options.img
+	var tmp = '';
+	if(this.qcanvas.isStr(options.img)){
+		tmp = options.img;
+		options.img = this.qcanvas.placeHolderImg;
+	}
+		
 			
 	this.qcanvas.extend(OPTIONS,options);
 	this.qcanvas.appendSetFun(OPTIONS);
+
+
+	//如果指定的img参数是一个图片地址 则需要去加载 完成后替找掉OPTIONS.img
+	if(tmp !=''){
+		OPTIONS.sWidth = 1;
+		OPTIONS.sHeight = 1;
+
+
+		this.qcanvas.load({img:tmp},function(){
+			var img = _this.qcanvas.getSourceByName("img");
+
+			OPTIONS.sWidth = img.width;
+			OPTIONS.sHeight = img.height;
+			OPTIONS.img = img;
+
+
+			if(OPTIONS.size!=''){
+				
+				//重新计算sStart sWidth sHeight
+				//全覆盖目标区域 图像的某些部分也许无法显示在目标区域中
+				if(OPTIONS.size =='cover'){ 
+						delete OPTIONS.sStart;
+					  	delete OPTIONS.sWidth;
+						delete OPTIONS.sHeight;
+					  
+						
+						var sourceObj = _this.sourcePosition(OPTIONS.img,OPTIONS.tWidth,OPTIONS.tHeight);
+						
+						
+						OPTIONS.sStart = sourceObj.sStart;
+						OPTIONS.sWidth = sourceObj.sWidth;
+						OPTIONS.sHeight = sourceObj.sHeight;
+					
+					
+					
+				}
+			
+			
+			}
+
+
+
+		})
+    } 
 	
 	
 	if(OPTIONS.size!=''){
@@ -3229,6 +3281,10 @@ function Qcanvas(options){
   		'group':this.qgroup.paintGroup
   	} 
 
+
+  	//1px点位图 
+  	this.placeHolderImg = new Image();
+  	this.placeHolderImg.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTQwIDc5LjE2MDQ1MSwgMjAxNy8wNS8wNi0wMTowODoyMSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTggKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NDlEMzc4NzlFMDJDMTFFQUE1QkREQzVDRjA2NDgzNEQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NDlEMzc4N0FFMDJDMTFFQUE1QkREQzVDRjA2NDgzNEQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0OUQzNzg3N0UwMkMxMUVBQTVCRERDNUNGMDY0ODM0RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0OUQzNzg3OEUwMkMxMUVBQTVCRERDNUNGMDY0ODM0RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Ph/0HDsAAAAQSURBVHjaYvj//z8DQIABAAj8Av7bok0WAAAAAElFTkSuQmCC'
 
 	//启动
 	// this.start();

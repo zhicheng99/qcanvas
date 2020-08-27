@@ -26,7 +26,7 @@ qcanvas.load({
 	
 	
 	qcanvas.qimg.img({
-		img:b,
+		img:'img/img.png',
 		sStart:[0,0],
 		sWidth:b.width,
 		sHeight:b.height,
@@ -41,9 +41,20 @@ qcanvas.load({
 		
 		
 	});
-	
-	
 });	
+或
+qcanvas.qimg.img({
+		img:'img/img.png',
+		sStart:[0,0],
+		tStart:[200,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
 			
 		</code>
 	</pre>
@@ -74,11 +85,23 @@ qcanvas.load({
 			console.log(position);
 		}
 		
-		
 	});
 	
 	
 });	
+
+qcanvas.qimg.img({
+		img:'img/img.png',
+		sStart:[0,0],
+		tStart:[200,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
 
 
 </script>
