@@ -915,6 +915,7 @@ Qrect.prototype.rect = function(options){
 			fillColor:'',
 			drag:true,
 			dragRange:[],
+			dashed:false,
 			degree:0,
 			radius:0,
 			pointerEvent:'auto',
@@ -1104,6 +1105,11 @@ Qrect.prototype.paintRect = function(obj){
 		//有角度时 移动画布原点 旋转画布
 		var centerPos = this.qcanvas.setDegree(obj);   
 
+		if(obj.dashed){
+			this.qcanvas.context.setLineDash([3]);
+		}
+
+
 		if(this.qcanvas.isNum(obj.radius) && (obj.radius>0)){  //圆角矩形
 
 			this.drawRoundedRect(this.qcanvas.context,start[0],start[1],width,height,obj);
@@ -1132,6 +1138,9 @@ Qrect.prototype.paintRect = function(obj){
 
 		// //重置画布原点 旋转复原
 		this.qcanvas.resetDegree(obj,centerPos); 
+
+		this.qcanvas.context.setLineDash([]);
+
 
 }
 

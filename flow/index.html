@@ -11,19 +11,74 @@
 			height: 100%;
 		}
 		canvas{
-			background:#ccc;
+			background:#ddd;
+			height: 100%;
+			width: 100%;
+		}
+		.tool{
+			height: 40px;
+			position: relative;
+			z-index: 1;
+			line-height: 40px;
+
+		}
+		.tool span{
+			display: inline-block;
+			width: 30px;
+			height: 30px;
+			text-align: center;
+			margin-top:5px;
+			margin-left:10px;
+		} 
+		.tool span img{
+			pointer-events: none;
+		}
+
+
+		#qcanvas_lay{
+			position: absolute;
+			top:40px;
+			left:0;
+			width: 100%;
+			bottom: 0;
+			overflow:scroll;
 		}
 	</style>
 </head>
 <body>
-<canvas id="qcanvas"></canvas>
+	<div class="tool">
+		<span class="drag_ele" data-id="-1">
+			<img src="img/container.svg" height="20" alt="" draggable="false">
+		</span>
+	</div>
+	<div id="qcanvas_lay">
+		<canvas id="qcanvas"></canvas>
+	</div>
 
 </body>
 <script src='../Qcanvas.js'></script>
+<script src='js/Drag.js'></script>
 <script src='js/Qflow.js'></script>
 <script> 
+	var qflow = new Qflow(['qcanvas',document.body.offsetWidth,document.body.offsetHeight]);
+	new Drag({ 
+          dragAimClass:"drag_ele",
+          moveFun:(x,y)=>{ 
+          	// console.log(x,y);
+          },
+          upFun:(obj)=>{ 
+          	if(obj.y > 40 && obj.x>0){
 
-	new Qflow(['qcanvas',document.body.offsetWidth,document.body.offsetHeight]);
+          		//转换到画布的坐标
+          		obj.y +=document.getElementById('qcanvas_lay').scrollTop - 40;
+          		obj.x +=document.getElementById('qcanvas_lay').scrollLeft;
+
+	 			qflow.addNode(obj);
+          	}
+
+          }
+      })
+
 </script>
 
 

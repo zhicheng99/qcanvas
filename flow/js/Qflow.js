@@ -4,6 +4,7 @@ function Qflow(options){
 	this.toolLayer = null;
 	this.menuLayer = null;
 
+
 	this.init();
 }
 
@@ -19,19 +20,37 @@ Qflow.prototype.init = function() {
 
 
 	});
-	this.toolLayer = this.qcanvas.qlayer.layer();
+	// this.toolLayer = this.qcanvas.qlayer.layer();
 
-	this.initTool();
+	// this.initTool();
+
+};
+Qflow.prototype.addContainer = function(obj) {
+
+	var rect = this.qcanvas.qrect.rect({
+	 start:[obj.x,obj.y], 
+	 borderColor:'red', 
+	 fillColor:'',
+	 dashed:true, 
+	})
+
+	
+};
+Qflow.prototype.addNode = function(obj) {
+	
+	if(obj.id == '-1'){
+		this.addContainer(obj);
+	}
 
 };
 Qflow.prototype.canvasUpFun = function() {
 	console.log('canvasUpFun');
 };
 Qflow.prototype.canvasMoveFun = function() {
-	console.log('canvasMoveFun');
+	// console.log('canvasMoveFun');
 };
 Qflow.prototype.canvasDownFun = function() {
-	console.log('canvasDownFun');
+	// console.log('canvasDownFun');
 };
 
 Qflow.prototype.rectDown = function(pos) {
