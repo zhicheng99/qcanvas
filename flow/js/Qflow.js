@@ -4,20 +4,30 @@ function Qflow(options){
 	this.toolLayer = null;
 	this.menuLayer = null;
 
+	//初始画布
+	this.initCanvas();
 
-	this.init();
+	//初始节点
+	this.initNode();
+
+	//初始连线
+	this.initLink();
 }
-
-Qflow.prototype.init = function() {
+Qflow.prototype.initLink = function() {
+	
+};
+Qflow.prototype.initNode = function() {
+	
+};
+Qflow.prototype.initCanvas = function() {
  
 	this.qcanvas = new Qcanvas({
-		id:this.options[0],
-		width:this.options[1],
-		height:this.options[2],
+		id:this.options.id,
+		width:this.options.width,
+		height:this.options.height,
 		mousedown:this.canvasDownFun,
 		mousemove:this.canvasMoveFun,
 		mouseup:this.canvasUpFun
-
 
 	});
 	// this.toolLayer = this.qcanvas.qlayer.layer();

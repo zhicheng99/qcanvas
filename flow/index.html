@@ -43,41 +43,87 @@
 			bottom: 0;
 			overflow:scroll;
 		}
+		.sheetLay{
+			font-size: 12px;
+			position: absolute;
+			bottom: 0;
+			left:0;
+			background: #fff;
+
+		}
 	</style>
 </head>
 <body>
-	<div class="tool">
-		<span class="drag_ele" data-id="-1">
-			<img src="img/container.svg" height="20" alt="" draggable="false">
-		</span>
+	<div id="app">
+		<div class="tool">
+			<span class="drag_ele" data-id="-1">
+				<img src="img/container.svg" height="20" alt="" draggable="false">
+			</span>
+		</div>
+		<div id="qcanvas_lay">
+			<canvas id="qcanvas"></canvas>
+			<div class="sheetLay">
+				<span v-for="item in sheets">{{item.name}}</span>
+			</div>
+		</div>
 	</div>
-	<div id="qcanvas_lay">
-		<canvas id="qcanvas"></canvas>
-	</div>
+	
 
 </body>
 <script src='../Qcanvas.js'></script>
 <script src='js/Drag.js'></script>
 <script src='js/Qflow.js'></script>
+<script src="js/mock.js"></script>
+<script src="js/vue.js"></script>
+
 <script> 
-	var qflow = new Qflow(['qcanvas',document.body.offsetWidth,document.body.offsetHeight]);
-	new Drag({ 
-          dragAimClass:"drag_ele",
-          moveFun:(x,y)=>{ 
-          	// console.log(x,y);
-          },
-          upFun:(obj)=>{ 
-          	if(obj.y > 40 && obj.x>0){
+	
 
-          		//转换到画布的坐标
-          		obj.y +=document.getElementById('qcanvas_lay').scrollTop - 40;
-          		obj.x +=document.getElementById('qcanvas_lay').scrollLeft;
 
-	 			qflow.addNode(obj);
-          	}
+	  var v =	new Vue({
+		  el: '#app',
+		  data: {
+		  	curr:0,
+		  	sheets:[
+		  		{
+		  			name:'sheet1'
+		  		}
+		  	]
+		  },
+		  methods:{
+		  	init:function(){
+		  		var qflow = new Qflow({
+					id:'qcanvas',
+					width:document.body.offsetWidth,
+					height:document.body.offsetHeight,
+					initData:jsonData[this.curr]
+					});
 
-          }
-      })
+				new Drag({ 
+			          dragAimClass:"drag_ele",
+			          moveFun:(x,y)=>{ 
+			          	// console.log(x,y);
+			          },
+			          upFun:(obj)=>{ 
+			          	if(obj.y > 40 && obj.x>0){
+
+			          		//转换到画布的坐标
+			          		obj.y +=document.getElementById('qcanvas_lay').scrollTop - 40;
+			          		obj.x +=document.getElementById('qcanvas_lay').scrollLeft;
+
+				 			qflow.addNode(obj);
+			          	}
+
+			          }
+			      })
+		  	}
+		  },
+		  mounted(){
+
+		  	this.init();
+
+		  }
+		})
 
 </script>
 

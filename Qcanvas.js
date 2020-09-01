@@ -2093,9 +2093,33 @@ Qspirit.prototype.spirit = function(options){
 
 			
 		}
+
+	//占位图替换掉options.img
+	var tmp = '';
+	if(this.qcanvas.isStr(options.img)){
+		tmp = options.img;
+		options.img = this.qcanvas.placeHolderImg;
+	}
 			
 	this.qcanvas.extend(OPTIONS,options);
 	this.qcanvas.appendSetFun(OPTIONS);
+
+	//如果指定的img参数是一个图片地址 则需要去加载 完成后替找掉OPTIONS.img
+	if(tmp !=''){ 
+
+		this.qcanvas.load({img:tmp},function(){
+			var img = _this.qcanvas.getSourceByName("img");
+ 
+			OPTIONS.img = img;
+			_this.createFrames(OPTIONS); 
+
+		})
+    } 
+	
+	 
+
+
+
 	
 	this.createFrames(OPTIONS);
 	
