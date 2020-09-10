@@ -2656,13 +2656,23 @@ function Qlayer(p){
 				return tmp.length>0;
 			},
 			//以下Qcanvas方法得重置this 赋到Qlayer实例上
-			getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
-			removeEle: this.pcanvas.removeEle.bind(this.qcanvas),
-			getIndexById: this.pcanvas.getIndexById.bind(this.qcanvas),
-			lower: this.pcanvas.lower.bind(this.qcanvas),
-			lowerToBottom: this.pcanvas.lowerToBottom.bind(this.qcanvas),
-			raise: this.pcanvas.raise.bind(this.qcanvas),
-			raiseToTop: this.pcanvas.raiseToTop.bind(this.qcanvas),
+			// getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
+			// removeEle: this.pcanvas.removeEle.bind(this.qcanvas),
+
+			// getIndexById: this.pcanvas.getIndexById.bind(this.qcanvas),
+			// lower: this.pcanvas.lower.bind(this.qcanvas),
+			// lowerToBottom: this.pcanvas.lowerToBottom.bind(this.qcanvas),
+			// raise: this.pcanvas.raise.bind(this.qcanvas),
+			// raiseToTop: this.pcanvas.raiseToTop.bind(this.qcanvas),
+
+			getEleById: this.pcanvas.getEleById,
+			removeEle: this.pcanvas.removeEle,
+
+			getIndexById: this.pcanvas.getIndexById,
+			lower: this.pcanvas.lower,
+			lowerToBottom: this.pcanvas.lowerToBottom,
+			raise: this.pcanvas.raise,
+			raiseToTop: this.pcanvas.raiseToTop,
 
 		}
 		

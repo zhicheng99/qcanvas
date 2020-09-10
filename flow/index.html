@@ -20,6 +20,7 @@
 			position: relative;
 			z-index: 1;
 			line-height: 40px;
+			background-color: #fff;
 
 		}
 		.tool span{
@@ -37,7 +38,7 @@
 
 		#qcanvas_lay{
 			position: absolute;
-			top:40px;
+			top:0;
 			left:0;
 			width: 100%;
 			bottom: 0;
@@ -57,6 +58,9 @@
 	<div id="app">
 		<div class="tool">
 			<span class="drag_ele" data-id="-1">
+				<img src="img/container.svg" height="20" alt="" draggable="false">
+			</span>
+			<span class="drag_ele" data-id="1">
 				<img src="img/container.svg" height="20" alt="" draggable="false">
 			</span>
 		</div>
@@ -97,6 +101,7 @@
 					width:document.body.offsetWidth,
 					height:document.body.offsetHeight,
 					initData:jsonData[this.curr]
+					// initData:null
 					});
 
 				new Drag({ 
@@ -108,10 +113,10 @@
 			          	if(obj.y > 40 && obj.x>0){
 
 			          		//转换到画布的坐标
-			          		obj.y +=document.getElementById('qcanvas_lay').scrollTop - 40;
+			          		obj.y +=document.getElementById('qcanvas_lay').scrollTop;
 			          		obj.x +=document.getElementById('qcanvas_lay').scrollLeft;
 
-				 			qflow.addNode(obj);
+				 			qflow.addEle(obj);
 			          	}
 
 			          }
