@@ -23,6 +23,9 @@ function Qflow(options){
 
 	this.draging = false;
 
+	this.contextMenuNode = null; //右键的对象
+	this.contextAimAttr = '';    //右键tab指向的属性
+
 	//17种基本颜色
 	this.colorRect = { 
 		"red":"#FF0000",
@@ -68,7 +71,7 @@ function Qflow(options){
 	this.contextMenuLayer = this.qcanvas.qlayer.layer();
 	this.contextMenuLayer.setDisplay('none');
 
-	//右击半透明覆盖层
+	//右击显示半透明覆盖层
 	this.initContextCover();
 
 
@@ -109,6 +112,8 @@ Qflow.prototype.contextMenuShow = function(pos) {
 };
 Qflow.prototype.contextMenuHide = function() {
 	var _this = this;
+
+	this.contextMenuNode = null;
 	this.contextMenuLayer.setDisplay('none'); 
 
 
@@ -127,6 +132,7 @@ Qflow.prototype.contextMenuHide = function() {
 };
 
 Qflow.prototype.initColorRect = function() {
+	var _this = this;
 	var disTop = 30;
 	var padding = 10;
 	var rectW = 20;
@@ -159,32 +165,135 @@ Qflow.prototype.initColorRect = function() {
 			start:[pos[i].x,pos[i].y],
 			width:rectW,
 			height:rectH,
-			fillColor:color[i]
+			fillColor:color[i],
+			drag:false,
+			mouseup:function(){
+
+				if(_this.contextAimAttr == 'color'){
+					//设置节点标题颜色
+					_this.updateNodeTitleColor(this.fillColor);
+
+
+				}else{
+
+					_this.contextMenuNode[_this.contextAimAttr] = this.fillColor;
+					 
+				}
+
+					//更新json数据相关属性值
+					_this.updateInitDataAttr(this.fillColor);
+
+
+			}
 		}))
 	}
+};
+Qflow.prototype.updateNodeTitleColor = function(v) {
+
+	var _this = this;
+
+	//第一步 找到标题的id
+	var getTitleNodeJSON = function(){ 
+
+		var tmp = _this.options.initData.node.filter(function(item){
+			return item.nodeId == _this.contextMenuNode.id;
+		})
+
+		if(tmp.length>0){
+			return tmp[0];
+		}else{
+			console.log('没有找到');
+			//如果没有取到  那就是在子项里
+			var tmp;
+			_this.options.initData.node.forEach(function(item){
+				if(item.nodeType == 'container'){
+					for (var i = 0; i < item.child.length; i++) {
+						if(item.child[i].nodeId == _this.contextMenuNode.id){
+							tmp = item.child[i];
+							break;
+						}
+					}
+				}
+			})
+
+			return tmp;
+		}
+	} 
+ 	
+ 	var titleJSON = getTitleNodeJSON();
+
+	var tmp = this.qnodes.filter(function(item){
+		return item.id == titleJSON.attr.titleId;
+	})
  
+	if(tmp.length>0){
+		tmp[0][_this.contextAimAttr] = v;
+	}
+	 
+};
+
+
+Qflow.prototype.updateInitDataAttr = function(v) {
+
+	var _this = this;
+	var getTitleNodeJSON = function(){ 
+
+		var tmp = _this.options.initData.node.filter(function(item){
+			return item.nodeId == _this.contextMenuNode.id;
+		})
+
+		if(tmp.length>0){
+			return tmp[0];
+		}else{
+			console.log('没有找到');
+			//如果没有取到  那就是在子项里
+			var tmp;
+			_this.options.initData.node.forEach(function(item){
+				if(item.nodeType == 'container'){
+					for (var i = 0; i < item.child.length; i++) {
+						if(item.child[i].nodeId == _this.contextMenuNode.id){
+							tmp = item.child[i];
+							break;
+						}
+					}
+				}
+			})
+
+			return tmp;
+		}
+	} 
+
+
+	var titleNodeJSON = getTitleNodeJSON();
+	titleNodeJSON.attr[_this.contextAimAttr] = v;		
 
 
 };
+
 Qflow.prototype.initContextMenuTab = function() {
 	var _this = this;
 	var tmp = this.contextMenuLayer.elements[1];
 
 	var textArr = [
-		{text:'边框色', aimAttr:'borderColor'},
-		{text:'背景色', aimAttr:'fillColor'},
-		{text:'文字色', aimAttr:'color'},
+		{text:'边框颜色', aimAttr:'borderColor'},
+		{text:'背景颜色', aimAttr:'fillColor'},
+		{text:'文字颜色', aimAttr:'color'},
 	];
 
 
 	textArr.forEach(function(item,index){
 		var x = tmp.start[0]+index*(200/(textArr.length)) + 200/(textArr.length)*0.5;
 
+		if(index==0){
+			_this.contextAimAttr = item.aimAttr
+		}
+
 		_this.contextMenuLayer.push(_this.qcanvas.qtext.text({
 			text:item.text,
 			start:[x,tmp.start[1]+15],
 
 			color:index==0?'#000':'#ccc',
+			aimAttr:item.aimAttr,
 			mouseup:function(){   
 				var _self = this; 
 				_this.contextMenuLayer.elements.forEach(function(item){
@@ -193,6 +302,7 @@ Qflow.prototype.initContextMenuTab = function() {
 						item.color = '#ccc';
 
 						if(item.id == _self.id){ 
+							_this.contextAimAttr = item.aimAttr;
 							item.color = '#000';
 						}
 					}
@@ -421,86 +531,94 @@ Qflow.prototype.initNodeTitle = function(obj) {
 		return item.id == obj.nodeId;
 	})
 
+	console.log(obj);
+
 	if(tmp.length>0){
 
-		this.qnodes.push(
-			this.qcanvas.qtext.text({
+
+		var t = this.qcanvas.qtext.text({
 				start:function(){
 					return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+tmp[0].height*0.5];
 				},
 				text:obj.text,
 				pointerEvent:'none',
-				color:'blue',
+				color:obj.attr && obj.attr.color?obj.attr.color:'#000',
 				fontSize:'12px',
 				ownerId:obj.nodeId
 
 			})
-		)
+
+		this.qnodes.push(t);
+		obj.attr.titleId = t.id;
 
 	}
 };
-Qflow.prototype.initContainerTitle = function(obj) {
+/**
+ * 给容器创建标题节点
+ * @param  {[type]} obj  [json数据对象]
+ * @param  {[type]} qobj [容器节点对象]
+ * @return {[type]}      [description]
+ */
+Qflow.prototype.initContainerTitle = function(obj,qobj) {
 	var _this = this;
-	var tmp = this.qnodes.filter(function(item){
-		return item.id == obj.nodeId;
-	})
+	 
 
-	if(tmp.length>0){
-
-		this.qnodes.push(
-			this.qcanvas.qtext.text({
+		var t = this.qcanvas.qtext.text({
 				start:function(){
-					return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+_this.containerTitleHeight*0.5];
+					return [qobj.start[0]+qobj.width*0.5,qobj.start[1]+_this.containerTitleHeight*0.5];
 				},
 				text:obj.text,
 				pointerEvent:'none',
-				color:'blue',
+				color:obj.attr?obj.attr.color:'#000',
 				fontSize:'12px',
 				ownerId:obj.nodeId
 			})
-		)
 
-	}
+		this.qnodes.push(t);
+
+		//标题节点的id记到container节点json数据上
+		obj.attr.titleId = t.id;
+ 
 };
 Qflow.prototype.drawNode = function(parentNode,nodes) { 
+
+	console.log(nodes);
 	var _this = this;
 	for (var i = 0; i < nodes.length; i++) {
 
 		if(parentNode!== null){
 
-			var tmp = this.qcanvas.qrect.rect({
-				 start:[parentNode.attr.gridPosition[i].x,parentNode.attr.gridPosition[i].y], 
-				 nodeType:nodes[i].nodeType,
-				 width:nodes[i].width?nodes[i].width:100,
-				 height:nodes[i].height?nodes[i].height:50,
-				 borderColor:nodes[i].attr?nodes[i].attr.borderColor:'red', 
-				 fillColor:nodes[i].attr?nodes[i].attr.fillColor:'', 
-				 dashed:nodes[i].attr?nodes[i].attr.dashed:false,  
-				 drag:false,
-				 ownerId:parentNode.nodeId
-				})
+			//创建某个容器里包含的节点
+			_this.createChildsOfContainer(parentNode,nodes[i],i);
  
-			//qcanvas和数据作关联
-			nodes[i].nodeId = tmp.id;
-			parentNode.childNodes?parentNode.childNodes.push(tmp):(parentNode.childNodes = [tmp]);
-
-
-			this.qnodes.push(tmp);
-
-			this.initNodeTitle(nodes[i]);
-
-
 		}else{
 
-			var tmp = this.qcanvas.qrect.rect({
-					 start:[nodes[i].x,nodes[i].y], 
-					 nodeType:nodes[i].nodeType,
-					 width:nodes[i].width?nodes[i].width:100,
-					 height:nodes[i].height?nodes[i].height:50,
-					 borderColor:nodes[i].attr.borderColor, 
-					 fillColor:nodes[i].attr.fillColor, 
-					 dashed:nodes[i].attr.dashed,  
-					 mousedown:function(){
+			//创建容器或节点（顶级的平行数据）
+			_this.createContainerOrNode(nodes[i]); 
+
+		}
+	}
+};
+/**
+ * 创建container的子项
+ * @param  {[type]} parentNode [description]
+ * @param  {[type]} jsonObj    [子项json数据]
+ * @param  {[type]} index      [子项在container里的索引]
+ * @return {[type]}            [description]
+ */
+Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
+	var _this = this;
+	var tmp = this.qcanvas.qrect.rect({
+				 start:[parentNode.attr.gridPosition[index].x,parentNode.attr.gridPosition[index].y], 
+				 nodeType:jsonObj.nodeType,
+				 width:jsonObj.width?jsonObj.width:100,
+				 height:jsonObj.height?jsonObj.height:50,
+				 borderColor:jsonObj.attr && jsonObj.attr.borderColor?jsonObj.attr.borderColor:'red', 
+				 fillColor:jsonObj.attr && jsonObj.attr.fillColor?jsonObj.attr.fillColor:'', 
+				 dashed:jsonObj.attr && jsonObj.attr.dashed?jsonObj.attr.dashed:false,  
+				 drag:false,
+				 ownerId:parentNode.nodeId,
+				 mousedown:function(){
 					 	_this.draging = true;
 					 },
 					 mouseup:function(e,pos){
@@ -509,7 +627,7 @@ Qflow.prototype.drawNode = function(parentNode,nodes) {
 
 					 	//右击显示菜单
 					 	if(e.button == '2'){
-					 		console.log(pos);
+					 		_this.contextMenuNode = this;
 
 					 		//右键菜单层级放到最高
 					 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
@@ -525,25 +643,73 @@ Qflow.prototype.drawNode = function(parentNode,nodes) {
 
 					 }
 				})
+	// //qcanvas和数据作关联
+	jsonObj.nodeId = tmp.id;
+	parentNode.childNodes?parentNode.childNodes.push(tmp):(parentNode.childNodes = [tmp]);
+
+	this.qnodes.push(tmp);
 
 
-			//qcanvas和数据作关联
-			nodes[i].nodeId = tmp.id;
-
-			this.qnodes.push(tmp);
-
-			//初始化容器的标题
-			nodes[i].nodeType == 'container' &&
-			this.initContainerTitle(nodes[i]);
+	this.initNodeTitle(jsonObj);
 
 
-			nodes[i].nodeType == 'container' && 
-			typeof nodes[i].child !='undefined' && 
-			this.initNode(nodes[i]);
+};
+Qflow.prototype.createContainerOrNode = function(jsonObj) {
+	var _this = this;
+	var tmp = this.qcanvas.qrect.rect({
+		 start:[jsonObj.x,jsonObj.y], 
+		 nodeType:jsonObj.nodeType,
+		 width:jsonObj.width?jsonObj.width:100,
+		 height:jsonObj.height?jsonObj.height:50,
+		 borderColor:jsonObj.attr.borderColor, 
+		 fillColor:jsonObj.attr.fillColor, 
+		 dashed:jsonObj.attr.dashed,  
+		 mousedown:function(){
+		 	_this.draging = true;
+		 },
+		 mouseup:function(e,pos){
+		 	_this.draging = false;
 
 
-		}
-	}
+		 	//右击显示菜单
+		 	if(e.button == '2'){ 
+
+		 		_this.contextMenuNode = this;
+
+		 		//右键菜单层级放到最高
+		 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+
+		 		_this.contextMenuShow(pos);
+
+		 	}
+
+		 },
+		 mousemove:function(){
+		 	_this.draging && 
+		 	_this.updateInitData.call(_this,this);
+
+		 }
+	})
+
+
+	//qcanvas和数据作关联
+	jsonObj.nodeId = tmp.id;
+
+	this.qnodes.push(tmp);
+
+	//初始化容器的标题
+	jsonObj.nodeType == 'container' &&
+	this.initContainerTitle(jsonObj,tmp);
+
+	//初始化节点标题
+	jsonObj.nodeType == 'node' &&
+	this.initNodeTitle(jsonObj);
+
+
+
+	jsonObj.nodeType == 'container' && 
+	typeof jsonObj.child !='undefined' && 
+	this.initNode(jsonObj);
 };
 Qflow.prototype.initNode = function(parentNode) { 
 
@@ -589,6 +755,7 @@ Qflow.prototype.addContainer = function(obj) {
 	//this.options.initData同时需要添加一项
 	this.options.initData.push({
 		id:tmp.id,
+		nodeId:tmp.id,
 		nodeType:'container',  //容器类型
 		x:obj.x,
 		y:obj.y,

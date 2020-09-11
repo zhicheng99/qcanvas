@@ -2,7 +2,8 @@ var jsonData = [
 			{
 				node:[
 					{	
-						id:1,
+						id:1,     //节点的唯一标识 也有于连线的起终点标识
+						nodeId:1, //初始化生成后对应相应的节点对象id 每次都会变
 						nodeType:'container',  //容器类型
 						x:100,
 						y:100,
@@ -16,22 +17,33 @@ var jsonData = [
 							{	
 								id:2,
 								nodeType:'node',
-								text:'我是容器里的1'
+								text:'我是容器里的1',
+								attr:{
+									color:'red'
+								}
 							},
 							{	
 								id:3,
 								nodeType:'node',
-								text:'我是容器里的2'
+								text:'我是容器里的2',
+								attr:{
+									color:'red'
+								}
 							},
 							{	
 								id:5,
 								nodeType:'node',
-								text:'我是容器里的2'
+								text:'我是容器里的2',
+								attr:{
+									color:'red'
+								}
+
 							}
 
 						],
 						attr:{
 							 titlePosition:'top-center',
+							 color:'red', //标题文字的颜色
 							 borderColor:'red', 
 							 fillColor:'',
 							 dashed:false, 
@@ -45,6 +57,7 @@ var jsonData = [
 						text:'标题',
 						attr:{
 							 borderColor:'red', 
+							 color:'red', 
 							 fillColor:'',
 							 dashed:true, 
 						}
