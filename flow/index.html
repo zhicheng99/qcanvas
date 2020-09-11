@@ -10,10 +10,18 @@
 			overflow: hidden;
 			height: 100%;
 		}
-		canvas{
-			background:#ddd;
+		.clear:after{
+			content: "";
+			display: block;
+			clear: both;
+			font-size: 0;
+			line-height: 0;
+		}
+		canvas{ 
 			height: 100%;
 			width: 100%;
+			background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+
 		}
 		.tool{
 			height: 40px;
@@ -52,6 +60,10 @@
 			background: #fff;
 
 		}
+		.save{
+			float: right;
+			font-size: 12px;
+		}
 	</style>
 </head>
 <body>
@@ -63,6 +75,8 @@
 			<span class="drag_ele" data-id="1">
 				<img src="img/container.svg" height="20" alt="" draggable="false">
 			</span>
+
+			<span class="save" @click="save">保存</span>
 		</div>
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
@@ -82,8 +96,8 @@
 
 <script> 
 	
-
-
+	
+	  var qflow;
 	  var v =	new Vue({
 		  el: '#app',
 		  data: {
@@ -95,8 +109,11 @@
 		  	]
 		  },
 		  methods:{
+		  	save:function(){
+		  		console.log(qflow.options.initData.node);
+		  	},	
 		  	init:function(){
-		  		var qflow = new Qflow({
+		  		qflow = new Qflow({
 					id:'qcanvas',
 					width:document.body.offsetWidth,
 					height:document.body.offsetHeight,

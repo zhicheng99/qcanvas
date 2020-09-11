@@ -33,7 +33,7 @@ var jsonData = [
 							{	
 								id:5,
 								nodeType:'node',
-								text:'我是容器里的2',
+								text:'我是容器里的3',
 								attr:{
 									color:'red'
 								}

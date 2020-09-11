@@ -489,69 +489,112 @@ Qflow.prototype.reSizeByInitData = function() {
 Qflow.prototype.initLink = function() {
 	
 }; 
-Qflow.prototype.updateInitData = function(obj) {
+Qflow.prototype.updateInitData = function(obj,jsonObj) {
+	jsonObj.x = obj.start[0];
+	jsonObj.y = obj.start[1];
+
+
+	if(jsonObj.nodeType == 'container'){
+		//每一步 更新attr.gridPosition 
+		//先实现top-center
+		//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+		var childAreaPosition = this.getChildAreaPosition(jsonObj);
+
+		//可以摆放子项的区域位置 计算出各个格子的坐标
+		var childPosition = this.getChildPosition(jsonObj,childAreaPosition);
+
+		//把格子坐标添加到ettr里
+		jsonObj.attr.gridPosition = childPosition;
+
+		//第二步 更新子项位置 
+		// jsonObj.childNodes && jsonObj.childNodes.forEach(function(item,index){
+		// 	item.start = [childPosition[index].x,childPosition[index].y]; 
+		// })
+	}
+
+
 
 	//通过id找到节点
-	var tmp = this.options.initData.node.filter(function(item){
-		return item.nodeId == obj.id;
-	})
+	// var tmp = this.options.initData.node.filter(function(item){
+	// 	return item.nodeId == obj.id;
+	// })
 
-	if(tmp.length>0){
-		tmp[0].x = obj.start[0];
-		tmp[0].y = obj.start[1];
+	// if(tmp.length>0){
+	// 	tmp[0].x = obj.start[0];
+	// 	tmp[0].y = obj.start[1];
 
 
-		if(tmp[0].nodeType == 'container'){
-			//每一步 更新attr.gridPosition 
-			//先实现top-center
-			//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
-			var childAreaPosition = this.getChildAreaPosition(tmp[0]);
+	// 	if(tmp[0].nodeType == 'container'){
+	// 		//每一步 更新attr.gridPosition 
+	// 		//先实现top-center
+	// 		//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+	// 		var childAreaPosition = this.getChildAreaPosition(tmp[0]);
 
-			//可以摆放子项的区域位置 计算出各个格子的坐标
-			var childPosition = this.getChildPosition(tmp[0],childAreaPosition);
+	// 		//可以摆放子项的区域位置 计算出各个格子的坐标
+	// 		var childPosition = this.getChildPosition(tmp[0],childAreaPosition);
 
-			//把格子坐标添加到ettr里
-			tmp[0].attr.gridPosition = childPosition;
+	// 		//把格子坐标添加到ettr里
+	// 		tmp[0].attr.gridPosition = childPosition;
 
-			//第二步 更新子项位置 
-			tmp[0].childNodes && tmp[0].childNodes.forEach(function(item,index){
-				item.start = [childPosition[index].x,childPosition[index].y]; 
-			})
-		}
+	// 		//第二步 更新子项位置 
+	// 		tmp[0].childNodes && tmp[0].childNodes.forEach(function(item,index){
+	// 			item.start = [childPosition[index].x,childPosition[index].y]; 
+	// 		})
+	// 	}
 		
 		
-	}
+	// }
 
 
 
 };
-Qflow.prototype.initNodeTitle = function(obj) {
+Qflow.prototype.initNodeTitle = function(jsonObj,nodeObj) {
 	var _this = this;
-	var tmp = this.qnodes.filter(function(item){
-		return item.id == obj.nodeId;
-	})
+	var t = this.qcanvas.qtext.text({
+			start:function(){
+				var start = _this.qcanvas.isFun(nodeObj.start)?nodeObj.start():nodeObj.start;
+				return [start[0]+nodeObj.width*0.5,start[1]+nodeObj.height*0.5]
+				// return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+tmp[0].height*0.5];
+			},
+			text:jsonObj.text,
+			pointerEvent:'none',
+			color:jsonObj.attr && jsonObj.attr.color?jsonObj.attr.color:'#000',
+			fontSize:'12px',
+			ownerId:jsonObj.nodeId
 
-	console.log(obj);
+		})
 
-	if(tmp.length>0){
+	this.qnodes.push(t);
+	jsonObj.attr.titleId = t.id;
 
 
-		var t = this.qcanvas.qtext.text({
-				start:function(){
-					return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+tmp[0].height*0.5];
-				},
-				text:obj.text,
-				pointerEvent:'none',
-				color:obj.attr && obj.attr.color?obj.attr.color:'#000',
-				fontSize:'12px',
-				ownerId:obj.nodeId
 
-			})
 
-		this.qnodes.push(t);
-		obj.attr.titleId = t.id;
+	// var tmp = this.qnodes.filter(function(item){
+	// 	return item.id == jsonObj.nodeId;
+	// })
 
-	}
+	// console.log(jsonObj);
+
+	// if(tmp.length>0){
+
+
+	// 	var t = this.qcanvas.qtext.text({
+	// 			start:function(){
+	// 				return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+tmp[0].height*0.5];
+	// 			},
+	// 			text:jsonObj.text,
+	// 			pointerEvent:'none',
+	// 			color:jsonObj.attr && jsonObj.attr.color?jsonObj.attr.color:'#000',
+	// 			fontSize:'12px',
+	// 			ownerId:jsonObj.nodeId
+
+	// 		})
+
+	// 	this.qnodes.push(t);
+	// 	jsonObj.attr.titleId = t.id;
+
+	// }
 };
 /**
  * 给容器创建标题节点
@@ -607,9 +650,14 @@ Qflow.prototype.drawNode = function(parentNode,nodes) {
  * @return {[type]}            [description]
  */
 Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
-	var _this = this;
+	var _this = this; 
 	var tmp = this.qcanvas.qrect.rect({
-				 start:[parentNode.attr.gridPosition[index].x,parentNode.attr.gridPosition[index].y], 
+				 // start:[parentNode.attr.gridPosition[index].x,parentNode.attr.gridPosition[index].y],
+
+				 start:function(){
+				 	return [parentNode.attr.gridPosition[this.sort].x,parentNode.attr.gridPosition[this.sort].y]
+				 },
+				 sort:index,
 				 nodeType:jsonObj.nodeType,
 				 width:jsonObj.width?jsonObj.width:100,
 				 height:jsonObj.height?jsonObj.height:50,
@@ -621,27 +669,27 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 mousedown:function(){
 					 	_this.draging = true;
 					 },
-					 mouseup:function(e,pos){
-					 	_this.draging = false;
+				 mouseup:function(e,pos){
+				 	_this.draging = false;
 
 
-					 	//右击显示菜单
-					 	if(e.button == '2'){
-					 		_this.contextMenuNode = this;
+				 	//右击显示菜单
+				 	if(e.button == '2'){
+				 		_this.contextMenuNode = this;
 
-					 		//右键菜单层级放到最高
-					 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+				 		//右键菜单层级放到最高
+				 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
 
-					 		_this.contextMenuShow(pos);
+				 		_this.contextMenuShow(pos);
 
-					 	}
+				 	}
 
-					 },
-					 mousemove:function(){
-					 	_this.draging && 
-					 	_this.updateInitData.call(_this,this);
+				 },
+				 mousemove:function(){
+				 	_this.draging && 
+				 	_this.updateInitData.call(_this,this,jsonObj);
 
-					 }
+				 }
 				})
 	// //qcanvas和数据作关联
 	jsonObj.nodeId = tmp.id;
@@ -650,9 +698,20 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 	this.qnodes.push(tmp);
 
 
-	this.initNodeTitle(jsonObj);
+	this.initNodeTitle(jsonObj,tmp);
 
 
+};
+Qflow.prototype.getNodeObj = function(nodeId) {
+	var tmp = this.qnodes.filter(function(item){
+ 		return item.id == nodeId;
+ 	})
+
+ 	if(tmp.length>0){
+ 		return tmp[0];
+ 	}else{
+ 		return null;
+ 	}
 };
 Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var _this = this;
@@ -665,6 +724,30 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 fillColor:jsonObj.attr.fillColor, 
 		 dashed:jsonObj.attr.dashed,  
 		 mousedown:function(){
+
+		 	//提高元素层级
+		 	_this.qcanvas.raiseToTop(this);
+
+		 	//同时提高标题节点层级 
+		 	var titleNode = _this.getNodeObj(jsonObj.attr.titleId);
+		 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
+
+		 	//如果是container 同时提高它的子项节点及标题节点
+		 	if(jsonObj.nodeType == 'container'){
+		 		
+		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
+				 	_this.qcanvas.raiseToTop(item);
+		 		})
+
+		 		jsonObj.child && jsonObj.child.forEach(function(item){
+		 			var titleNode = _this.getNodeObj(item.attr.titleId);
+				 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
+		 		})
+
+
+		 	}
+		 	
+
 		 	_this.draging = true;
 		 },
 		 mouseup:function(e,pos){
@@ -686,7 +769,7 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 },
 		 mousemove:function(){
 		 	_this.draging && 
-		 	_this.updateInitData.call(_this,this);
+		 	_this.updateInitData.call(_this,this,jsonObj);
 
 		 }
 	})
@@ -703,7 +786,7 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 
 	//初始化节点标题
 	jsonObj.nodeType == 'node' &&
-	this.initNodeTitle(jsonObj);
+	this.initNodeTitle(jsonObj,tmp);
 
 
 
