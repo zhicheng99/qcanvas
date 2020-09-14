@@ -861,6 +861,7 @@ Qtext.prototype.text = function(options){
 
 
 Qtext.prototype.formatText = function(obj) {
+	var _this = this;
 	var text = this.qcanvas.isFun(obj.text)?obj.text():obj.text;
 
 	var t;
@@ -874,7 +875,7 @@ Qtext.prototype.formatText = function(obj) {
 	//计算每行的宽度
 	var w = [];
 	t.forEach(function(item){
-		w.push(this.qcanvas.context.measureText(item).width);
+		w.push(_this.qcanvas.context.measureText(item).width);
 	})
 
 	return {
@@ -885,7 +886,6 @@ Qtext.prototype.formatText = function(obj) {
 Qtext.prototype.paintText = function(obj){
 	var _this = this;
 	var textArr = this.formatText(obj);  
-
 
 	obj.range = {
 		// width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
