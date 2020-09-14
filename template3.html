@@ -19,18 +19,27 @@
 		<canvas id="qcanvas"></canvas>
 	</div>
 	<div class="code_lay">
-		<pre><code class="js">
+		<pre><code class="js">//支持\n换行	
 var text = qcanvas.qtext.text({
 	start:[100,100],
 	color:'blue',
-	fontSize:'20px'
+	fontSize:'20px',
+	text:'Qcanvas\nText',
+	lineHeight:'20px',
+	// drag:false,
+	degree:290,
+	// textAlign:'left',
+	textBaseline:'top',
+	mouseup:function(e,pos){
+		console.log(e)
+		console.log(pos);
+		// qcanvas.destroy();
+	},
+	mousedown:function(e,position){
+		console.log(e);
+		console.log(position)
+	}
 })		
-var textfps = qcanvas.qtext.text({
-	start:[20,20],
-		text:function(){ return qcanvas.currFps},
-	color:'blue',
-	fontSize:'20px'
-})	
 		</code>
 	</pre>
 	</pre>
@@ -45,7 +54,8 @@ var text = qcanvas.qtext.text({
 	start:[100,100],
 	color:'blue',
 	fontSize:'20px',
-	// text:'中华人民共和国万岁',
+	text:'Qcanvas\nText',
+	lineHeight:'20px',
 	// drag:false,
 	degree:290,
 	// textAlign:'left',

@@ -648,6 +648,7 @@ Qtext.prototype.text = function(options){
 			color:'red',
 			textAlign:'center',
 			textBaseline:'middle',
+			lineHeight:'12px',
 			fontSize:"12px",
 			fontFamily:'Microsoft YaHei',
 			start:[0,0],
@@ -858,10 +859,40 @@ Qtext.prototype.text = function(options){
 	return OPTIONS;
 }
 
+
+Qtext.prototype.formatText = function(obj) {
+	var text = this.qcanvas.isFun(obj.text)?obj.text():obj.text;
+
+	var t;
+	if(text.indexOf('\n') > -1){
+		t =  text.split('\n');
+	}else{
+
+		t = [text];
+	}
+
+	//计算每行的宽度
+	var w = [];
+	t.forEach(function(item){
+		w.push(this.qcanvas.context.measureText(item).width);
+	})
+
+	return {
+		text:t,
+		width:w
+	}
+};
 Qtext.prototype.paintText = function(obj){
-	obj.range = {width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
-							 height:parseInt(obj.fontSize)	
-							};
+	var _this = this;
+	var textArr = this.formatText(obj);  
+
+
+	obj.range = {
+		// width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,
+	 //    height:parseInt(obj.fontSize),
+	    width:Math.max.apply(null,textArr.width),
+	    height:parseInt(obj.lineHeight)*textArr.text.length
+	};
 		//有角度时 移动画布原点 旋转画布
 		var centerPos = this.qcanvas.setDegree(obj);  
 
@@ -877,7 +908,11 @@ Qtext.prototype.paintText = function(obj){
 		this.qcanvas.context.font = obj.fontSize + ' '+obj.fontFamily;
 		this.qcanvas.context.textAlign = obj.textAlign;
     	// this.qcanvas.context.strokeText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
-    	this.qcanvas.context.fillText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
+    	// this.qcanvas.context.fillText(this.qcanvas.isFun(obj.text)?obj.text():obj.text,  start[0],  start[1]);
+
+    	textArr.text.forEach(function(item,index){
+	    	_this.qcanvas.context.fillText(item,  start[0],  start[1]+parseInt(obj.lineHeight)*index);
+    	})
 
 
     	
