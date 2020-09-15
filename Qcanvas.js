@@ -850,6 +850,28 @@ Qtext.prototype.text = function(options){
 				} 
 			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
 				this.start = [x,y];
+			},
+			formatText:function(obj) {  //处理多行文本
+				var text = _this.qcanvas.isFun(obj.text)?obj.text():obj.text;
+
+				var t;
+				if(text.indexOf('\n') > -1){
+					t =  text.split('\n');
+				}else{
+
+					t = [text];
+				}
+
+				//计算每行的宽度
+				var w = [];
+				t.forEach(function(item){
+					w.push(_this.qcanvas.context.measureText(item).width);
+				})
+
+				return {
+					text:t,
+					width:w
+				}
 			}
 		}
 			
@@ -858,34 +880,10 @@ Qtext.prototype.text = function(options){
 	
 	return OPTIONS;
 }
-
-
-Qtext.prototype.formatText = function(obj) {
-	var _this = this;
-	var text = this.qcanvas.isFun(obj.text)?obj.text():obj.text;
-
-	var t;
-	if(text.indexOf('\n') > -1){
-		t =  text.split('\n');
-	}else{
-
-		t = [text];
-	}
-
-	//计算每行的宽度
-	var w = [];
-	t.forEach(function(item){
-		w.push(_this.qcanvas.context.measureText(item).width);
-	})
-
-	return {
-		text:t,
-		width:w
-	}
-};
+ 
 Qtext.prototype.paintText = function(obj){
 	var _this = this;
-	var textArr = this.formatText(obj);  
+	var textArr = obj.formatText(obj);  
 
 	obj.range = {
 		// width:this.qcanvas.context.measureText(this.qcanvas.isFun(obj.text)?obj.text():obj.text).width,

@@ -279,6 +279,7 @@ Qflow.prototype.initContextMenuTab = function() {
 		{text:'背景颜色', aimAttr:'fillColor'},
 		{text:'文字颜色', aimAttr:'color'},
 	];
+	
 
 
 	textArr.forEach(function(item,index){
@@ -288,7 +289,8 @@ Qflow.prototype.initContextMenuTab = function() {
 			_this.contextAimAttr = item.aimAttr
 		}
 
-		_this.contextMenuLayer.push(_this.qcanvas.qtext.text({
+
+		var c = _this.qcanvas.qtext.text({
 			text:item.text,
 			start:[x,tmp.start[1]+15],
 
@@ -309,7 +311,10 @@ Qflow.prototype.initContextMenuTab = function() {
 
 				}) 
 			}
-		}))
+		});
+
+
+		_this.contextMenuLayer.push(c);
 	})
 	
 };
@@ -680,7 +685,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 		//右键菜单层级放到最高
 				 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
 
-				 		_this.contextMenuShow(pos);
+				 		_this.contextMenuShow.call(_this,pos);
 
 				 	}
 
@@ -732,19 +737,22 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 	var titleNode = _this.getNodeObj(jsonObj.attr.titleId);
 		 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
 
-		 	//如果是container 同时提高它的子项节点及标题节点
+		 	//如果是container 同时提高它的子项节点及标题节点 取消事件响应
 		 	if(jsonObj.nodeType == 'container'){
-		 		
+
 		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
 				 	_this.qcanvas.raiseToTop(item);
+				 	// item.setPointerEvent('none');
 		 		})
 
 		 		jsonObj.child && jsonObj.child.forEach(function(item){
 		 			var titleNode = _this.getNodeObj(item.attr.titleId);
-				 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
+				 	if(titleNode !==null ){
+				 		_this.qcanvas.raiseToTop(titleNode);
+					 	// titleNode.setPointerEvent('none');
+
+				 	} 
 		 		})
-
-
 		 	}
 		 	
 
@@ -753,6 +761,21 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 mouseup:function(e,pos){
 		 	_this.draging = false;
 
+		 	//如果是container 恢复事件响应
+		 	// if(jsonObj.nodeType == 'container'){
+
+		 	// 	jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
+				//  	item.setPointerEvent('auto');
+		 	// 	})
+
+		 	// 	jsonObj.child && jsonObj.child.forEach(function(item){
+		 	// 		var titleNode = _this.getNodeObj(item.attr.titleId);
+				//  	if(titleNode !==null ){
+				// 	 	titleNode.setPointerEvent('auto');
+
+				//  	} 
+		 	// 	})
+		 	// }
 
 		 	//右击显示菜单
 		 	if(e.button == '2'){ 
