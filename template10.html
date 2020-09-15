@@ -14,7 +14,8 @@
 	 	#tip{
 			float: right;
 			font-size: 12px;
-			overflow-y:scroll;;
+			margin-right:20px;
+			overflow-y:scroll;
 			height: 200px;
 		}
 	 </style>
@@ -37,8 +38,8 @@
 		fillColor:'green',
 		drag:false,
 		mouseout:function(){
-			console.log('绿色块mouseup事件');
-		tip.innerHTML ='绿色块mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+			console.log('绿色块mouseout事件');
+		tip.innerHTML ='绿色块mouseout事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 		}
 	})
 
@@ -82,8 +83,8 @@ var rect = qcanvas.qrect.rect({
 		fillColor:'green',
 		drag:false,
 		mouseout:function(){
-			console.log('绿色块mouseup事件');
-		tip.innerHTML ='绿色块mouseup事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
+			console.log('绿色块mouseout事件');
+		tip.innerHTML ='绿色块mouseout事件'+parseInt(Math.random()*10)+'<br>'+tip.innerHTML;
 		}
 	})
 

@@ -742,14 +742,14 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 
 		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
 				 	_this.qcanvas.raiseToTop(item);
-				 	// item.setPointerEvent('none');
+				 	item.setPointerEvent('none');
 		 		})
 
 		 		jsonObj.child && jsonObj.child.forEach(function(item){
 		 			var titleNode = _this.getNodeObj(item.attr.titleId);
 				 	if(titleNode !==null ){
 				 		_this.qcanvas.raiseToTop(titleNode);
-					 	// titleNode.setPointerEvent('none');
+					 	titleNode.setPointerEvent('none');
 
 				 	} 
 		 		})
@@ -762,20 +762,20 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 	_this.draging = false;
 
 		 	//如果是container 恢复事件响应
-		 	// if(jsonObj.nodeType == 'container'){
+		 	if(jsonObj.nodeType == 'container'){
 
-		 	// 	jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
-				//  	item.setPointerEvent('auto');
-		 	// 	})
+		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
+				 	item.setPointerEvent('auto');
+		 		})
 
-		 	// 	jsonObj.child && jsonObj.child.forEach(function(item){
-		 	// 		var titleNode = _this.getNodeObj(item.attr.titleId);
-				//  	if(titleNode !==null ){
-				// 	 	titleNode.setPointerEvent('auto');
+		 		jsonObj.child && jsonObj.child.forEach(function(item){
+		 			var titleNode = _this.getNodeObj(item.attr.titleId);
+				 	if(titleNode !==null ){
+					 	titleNode.setPointerEvent('auto');
 
-				//  	} 
-		 	// 	})
-		 	// }
+				 	} 
+		 		})
+		 	}
 
 		 	//右击显示菜单
 		 	if(e.button == '2'){ 

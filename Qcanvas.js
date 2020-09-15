@@ -2327,6 +2327,9 @@ function Qevent(qcanvas){
 		},
 		'mousemove_or_touchmove':function(e,position){
 
+				// if(_this.qcanvas.moveAim === null){
+				// 	_this.qcanvas.moveAim = _this.findElmByEventPosition(position);
+				// }
 
 				if(    
 					  (_this.qcanvas.dragAim !== null)
@@ -2437,7 +2440,7 @@ Qevent.prototype.init = function(){
 	
 }	
 
-Qevent.prototype.executeMouseOut = function(aim,position){
+Qevent.prototype.executeMouseOut = function(aim,position){ 
 	//修复对象mouseout自定义事件不执行的问题 
 	if(this.qcanvas.isObj(aim)){
 
@@ -2469,7 +2472,7 @@ Qevent.prototype.eventCallback = function(e,position){
 	 	var aim = this.findElmByEventPosition(position);
 
 	 	//修复对象mouseout自定义事件不执行的问题
-	  	this.executeMouseOut(e,position);
+	  	this.executeMouseOut(aim,position);
 
 
 	  	//触发aim的事件(调用配置好的事件) 
@@ -2622,16 +2625,18 @@ Qevent.prototype.rayCasting = function(p, poly) {
 function Qlayer(p){
 	this.qlayerVersion = '1.0';
 	this.pcanvas = p;   //主canvas 
-
+	this.dpr = window.devicePixelRatio; // 假设dpr为2
 
 	
 
 	//实例属性覆盖原型Qcanvas继承过来的属性
 	var t = document.createElement('canvas');
-	// var t = document.getElementById('qcanvas1'); 
+	// var t = document.getElementById('qcanvas1');  
 
-	t.width = this.pcanvas.stage.width;
-	t.height = this.pcanvas.stage.height;
+	t.width = this.pcanvas.stage.width*this.dpr;
+	t.height = this.pcanvas.stage.height*this.dpr;
+	t.style.width = this.pcanvas.stage.width;
+	t.style.height = this.pcanvas.stage.height;
 	t.id = parseInt(Math.random()*10000);
 
 
@@ -2647,6 +2652,7 @@ function Qlayer(p){
 
 	//重置context和elements属性
 	this.qcanvas.context = t.getContext('2d');
+	this.qcanvas.context.scale(this.dpr,this.dpr);
 	this.qcanvas.elements = []; 
  
 
@@ -2725,7 +2731,7 @@ function Qlayer(p){
 
 	this.paintLayer = function(o){
 		this.start(o);
-		this.pcanvas.context.drawImage(t,0,0);
+		this.pcanvas.context.drawImage(t,0,0,this.pcanvas.stage.width*this.dpr,this.pcanvas.stage.height*this.dpr,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
 	}
 
 	this.paint = function(layer){ 
@@ -3217,6 +3223,7 @@ c_p:初始化canvas参数数组
 function Qcanvas(options){
 	
 	var doc = document;
+	var dpr = window.devicePixelRatio; // 假设dpr为2
 
 	if(this.isArr(options)){
 		if(options.length<3 ){
@@ -3225,8 +3232,11 @@ function Qcanvas(options){
 		}
 		
 		var c_obj = doc.getElementById(options[0]);
-		c_obj.width = options[1];
-		c_obj.height = options[2];
+		c_obj.width = options[1]*dpr;
+		c_obj.height = options[2]*dpr;
+		c_obj.style.width = options[1]+'px';
+		c_obj.style.height = options[2]+'px';
+
 		
 		//舞台对象
 		this.stage = {
@@ -3247,8 +3257,10 @@ function Qcanvas(options){
 		}
  
 		var c_obj = doc.getElementById(options.id);
-		c_obj.width = options.width;
-		c_obj.height = options.height;
+		c_obj.width = options.width*dpr;
+		c_obj.height = options.height*dpr;
+		c_obj.style.width = options.width+'px';
+		c_obj.style.height = options.height+'px';
 		
 		//舞台对象
 		this.stage = {
@@ -3285,6 +3297,9 @@ function Qcanvas(options){
 	this.type = 'canvas';
 	this.id = parseInt(Math.random()*10000);
 	this.context = c_obj.getContext('2d');
+	// 需要将绘制比例放大
+    this.context.scale(dpr,dpr);
+
 	this.canvas = c_obj;
 	this.fps = 60;
 	this.dragAim = null;  //当前拖动的对象
