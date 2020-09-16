@@ -279,7 +279,7 @@ Qflow.prototype.initContextMenuTab = function() {
 		{text:'背景颜色', aimAttr:'fillColor'},
 		{text:'文字颜色', aimAttr:'color'},
 	];
-	
+
 
 
 	textArr.forEach(function(item,index){
@@ -718,6 +718,87 @@ Qflow.prototype.getNodeObj = function(nodeId) {
  		return null;
  	}
 };
+
+Qflow.prototype.getJsonObj = function(nodeId) {
+	var tmp = this.options.initData.node.filter(function(item){
+ 		return item.nodeId == nodeId;
+ 	})
+
+ 	if(tmp.length>0){
+ 		return tmp[0];
+ 	}else{
+ 		return null;
+ 	}
+
+};
+
+Qflow.prototype.containerMouseDown = function(container,jsonObj) {
+	var _this = this;
+	//提高元素层级
+ 	_this.qcanvas.raiseToTop(container);
+
+ 	//同时提高标题节点层级 
+ 	var titleNode = _this.getNodeObj(jsonObj.attr.titleId);
+ 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
+
+ 	//如果是container 同时提高它的子项节点及标题节点 取消事件响应
+ 	if(jsonObj.nodeType == 'container'){
+
+ 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
+		 	_this.qcanvas.raiseToTop(item);
+		 	item.setPointerEvent('none');
+ 		})
+
+ 		jsonObj.child && jsonObj.child.forEach(function(item){
+ 			var titleNode = _this.getNodeObj(item.attr.titleId);
+		 	if(titleNode !==null ){
+		 		_this.qcanvas.raiseToTop(titleNode);
+			 	titleNode.setPointerEvent('none');
+
+		 	} 
+ 		})
+ 	}
+ 	
+
+ 	_this.draging = true;
+};
+Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
+	var _this = this;
+	_this.draging = false;
+
+ 	//如果是container 恢复事件响应
+ 	if(jsonObj.nodeType == 'container'){
+
+ 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
+		 	item.setPointerEvent('auto');
+ 		})
+
+ 		jsonObj.child && jsonObj.child.forEach(function(item){
+ 			var titleNode = _this.getNodeObj(item.attr.titleId);
+		 	if(titleNode !==null ){
+			 	titleNode.setPointerEvent('auto');
+
+		 	} 
+ 		})
+ 	}
+
+ 	//右击显示菜单
+ 	if(e.button == '2'){ 
+
+ 		_this.contextMenuNode = container;
+
+ 		//右键菜单层级放到最高
+ 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+
+ 		_this.contextMenuShow(pos);
+
+ 	}
+};
+Qflow.prototype.containerMouseMove = function(container,jsonObj) {
+
+	this.draging && 
+ 	this.updateInitData(container,jsonObj);
+};
 Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var _this = this;
 	var tmp = this.qcanvas.qrect.rect({
@@ -730,69 +811,16 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 dashed:jsonObj.attr.dashed,  
 		 mousedown:function(){
 
-		 	//提高元素层级
-		 	_this.qcanvas.raiseToTop(this);
-
-		 	//同时提高标题节点层级 
-		 	var titleNode = _this.getNodeObj(jsonObj.attr.titleId);
-		 	titleNode !==null && _this.qcanvas.raiseToTop(titleNode);
-
-		 	//如果是container 同时提高它的子项节点及标题节点 取消事件响应
-		 	if(jsonObj.nodeType == 'container'){
-
-		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
-				 	_this.qcanvas.raiseToTop(item);
-				 	item.setPointerEvent('none');
-		 		})
-
-		 		jsonObj.child && jsonObj.child.forEach(function(item){
-		 			var titleNode = _this.getNodeObj(item.attr.titleId);
-				 	if(titleNode !==null ){
-				 		_this.qcanvas.raiseToTop(titleNode);
-					 	titleNode.setPointerEvent('none');
-
-				 	} 
-		 		})
-		 	}
-		 	
-
-		 	_this.draging = true;
+		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
 		 mouseup:function(e,pos){
-		 	_this.draging = false;
 
-		 	//如果是container 恢复事件响应
-		 	if(jsonObj.nodeType == 'container'){
-
-		 		jsonObj.childNodes && jsonObj.childNodes.forEach(function(item){
-				 	item.setPointerEvent('auto');
-		 		})
-
-		 		jsonObj.child && jsonObj.child.forEach(function(item){
-		 			var titleNode = _this.getNodeObj(item.attr.titleId);
-				 	if(titleNode !==null ){
-					 	titleNode.setPointerEvent('auto');
-
-				 	} 
-		 		})
-		 	}
-
-		 	//右击显示菜单
-		 	if(e.button == '2'){ 
-
-		 		_this.contextMenuNode = this;
-
-		 		//右键菜单层级放到最高
-		 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
-
-		 		_this.contextMenuShow(pos);
-
-		 	}
+		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
 		 mousemove:function(){
-		 	_this.draging && 
-		 	_this.updateInitData.call(_this,this,jsonObj);
+
+		 	_this.containerMouseMove.call(_this,this,jsonObj); 
 
 		 }
 	})
@@ -846,20 +874,37 @@ Qflow.prototype.initCanvas = function() {
 
 };
 Qflow.prototype.addContainer = function(obj) {
+	var _this = this;
 
-
+	//添加容器
 	var tmp = this.qcanvas.qrect.rect({
-	 start:[obj.x,obj.y],
-	 width:this.containerNodeWidth,
-	 height:this.containerNodeHeight,
-	 borderColor:'red', 
-	 fillColor:'',
-	 dashed:true, 
-	})
-	this.nodes.push(tmp);
+		 start:[obj.x,obj.y],
+		 width:this.containerNodeWidth,
+		 height:this.containerNodeHeight,
+		 borderColor:'red', 
+		 fillColor:'',
+		 dashed:true, 
+		 mousedown:function(){
 
-	//this.options.initData同时需要添加一项
-	this.options.initData.push({
+		 	_this.containerMouseDown.call(_this,this,jsonObj); 
+		 },
+		 mouseup:function(e,pos){
+
+		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
+
+		 },
+		 mousemove:function(){
+
+		 	_this.containerMouseMove.call(_this,this,jsonObj); 
+
+		 }
+	})
+
+	this.qnodes.push(tmp);
+
+
+	//this.options.initData.node需要添加一项
+	var jsonObj = {
 		id:tmp.id,
 		nodeId:tmp.id,
 		nodeType:'container',  //容器类型
@@ -869,13 +914,120 @@ Qflow.prototype.addContainer = function(obj) {
 		width:this.containerNodeWidth,
 		height:this.containerNodeHeight,
 		grid:[1,1], //行 列
-		child:[]
-	})
+		child:[],
+		childNodes:[], //qcanvas元素对象
+		attr:{
+			 titlePosition:'top-center',
+			 color:'red', //标题文字的颜色
+			 borderColor:'red', 
+			 fillColor:'',
+			 dashed:false, 
+		}
+	}
+	this.options.initData.node.push(jsonObj);
 
+
+	//添加容器的标题
+	this.initContainerTitle(jsonObj,tmp);
+	
 	
 };
+Qflow.prototype.inSertToContainer = function(obj,aim) {
+	//添加节点到container
+	//根据container里的位置 初始化节点位置
+	console.log('创建的节点需要初始到容器里');
+
+	var parentJsonNode = this.getJsonObj(aim.id);
+	var parentNode = this.getNodeObj(aim.id);
+
+	//是否需要放大容器
+	//attr.gridPosition
+	if(parentJsonNode.attr.gridPosition.length <= parentJsonNode.child.length){ //需要放大
+
+		//放大container的一行子节点的高度 同时重新生成JSON数据中的gridPostion
+		parentJsonNode.height += (this.childNodeHeight+this.containerChildMargin);
+		parentJsonNode.grid[0] += 1;
+
+		parentNode.setHeight(parentJsonNode.height);
+		
+		//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+		var childAreaPosition = this.getChildAreaPosition(parentJsonNode);
+
+		//可以摆放子项的区域位置 计算出各个格子的坐标
+		var childPosition = this.getChildPosition(parentJsonNode,childAreaPosition);
+
+		//把格子坐标添加到attr里
+		parentJsonNode.attr.gridPosition = childPosition;
+
+	}
+
+
+	var jsonObj = {
+			nodeType:'node',
+			text:'我是新来的',
+			attr:{
+				color:'red'
+			}
+	}
+
+	this.createChildsOfContainer(parentJsonNode,jsonObj,parentJsonNode.child.length);
+
+	parentJsonNode.child.push(jsonObj); 
+
+
+};
 Qflow.prototype.addNode = function(obj) {
-	
+
+	var _this = this;
+
+	//添加节点
+	var tmp = this.qcanvas.qrect.rect({
+		 start:[obj.x,obj.y],
+		 width:this.childNodeWidth,
+		 height:this.childNodeHeight,
+		 borderColor:'red', 
+		 fillColor:'',
+		 dashed:true, 
+		 mousedown:function(){
+
+		 	_this.containerMouseDown.call(_this,this,jsonObj); 
+		 },
+		 mouseup:function(e,pos){
+
+		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
+
+		 },
+		 mousemove:function(){
+
+		 	_this.containerMouseMove.call(_this,this,jsonObj); 
+
+		 }
+	})
+
+	this.qnodes.push(tmp);
+
+
+	//添加节点到画布上
+	var jsonObj = {	 
+			id:tmp.id,
+			nodeId:tmp.id,
+			nodeType:'node', //普通节点
+			x:obj.x,
+			y:obj.y,
+			text:'标题',
+			attr:{
+				 borderColor:'red', 
+				 color:'red', 
+				 fillColor:'',
+				 dashed:true, 
+			}
+	}
+
+	this.options.initData.node.push(jsonObj);
+
+	//初始化节点标题
+	this.initNodeTitle(jsonObj,tmp);
+
 };
 /**
    * @description 射线法判断点是否在多边形内部
@@ -934,17 +1086,24 @@ Qflow.prototype.inContainer = function(obj) {
 	var sign = false;
 	if(aim !== null){
 
-		//通过id找this.options.initData中的节点对象
-		var tmp = this.options.initData.filter(function(item){
-			return item.nodeId == aim.id;
-		})
+		if(typeof aim.ownerId !='undefined'){ //目标在某个容器里的某个节点上
 
-		if(tmp.length>0){
-			if (tmp[0].nodeType == 'container'){
+			var ownerObj = this.getJsonObj(aim.ownerId);
+			aim = this.getNodeObj(aim.ownerId);
+			if(ownerObj.nodeType == 'container'){
 				sign = true;
-				// this.inSertToContainer(obj);
+			}
+
+		}else{
+
+			var tmp = this.getJsonObj(aim.id);
+			if(tmp !== null && tmp.nodeType == 'container'){
+				sign = true;
+
 			}
 		}
+
+		
 	}
 
 	return {
@@ -954,9 +1113,7 @@ Qflow.prototype.inContainer = function(obj) {
 
 
 };
-Qflow.prototype.inSertToContainer = function(obj,aim) {
-	
-};
+
 Qflow.prototype.addEle = function(obj) {
 
 	switch(obj.id){

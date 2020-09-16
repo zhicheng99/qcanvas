@@ -71,8 +71,7 @@ Drag.prototype.createDragDom = function(x,y,w,h,domId){
         _this.removeEvents(d,'mouseup',null);
         document.getElementById('dragDom') && 
         document.body.removeChild(document.getElementById('dragDom'));
-
-        console.log(_this.drag);
+ 
         _this.options.upFun({x:x,y:y,id:_this.drag.getAttribute('data-id')});
         _this.drag = null; 
 
