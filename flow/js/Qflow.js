@@ -78,9 +78,54 @@ function Qflow(options){
 	this.initContextCover();
 
 
-
+	//初始化设置按钮（鼠标划过元素时显示）
+	this.settingIco = null;
+	this.initSettingIco();
 
 }
+Qflow.prototype.initSettingIco = function() {
+	var _this = this;
+	this.settingIco = this.qcanvas.qimg.img({
+		img:'../img/img.png',
+		sStart:[0,0],
+		tStart:[0,0],
+		tWidth:20,
+		tHeight:20,
+		display:'none',
+		drag:false,
+		mousemove:function(){
+			this.setDisplay('block');
+		},
+		mouseup:function(e,pos){ 
+			_this.contextMenuNode = this.contextMenuNode;
+
+			console.log(_this.contextMenuNode)
+
+			_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+			// _this.contextMenuShow.call(_this.contextMenuNode,{x:this.sStart[0],y:this.sStart[1]});
+			// _this.contextMenuShow({x:this.sStart[0],y:this.sStart[1]});
+			_this.contextMenuShow(pos);
+
+
+		}
+	}); 
+};
+Qflow.prototype.settingIcoShow = function(node) {
+	var start = this.qcanvas.isFun(node.start)?node.start():node.start;
+ 	var x = start[0]+node.width - 20;
+	var y = start[1]+5; 
+
+
+	this.settingIco.contextMenuNode = node;
+	this.settingIco.setTStart([x,y]);
+	this.settingIco.setDisplay('block');
+	this.qcanvas.raiseToTop(this.settingIco);
+};
+Qflow.prototype.settingIcoHide = function() {
+	this.settingIco.setDisplay('none');
+};
+
+
 Qflow.prototype.initContextCover = function() {
 	var _this = this;
 	//半透明层覆盖整个画布
@@ -718,8 +763,7 @@ Qflow.prototype.initContainerTitle = function(obj,qobj) {
  
 };
 Qflow.prototype.drawNode = function(parentNode,nodes) { 
-
-	console.log(nodes);
+ 
 	var _this = this;
 	for (var i = 0; i < nodes.length; i++) {
 
@@ -779,10 +823,18 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 	}
 
 				 },
-				 mousemove:function(){
+				 mousemove:function(){ 
+
+
+					_this.settingIcoShow.call(_this,this);
+
+
 				 	_this.draging && 
 				 	_this.updateInitData.call(_this,this,jsonObj);
 
+				 },
+				 mouseout:function(){
+				 	_this.settingIcoHide(); 
 				 }
 				})
 	// //qcanvas和数据作关联
@@ -897,6 +949,9 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
 };
 Qflow.prototype.containerMouseMove = function(container,jsonObj) {
 
+	this.settingIcoShow(container);
+
+
 	this.draging && 
  	this.updateInitData(container,jsonObj);
 };
@@ -923,6 +978,9 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 
 		 	_this.containerMouseMove.call(_this,this,jsonObj); 
 
+		 },
+		 mouseout:function(){
+		 	_this.settingIcoHide(); 
 		 }
 	})
 
