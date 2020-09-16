@@ -64,6 +64,16 @@
 			float: right;
 			font-size: 12px;
 		}
+		#titleInput{
+			position: absolute;
+			left:0;
+			top:0;
+			padding: 0;
+			margin:0;
+			border:none;
+			text-indent: 5px;
+			font-size: 12px;
+		}
 	</style>
 </head>
 <body>
@@ -80,6 +90,7 @@
 		</div>
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
+			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle">
 			<div class="sheetLay">
 				<span v-for="item in sheets">{{item.name}}</span>
 			</div>
@@ -104,14 +115,19 @@
 		  	curr:0,
 		  	sheets:[
 		  		{
-		  			name:'sheet1'
+		  			name:'sheet1',
 		  		}
-		  	]
+		  	],
+  			nodeTitle:'',
+
 		  },
 		  methods:{
 		  	save:function(){
 		  		console.log(qflow.options.initData.node);
 		  	},	
+		  	modiTitle:function(){
+		  		qflow.modiTitle(this.nodeTitle);
+		  	},
 		  	init:function(){
 		  		qflow = new Qflow({
 					id:'qcanvas',

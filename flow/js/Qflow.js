@@ -26,6 +26,9 @@ function Qflow(options){
 	this.contextMenuNode = null; //右键的对象
 	this.contextAimAttr = '';    //右键tab指向的属性
 
+
+	this.modiTitleObj = null;
+
 	//17种基本颜色
 	this.colorRect = { 
 		"red":"#FF0000",
@@ -101,33 +104,119 @@ Qflow.prototype.contextMenuShow = function(pos) {
 	//初始化contextMenu右键菜单区rect
 	this.initContextMenuArea(pos);
 
+	//修改标题框(用于定位一个input框)
+	this.initModiTitleNode();
+
 	//初始化contextMenu中的tab项
 	this.initContextMenuTab();
 
 	//17颜色块画到右击菜单区
 	this.initColorRect();
 
+	//删除按钮
+	this.initDelBtn();
+
 	this.contextMenuLayer.setDisplay('block');
  
+};
+Qflow.prototype.delNode = function() {
+	console.log('delNode');
+};
+Qflow.prototype.initDelBtn = function() {
+	var _this = this;
+	var ele = this.contextMenuLayer.elements[1];
+
+	this.contextMenuLayer.push(
+		this.qcanvas.qrect.rect({
+			start:[ele.start[0]+ele.width-70,ele.start[1]+ele.height-40],
+			width:60,
+			height:30,
+			fillColor:'#fff',
+			drag:false,  
+			mouseup:function(){
+				//删除操作
+				_this.delNode();
+
+				_this.contextMenuHide();
+			}
+		}),
+		this.qcanvas.qtext.text({
+			text:'删除',
+			start:[ele.start[0]+ele.width-40,ele.start[1]+ele.height-25],
+			fontSize:'12px',
+			color:'#000',
+			pointerEvent:'none'
+		})
+	);
+
+};
+Qflow.prototype.modiTitle = function(v) {
+	if(this.modiTitleObj){
+		this.modiTitleObj.setText(v);
+	}
+
+	var jsonObj = this.getJsonObj(this.contextMenuNode.id);
+	jsonObj.text = v;
+
+};
+Qflow.prototype.initModiTitleNode = function() {
+
+	var ele = this.contextMenuLayer.elements[1];
+	var x = ele.start[0]+10;
+	var y = ele.start[1]+10;
+	var w = ele.width - 20;
+	var h = 30;
+
+	this.contextMenuLayer.push(this.qcanvas.qrect.rect({
+			start:[x,y],
+			width:w,
+			height:h,
+			fillColor:'#fff',
+			drag:false,
+			pointerEvent:'none'
+		}));
+
+	var d = document.getElementById('titleInput');
+	d.style.left = x+'px';
+	d.style.top = y+'px';
+	d.style.width = w+'px';
+	d.style.height = h+'px';
+	d.style.display = 'block';
+
+	console.log(this.contextMenuNode);
+
+	var rectJsonObj = this.getJsonObj(this.contextMenuNode.id);
+	console.log(rectJsonObj);
+
+	if(rectJsonObj.attr && rectJsonObj.attr.titleId){
+		this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
+		
+		d.value = this.modiTitleObj.text;
+	}	
+
+
 };
 Qflow.prototype.contextMenuHide = function() {
 	var _this = this;
 
 	this.contextMenuNode = null;
+	this.modiTitleObj = null;
 	this.contextMenuLayer.setDisplay('none'); 
+
+	var d = document.getElementById('titleInput'); 
+	d.style.display = 'none';
 
 
 	//保留每一个半透明覆盖层对象 下次弹出右键菜单 内容重新初始化
 	var tmp = [];
 	for (var i = 1; i < this.contextMenuLayer.elements.length; i++) {
 		tmp.push(this.contextMenuLayer.elements[i]);
-
 	}
 	tmp.forEach(function(item){
 		_this.contextMenuLayer.removeEle(item);
-
 	})
- 
+
+
 	
 };
 
@@ -145,11 +234,11 @@ Qflow.prototype.initColorRect = function() {
 	var areaPosition = [
 		{
 			x:tmp.start[0]+10,
-			y:tmp.start[1]+disTop
+			y:tmp.start[1]+40+disTop
 		},
 		{
 			x:tmp.start[0]+tmp.width-10,
-			y:tmp.start[1]+tmp.height-10
+			y:tmp.start[1]+tmp.height+40-10
 		}
 	];
 
@@ -292,7 +381,7 @@ Qflow.prototype.initContextMenuTab = function() {
 
 		var c = _this.qcanvas.qtext.text({
 			text:item.text,
-			start:[x,tmp.start[1]+15],
+			start:[x,tmp.start[1]+40+15],
 
 			color:index==0?'#000':'#ccc',
 			aimAttr:item.aimAttr,
@@ -720,15 +809,27 @@ Qflow.prototype.getNodeObj = function(nodeId) {
 };
 
 Qflow.prototype.getJsonObj = function(nodeId) {
-	var tmp = this.options.initData.node.filter(function(item){
- 		return item.nodeId == nodeId;
- 	})
 
- 	if(tmp.length>0){
- 		return tmp[0];
- 	}else{
- 		return null;
- 	}
+	var tmp = null;
+	//搜索父 子项
+	for (var i = 0; i < this.options.initData.node.length; i++) {
+
+		if(this.options.initData.node[i].nodeId == nodeId){
+			tmp = this.options.initData.node[i];
+			break;
+		}
+		if(this.options.initData.node[i].child){
+			for (var j = 0; j < this.options.initData.node[i].child.length; j++) {
+				if(this.options.initData.node[i].child[j].nodeId == nodeId){
+					tmp = this.options.initData.node[i].child[j];
+					break;
+				}
+			} 
+		}
+		
+	}
+
+	return tmp;
 
 };
 
