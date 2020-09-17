@@ -67,6 +67,7 @@ function Qflow(options){
 
 
 	//初始连线
+	this.lineLayer = this.qcanvas.qlayer.layer();
 	this.initLink();
 
 
@@ -625,7 +626,51 @@ Qflow.prototype.reSizeByInitData = function() {
  		}
  	}
 };
+Qflow.prototype.getNodeIdFromJsonById = function(id) {
+
+	var tmp = null;
+	//搜索父 子项
+	for (var i = 0; i < this.options.initData.node.length; i++) {
+
+		if(this.options.initData.node[i].id == id){
+			tmp = this.options.initData.node[i].nodeId;
+			break;
+		}
+		if(this.options.initData.node[i].child){
+			for (var j = 0; j < this.options.initData.node[i].child.length; j++) {
+				if(this.options.initData.node[i].child[j].id == id){
+					tmp = this.options.initData.node[i].child[j].nodeId;
+					break;
+				}
+			} 
+		}
+		
+	}
+
+	return tmp;
+};
+Qflow.prototype.calcLineStartPos = function(startNode,endNode) {
+	
+};
+Qflow.prototype.calcLinekEndPos = function(startNode,endNode) {
+	
+};
 Qflow.prototype.initLink = function() {
+	var _this = this;
+	this.options.initData.link.forEach(function(item){
+
+		var startNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
+		var endNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
+
+		//根据起止节点的相对位置 计算出连线的坐标
+		var lineStartPos = _this.calcLineStartPos(startNode,endNode);
+		var lineEndPos = _this.calcLinekEndPos(startNode,endNode);
+
+
+		console.log(startNode);
+		console.log(endNode);
+
+	})
 	
 }; 
 Qflow.prototype.updateInitData = function(obj,jsonObj) {

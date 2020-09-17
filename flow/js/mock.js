@@ -65,7 +65,13 @@ var jsonData = [
 
 				],
 				link:[	 //连线关系  
-
+					{
+						fromId:1,
+						toId:4,
+						attr:{
+							like:'->'
+						}
+					}
 				] 
 			}
 		]
