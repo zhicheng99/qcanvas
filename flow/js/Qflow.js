@@ -652,7 +652,7 @@ Qflow.prototype.getNodeIdFromJsonById = function(id) {
 Qflow.prototype.calcLineStartPos = function(startNode,endNode) {
 	
 };
-Qflow.prototype.calcLinekEndPos = function(startNode,endNode) {
+Qflow.prototype.calcLineEndPos = function(startNode,endNode) {
 	
 };
 Qflow.prototype.initLink = function() {
@@ -664,7 +664,7 @@ Qflow.prototype.initLink = function() {
 
 		//根据起止节点的相对位置 计算出连线的坐标
 		var lineStartPos = _this.calcLineStartPos(startNode,endNode);
-		var lineEndPos = _this.calcLinekEndPos(startNode,endNode);
+		var lineEndPos = _this.calcLineEndPos(startNode,endNode);
 
 
 		console.log(startNode);
