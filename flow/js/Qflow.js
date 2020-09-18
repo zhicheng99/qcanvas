@@ -99,8 +99,7 @@ Qflow.prototype.initSettingIco = function() {
 		},
 		mouseup:function(e,pos){ 
 			_this.contextMenuNode = this.contextMenuNode;
-
-			console.log(_this.contextMenuNode)
+ 
 
 			_this.qcanvas.raiseToTop(_this.contextMenuLayer);
 			// _this.contextMenuShow.call(_this.contextMenuNode,{x:this.sStart[0],y:this.sStart[1]});
@@ -849,13 +848,19 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 dashed:jsonObj.attr && jsonObj.attr.dashed?jsonObj.attr.dashed:false,  
 				 drag:false,
 				 ownerId:parentNode.nodeId,
-				 mousedown:function(){
+				 mouseenter:function(){
+					_this.settingIcoShow(this);
+
+				 },
+				 mousedown:function(){ 
+
 					 	_this.draging = true;
-					 },
+				 },
 				 mouseup:function(e,pos){
+				 	_this.settingIcoHide(); 
+					
+
 				 	_this.draging = false;
-
-
 				 	//右击显示菜单
 				 	if(e.button == '2'){
 				 		_this.contextMenuNode = this;
@@ -994,7 +999,7 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
 };
 Qflow.prototype.containerMouseMove = function(container,jsonObj) {
 
-	this.settingIcoShow(container);
+	// this.settingIcoShow(container);
 
 
 	this.draging && 
@@ -1010,16 +1015,21 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 borderColor:jsonObj.attr.borderColor, 
 		 fillColor:jsonObj.attr.fillColor, 
 		 dashed:jsonObj.attr.dashed,  
-		 mousedown:function(){
+		 mouseenter:function(){
+		 	_this.settingIcoShow(this);
+		 },
+		 mousedown:function(){ 
 
 		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
 		 mouseup:function(e,pos){
-
+		 	_this.settingIcoHide(); 
 		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
 		 mousemove:function(){
+		 	_this.settingIcoShow(this);
+
 
 		 	_this.containerMouseMove.call(_this,this,jsonObj); 
 
