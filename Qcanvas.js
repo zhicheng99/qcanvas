@@ -2299,6 +2299,9 @@ function Qevent(qcanvas){
 
 
 	var eventCallback = {
+		'mouseenter':function(e,position){
+
+		},
 		'mousedown_or_touchstart':function(e,position){
 			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
@@ -2391,6 +2394,7 @@ function Qevent(qcanvas){
 	};
 
 	this.PC_Event = {
+		"mouseenter":eventCallback['mouseenter'],
 		"mousedown":eventCallback['mousedown_or_touchstart'],
 		"mousemove":eventCallback['mousemove_or_touchmove'],
 		"mouseup":eventCallback['mouseup_or_mouseout_or_touchend'],
@@ -2440,16 +2444,19 @@ Qevent.prototype.init = function(){
 	
 }	
 
-Qevent.prototype.executeMouseOut = function(aim,position){ 
+Qevent.prototype.executeMouseOutOrMouseEnter = function(aim,position){ 
 	//修复对象mouseout自定义事件不执行的问题 
 	if(this.qcanvas.isObj(aim)){
 
 		if(this.qcanvas.moveAim == null){
 				this.qcanvas.moveAim = aim;
+				aim['mouseenter'] && aim['mouseenter'](aim,position);
+
 
 		}else if(this.qcanvas.moveAim.id !== aim.id){ //划过了不同的对象 需要执行上一个对象的moveout事件
 				// console.log('划过了不同的对象');
 				this.qcanvas.moveAim['mouseout'] && this.qcanvas.moveAim['mouseout'](this.qcanvas.moveAim,position);
+				aim['mouseenter'] && aim['mouseenter'](aim,position);
 				this.qcanvas.moveAim = aim;
 			}
 
@@ -2471,8 +2478,8 @@ Qevent.prototype.eventCallback = function(e,position){
 
 	 	var aim = this.findElmByEventPosition(position);
 
-	 	//修复对象mouseout自定义事件不执行的问题
-	  	this.executeMouseOut(aim,position);
+	 	//修复对象mouseout mouserenter自定义事件不执行的问题
+	  	this.executeMouseOutOrMouseEnter(aim,position);
 
 
 	  	//触发aim的事件(调用配置好的事件) 
@@ -3273,6 +3280,8 @@ function Qcanvas(options){
 		this.mousemove = options.mousemove || function(){};
 		this.mouseup = options.mouseup || function(){};
 		this.mouseout = options.mouseout || function(){};
+		this.mouseenter = options.mouseenter || function(){};
+
 
 	}
 
