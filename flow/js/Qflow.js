@@ -68,6 +68,7 @@ function Qflow(options){
 
 	//初始连线
 	this.lineLayer = this.qcanvas.qlayer.layer();
+	this.solveLink();
 	this.initLink();
 
 
@@ -649,25 +650,64 @@ Qflow.prototype.getNodeIdFromJsonById = function(id) {
 	return tmp;
 };
 Qflow.prototype.calcLineStartPos = function(startNode,endNode) {
+
+	// console.log(startNode.getRangePoints()); //8个边界点
+
+	var tmp = startNode.polyPoints();
+
+	// return [tmp.x,tmp.y];
+	return [tmp[0].x,tmp[0].y];
+
 	
 };
 Qflow.prototype.calcLineEndPos = function(startNode,endNode) {
-	
+	var tmp = endNode.polyPoints();
+
+
+	return [tmp[0].x,tmp[0].y];
+};
+Qflow.prototype.solveLink = function() {
+	var _this = this;
+	this.options.initData.link.forEach(function(item){
+
+		item.fromNode =  _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
+		item.toNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
+
+	})
 };
 Qflow.prototype.initLink = function() {
 	var _this = this;
 	this.options.initData.link.forEach(function(item){
 
-		var startNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
-		var endNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
+		// var startNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
+		// var endNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
 
 		//根据起止节点的相对位置 计算出连线的坐标
-		var lineStartPos = _this.calcLineStartPos(startNode,endNode);
-		var lineEndPos = _this.calcLineEndPos(startNode,endNode);
+		// var lineStartPos = _this.calcLineStartPos(startNode,endNode);
+		// var lineEndPos = _this.calcLineEndPos(startNode,endNode);
 
 
-		console.log(startNode);
-		console.log(endNode);
+
+		// var start = [item.fromNode.centerPoints().x,item.fromNode.centerPoints().y];
+		// var end = [item.toNode.centerPoints().x,item.toNode.centerPoints().y];
+
+
+		var tmp = _this.qcanvas.qline.line({
+			start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode)},
+			end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode)}, 
+			// start:start,
+			// end:end,
+			width:1,
+			// pointerEvent:'none',
+			drag:false,
+			like:item.attr.like,
+			// color:'gray',
+			// withText:'line4',
+			// withTextAlign:'left'
+		});
+
+		_this.lineLayer.push(tmp);
+
 
 	})
 	
@@ -694,39 +734,7 @@ Qflow.prototype.updateInitData = function(obj,jsonObj) {
 		// 	item.start = [childPosition[index].x,childPosition[index].y]; 
 		// })
 	}
-
-
-
-	//通过id找到节点
-	// var tmp = this.options.initData.node.filter(function(item){
-	// 	return item.nodeId == obj.id;
-	// })
-
-	// if(tmp.length>0){
-	// 	tmp[0].x = obj.start[0];
-	// 	tmp[0].y = obj.start[1];
-
-
-	// 	if(tmp[0].nodeType == 'container'){
-	// 		//每一步 更新attr.gridPosition 
-	// 		//先实现top-center
-	// 		//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
-	// 		var childAreaPosition = this.getChildAreaPosition(tmp[0]);
-
-	// 		//可以摆放子项的区域位置 计算出各个格子的坐标
-	// 		var childPosition = this.getChildPosition(tmp[0],childAreaPosition);
-
-	// 		//把格子坐标添加到ettr里
-	// 		tmp[0].attr.gridPosition = childPosition;
-
-	// 		//第二步 更新子项位置 
-	// 		tmp[0].childNodes && tmp[0].childNodes.forEach(function(item,index){
-	// 			item.start = [childPosition[index].x,childPosition[index].y]; 
-	// 		})
-	// 	}
-		
-		
-	// }
+ 
 
 
 
@@ -751,33 +759,7 @@ Qflow.prototype.initNodeTitle = function(jsonObj,nodeObj) {
 	jsonObj.attr.titleId = t.id;
 
 
-
-
-	// var tmp = this.qnodes.filter(function(item){
-	// 	return item.id == jsonObj.nodeId;
-	// })
-
-	// console.log(jsonObj);
-
-	// if(tmp.length>0){
-
-
-	// 	var t = this.qcanvas.qtext.text({
-	// 			start:function(){
-	// 				return [tmp[0].start[0]+tmp[0].width*0.5,tmp[0].start[1]+tmp[0].height*0.5];
-	// 			},
-	// 			text:jsonObj.text,
-	// 			pointerEvent:'none',
-	// 			color:jsonObj.attr && jsonObj.attr.color?jsonObj.attr.color:'#000',
-	// 			fontSize:'12px',
-	// 			ownerId:jsonObj.nodeId
-
-	// 		})
-
-	// 	this.qnodes.push(t);
-	// 	jsonObj.attr.titleId = t.id;
-
-	// }
+ 
 };
 /**
  * 给容器创建标题节点
@@ -848,7 +830,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 dashed:jsonObj.attr && jsonObj.attr.dashed?jsonObj.attr.dashed:false,  
 				 drag:false,
 				 ownerId:parentNode.nodeId,
-				 mouseenter:function(){
+				 mouseenter:function(){ 
 					_this.settingIcoShow(this);
 
 				 },
@@ -876,7 +858,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 mousemove:function(){ 
 
 
-					_this.settingIcoShow.call(_this,this);
+					_this.settingIcoShow(this);
 
 
 				 	_this.draging && 
@@ -1005,6 +987,24 @@ Qflow.prototype.containerMouseMove = function(container,jsonObj) {
 	this.draging && 
  	this.updateInitData(container,jsonObj);
 };
+Qflow.prototype.getMiddleCoordinate = function(s,e) {
+ 
+	var start=[s.x,s.y],end=[e.x,e.y];
+
+	return {
+		x:(start[0] < end[0] ? start[0]:end[0])+Math.abs(start[0]-end[0]) * 0.5,
+		y:(start[1] < end[1] ? start[1]:end[1])+Math.abs(start[1]-end[1]) * 0.5,
+	};
+};
+Qflow.prototype.createRangePoints = function(polyPoints) {
+	var tmp = [];
+	for (var i = 0; i < polyPoints.length; i++) {
+		tmp.push(polyPoints[i]);
+		tmp.push(this.getMiddleCoordinate(polyPoints[i],polyPoints[i+1==polyPoints.length?0:i+1]));
+	}
+
+	return tmp;
+};
 Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var _this = this;
 	var tmp = this.qcanvas.qrect.rect({
@@ -1015,7 +1015,11 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 borderColor:jsonObj.attr.borderColor, 
 		 fillColor:jsonObj.attr.fillColor, 
 		 dashed:jsonObj.attr.dashed,  
-		 mouseenter:function(){
+		 getRangePoints:function(){ //返回rect边上的8个点的坐标
+		 	var polyPoints = this.polyPoints(); 
+		 	return _this.createRangePoints(polyPoints);
+		 },
+		 mouseenter:function(){ 
 		 	_this.settingIcoShow(this);
 		 },
 		 mousedown:function(){ 

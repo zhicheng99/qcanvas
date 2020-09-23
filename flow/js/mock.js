@@ -6,7 +6,7 @@ var jsonData = [
 						nodeId:1, //初始化生成后对应相应的节点对象id 每次都会变
 						nodeType:'container',  //容器类型
 						x:100,
-						y:100,
+						y:200,
 						text:'容器标题',
 						width:230,
 						height:160,
