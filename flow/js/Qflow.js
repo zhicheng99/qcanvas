@@ -775,18 +775,18 @@ Qflow.prototype.initLink = function() {
 	var _this = this;
 	this.options.initData.link.forEach(function(item){
 
-		var tmp = _this.qcanvas.qline.line({
-			start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
-			// end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
-			// start:[0,0],
-			end:[100,100],
-			width:1,
-			// pointerEvent:'none',
-			drag:false,
-			like:item.attr.like,
-		})
+		// var tmp = _this.qcanvas.qline.line({
+		// 	start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
+		// 	// end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
+		// 	// start:[0,0],
+		// 	end:[100,100],
+		// 	width:1,
+		// 	// pointerEvent:'none',
+		// 	drag:false,
+		// 	like:item.attr.like,
+		// })
 
-		_this.lineLayer.push(tmp);
+		// _this.lineLayer.push(tmp);
 
 
 		// var startNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
