@@ -323,9 +323,8 @@ Qline.prototype.paintLine  = function(obj){
 			// if(typeof obj.arrow !='undefined'){ 
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
-			// }
-			this.qline.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-
+			// } 
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color)
 			
 			break;
 		case '<->':
@@ -350,8 +349,8 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.qline.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-			this.qline.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
 			
 			
 			break;	
@@ -385,7 +384,7 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.qline.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
 			break;
 		case '<-->':
 			this.qcanvas.context.strokeStyle = obj.color;
@@ -417,8 +416,8 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.qline.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-			this.qline.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
 
 			break;
 	}
@@ -2673,6 +2672,19 @@ function Qlayer(p){
 			elements:[],
 			id: parseInt(Math.random()*10000),
 			display:'block', 
+			// qline:this.pcanvas.qline,
+			// TypeGroup: {
+		 //  		'line':this.pcanvas.qline.paintLine,
+		 //  		'text':this.qcanvas.qtext.paintText,
+		 //  		'rect':this.qcanvas.qrect.paintRect,
+		 //  		'arc':this.qcanvas.qarc.paintArc,
+		 //  		'polygon':this.qcanvas.qpolygon.paintPolygon,
+		 //  		'img':this.qcanvas.qimg.paintImg,
+		 //  		'spirit':this.qcanvas.qspirit.paintSpirit,
+		 //  		'shape':this.qcanvas.qshape.paintShape,
+		 //  		// 'layer':this.qcanvas.qlayer.paintLayer, 
+		 //  		// 'group':this.qcanvas.qgroup.paintGroup
+		 //  	},
 			push:function(ele){
 
 				for (var i = 0; i < arguments.length; i++) {
