@@ -177,7 +177,91 @@ Qline.prototype.line = function(options){
 					this.start = [x1,y1];
 					this.end = [x2,y2] 
 
-			}
+			},
+			drawArrow: function(fromX, fromY, toX, toY,theta,headlen,width,color) {
+				 
+				    var theta = typeof(theta) != 'undefined' ? theta : 30;
+				    var headlen = typeof(theta) != 'undefined' ? headlen : 10;
+				    var width = typeof(width) != 'undefined' ? width : 1;
+				    var color = typeof(color) != 'color' ? color : '#000';
+				 
+				    // 计算各角度和对应的P2,P3坐标
+				    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+				    var angle1 = (angle + theta) * Math.PI / 180;
+				    var angle2 = (angle - theta) * Math.PI / 180;
+				    var topX = headlen * Math.cos(angle1);
+				    var topY = headlen * Math.sin(angle1);
+				    var botX = headlen * Math.cos(angle2);
+				    var botY = headlen * Math.sin(angle2);
+				 
+				    // this.qcanvas.context.save();
+				    // this.qcanvas.context.beginPath();
+				 
+				    var arrowX = fromX - topX;
+				    var arrowY = fromY - topY;
+				 		// this.qcanvas.context.beginPath();
+				  	// 	this.qcanvas.context.setLineDash([]); 
+
+
+				    arrowX = toX + topX;
+				    arrowY = toY + topY;
+				    // this.qcanvas.context.moveTo(arrowX, arrowY);
+				    // this.qcanvas.context.lineTo(toX, toY);
+				    var arrow2X = toX + botX;
+				    var arrow2Y = toY + botY;
+				    // this.qcanvas.context.lineTo(arrow2X, arrow2Y);
+				    // this.qcanvas.context.strokeStyle = color;
+				    // this.qcanvas.context.lineWidth = width;
+				    // this.qcanvas.context.stroke();
+
+				    _this.paintLine({
+						    	like:'-',
+								start:[arrowX, arrowY],
+								end:[toX, toY],
+								width:width,
+								color:color,
+								pointerEvent:'none'
+
+				    })
+
+				    _this.paintLine({
+						    	like:'-',
+								start:[toX, toY],
+								end:[arrow2X,arrow2Y],
+								width:width,
+								color:color,
+								pointerEvent:'none'
+				    })
+
+				  //   return [
+				  //   	{
+						// 		like:'-',
+						// 		start:[arrowX, arrowY],
+						// 		end:[toX, toY]
+						// },
+						// {
+						// 		like:'-',
+						// 		start:[toX, toY],
+						// 		end:[arrow2X,arrow2Y]
+						// },	
+				  //   ]
+
+
+				   //  	angle = null;
+				   //      angle1 =  null;
+				   //      angle2 =  null;
+				   //      topX =  null;
+				   //      topY =  null;
+				   //      botX =  null;
+				   //      botY =  null;
+				   //      arrowX = null;
+				   //      arrowY = null;
+
+				   //  theta = null;
+				   //  headlen = null
+				   //  width = null;
+				   //  color = null;
+				}
 	}
 	
 	
@@ -316,7 +400,9 @@ Qline.prototype.paintLine  = function(obj){
 			
 			//分解出两条实线 生成箭头效果
 			// if(this.lineIsChange(obj)){
-			// 		this.appendArrow(obj);
+			// 		// this.appendArrow(obj);
+			// 		obj.arrow = this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color)
+
 			// }
 
 			// //画箭头			
@@ -324,7 +410,8 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// } 
-			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color)
+			
+			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color)
 			
 			break;
 		case '<->':
@@ -349,8 +436,8 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			obj.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
 			
 			
 			break;	
@@ -384,7 +471,7 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
 			break;
 		case '<-->':
 			this.qcanvas.context.strokeStyle = obj.color;
@@ -416,8 +503,8 @@ Qline.prototype.paintLine  = function(obj){
 			// 		arguments.callee.call(this,obj.arrow[0]);
 			// 		arguments.callee.call(this,obj.arrow[1]);
 			// }
-			this.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
-			this.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
+			obj.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color);
 
 			break;
 	}
@@ -442,41 +529,80 @@ Qline.prototype.paintLine  = function(obj){
  */
 Qline.prototype.drawArrow = function(fromX, fromY, toX, toY,theta,headlen,width,color) {
  
-    theta = typeof(theta) != 'undefined' ? theta : 30;
-    headlen = typeof(theta) != 'undefined' ? headlen : 10;
-    width = typeof(width) != 'undefined' ? width : 1;
-    color = typeof(color) != 'color' ? color : '#000';
+    var theta = typeof(theta) != 'undefined' ? theta : 30;
+    var headlen = typeof(theta) != 'undefined' ? headlen : 10;
+    var width = typeof(width) != 'undefined' ? width : 1;
+    var color = typeof(color) != 'color' ? color : '#000';
  
     // 计算各角度和对应的P2,P3坐标
-    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI,
-        angle1 = (angle + theta) * Math.PI / 180,
-        angle2 = (angle - theta) * Math.PI / 180,
-        topX = headlen * Math.cos(angle1),
-        topY = headlen * Math.sin(angle1),
-        botX = headlen * Math.cos(angle2),
-        botY = headlen * Math.sin(angle2);
+    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+    var angle1 = (angle + theta) * Math.PI / 180;
+    var angle2 = (angle - theta) * Math.PI / 180;
+    var topX = headlen * Math.cos(angle1);
+    var topY = headlen * Math.sin(angle1);
+    var botX = headlen * Math.cos(angle2);
+    var botY = headlen * Math.sin(angle2);
  
-    this.qcanvas.context.save();
-    this.qcanvas.context.beginPath();
+    // this.qcanvas.context.save();
+    // this.qcanvas.context.beginPath();
  
-    var arrowX = fromX - topX,
-        arrowY = fromY - topY;
- 		this.qcanvas.context.beginPath();
-  		this.qcanvas.context.setLineDash([]);
-    // this.qcanvas.context.moveTo(arrowX, arrowY);
-    // this.qcanvas.context.moveTo(fromX, fromY);
-    // this.qcanvas.context.lineTo(toX, toY);
+    var arrowX = fromX - topX;
+    var arrowY = fromY - topY;
+ 		// this.qcanvas.context.beginPath();
+  	// 	this.qcanvas.context.setLineDash([]); 
+
+
     arrowX = toX + topX;
     arrowY = toY + topY;
-    this.qcanvas.context.moveTo(arrowX, arrowY);
-    this.qcanvas.context.lineTo(toX, toY);
-    arrowX = toX + botX;
-    arrowY = toY + botY;
-    this.qcanvas.context.lineTo(arrowX, arrowY);
-    this.qcanvas.context.strokeStyle = color;
-    this.qcanvas.context.lineWidth = width;
-    this.qcanvas.context.stroke();
+    // this.qcanvas.context.moveTo(arrowX, arrowY);
+    // this.qcanvas.context.lineTo(toX, toY);
+    var arrow2X = toX + botX;
+    var arrow2Y = toY + botY;
+    // this.qcanvas.context.lineTo(arrow2X, arrow2Y);
+    // this.qcanvas.context.strokeStyle = color;
+    // this.qcanvas.context.lineWidth = width;
+    // this.qcanvas.context.stroke();
 
+    this.paintLine({
+		    	like:'-',
+				start:[arrowX, arrowY],
+				end:[toX, toY]
+    })
+
+    this.paintLine({
+    	like:'-',
+				start:[toX, toY],
+				end:[arrow2X,arrow2Y]
+    })
+
+  //   return [
+  //   	{
+		// 		like:'-',
+		// 		start:[arrowX, arrowY],
+		// 		end:[toX, toY]
+		// },
+		// {
+		// 		like:'-',
+		// 		start:[toX, toY],
+		// 		end:[arrow2X,arrow2Y]
+		// },	
+  //   ]
+
+
+   //  	angle = null;
+   //      angle1 =  null;
+   //      angle2 =  null;
+   //      topX =  null;
+   //      topY =  null;
+   //      botX =  null;
+   //      botY =  null;
+   //      arrowX = null;
+   //      arrowY = null;
+
+   //  theta = null;
+   //  headlen = null
+   //  width = null;
+   //  color = null;
 }
 
 
