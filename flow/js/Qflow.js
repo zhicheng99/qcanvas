@@ -680,12 +680,42 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 		var A_center = A.centerPoints();
 		var B_center = B.centerPoints();
 		var A_rangePos = A.getRangePoints(); 
-		var B_rangePos = B.getRangePoints(); 
+		// var B_rangePos = B.getRangePoints(); 
+ 
+
+		var pos = [0,0];
 
 
-		if(A_center.y>B_center.y){
-			return JSON.parse(JSON.stringify([A_rangePos[1].x,A_rangePos[1].y]));
+		//B
+		//↑
+		//A
+		if(A_center.y>=B_center.y){
+			pos = A_rangePos[1];
+
+			if(B_center.x < (A_center.x-(A.width*0.5))){
+				pos = A_rangePos[0];
+			}else if(B_center.x > A_center.x+(A.width*0.5)){
+				pos = A_rangePos[2]
+			}
+
+		//A
+		//↓
+		//B	
+		}else{  
+
+			pos = A_rangePos[5];
+
+			if(B_center.x < (A_center.x-(A.width*0.5))){
+				pos = A_rangePos[6];
+			}else if(B_center.x > A_center.x+(A.width*0.5)){
+				pos = A_rangePos[4]
+			}
 		}
+
+
+
+
+		return pos;
 	}
 	
 	if(typeof this.lineCache[nodeId] !=='undefined' &&
@@ -714,53 +744,82 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	
 };
 Qflow.prototype.calcLineEndPos = function(A,B,nodeId) {
+	var _this = this;
 
-
-
+	// 8个点的示意图
+	// 0__1__2
+	// |     |
+	// 7 节点 3
+	// |     |
+	// 6__5__4
 	// var tmp = endNode.polyPoints();
 
 
 	// return [tmp[0].x,tmp[0].y];
-	// 
-	var A_center = A.centerPoints();
-	var B_center = B.centerPoints();
-	var A_rangePos = A.getRangePoints(); 
-	var B_rangePos = B.getRangePoints(); 
-
-	if(A_center.y>B_center.y){
-		return [B_rangePos[5].x,B_rangePos[5].y];
-	}
-};
-Qflow.prototype.calcLinePos = function(A,B) {
-
-	var start = function(){
-		var A_center = A.centerPoints();
-		var B_center = B.centerPoints();
-		var A_rangePos = A.getRangePoints(); 
-		var B_rangePos = B.getRangePoints(); 
-
-
-		if(A_center.y>B_center.y){
-			return [A_rangePos[1].x,A_rangePos[1].y];
-		}
-	}
-	var end = function(){
+	
+	var F = function(){
 
 		var A_center = A.centerPoints();
 		var B_center = B.centerPoints();
-		var A_rangePos = A.getRangePoints(); 
+		// var A_rangePos = A.getRangePoints(); 
 		var B_rangePos = B.getRangePoints(); 
 
+		var pos = [0,0];
+
+		//B
+		//↑
+		//A
 		if(A_center.y>B_center.y){
-			return [B_rangePos[5].x,B_rangePos[5].y];
+			pos = B_rangePos[5];
+
+			if(B_center.x < (A_center.x-(A.width*0.5))){
+				pos = B_rangePos[4];
+			}else if(B_center.x > A_center.x+(A.width*0.5)){
+				pos = B_rangePos[6]
+			}
+
+		//A
+		//↓
+		//B		
+		}else{
+
+			pos = B_rangePos[1];
+
+			if(B_center.x < (A_center.x-(A.width*0.5))){
+				pos = B_rangePos[0];
+			}else if(B_center.x > A_center.x+(A.width*0.5)){
+
+				pos = B_rangePos[2];
+ 
+			}
 		}
 
+		return pos;
+
 	}
 
-	return {
-		start:start,
-		end:end,
+
+
+	if(typeof this.lineCache[nodeId] !=='undefined' &&
+		typeof this.lineCache[nodeId].oldEnd !=='undefined'){
+
+		if(((new Date()).getTime() - _this.lineCache[this.id].endCallTime) >300){
+			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
+			_this.lineCache[this.id].oldEnd = F();	
+
+		}
+
+
+	}else{
+		_this.lineCache[this.id].endCallTime = (new Date()).getTime();
+		_this.lineCache[this.id].oldEnd = F();
+ 
+
 	}
+
+	return _this.lineCache[this.id].oldEnd;
+
+
 };
 Qflow.prototype.solveLink = function() {
 	var _this = this;
@@ -773,124 +832,96 @@ Qflow.prototype.solveLink = function() {
 };
 Qflow.prototype.initLink = function() {
 	var _this = this;
-	this.options.initData.link.forEach(function(item){
+	this.options.initData.link.forEach(function(item){ 
 
-		// var tmp = _this.qcanvas.qline.line({
-		// 	start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
-		// 	// end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
-		// 	// start:[0,0],
-		// 	end:[100,100],
-		// 	width:1,
-		// 	// pointerEvent:'none',
-		// 	drag:false,
-		// 	like:item.attr.like,
-		// })
+		var tmp = _this.qcanvas.qline.line({
+			start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
+			end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
+			// start:function(){
 
-		// _this.lineLayer.push(tmp);
+			// 	if(typeof _this.lineCache[this.id] !=='undefined' && 
+			// 		typeof _this.lineCache[this.id].oldStart !=='undefined'){
 
+			// 		if(((new Date()).getTime() - _this.lineCache[this.id].startCallTime) >300){
+			// 			_this.lineCache[this.id].startCallTime = (new Date()).getTime();
+			// 			// _this.lineCache[this.id].oldStart = pos.start();
+			// 			_this.lineCache[this.id].oldStart = _this.calcLineStartPos(item.fromNode,item.toNode);
 
-		// var startNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
-		// var endNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
+			// 		}
 
-		//根据起止节点的相对位置 计算出连线的坐标
-		// var lineStartPos = _this.calcLineStartPos(startNode,endNode);
-		// var lineEndPos = _this.calcLineEndPos(startNode,endNode);
+			// 		// return _this.lineCache[this.id].oldStart;
 
-
-
-		// var start = [item.fromNode.centerPoints().x,item.fromNode.centerPoints().y];
-		// var end = [item.toNode.centerPoints().x,item.toNode.centerPoints().y];
-
-		// var pos = _this.calcLinePos(item.fromNode,item.toNode);
-
-		// var tmp = _this.qcanvas.qline.line({
-		// 	// start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode)},
-		// 	// end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode)}, 
-		// 	start:function(){
-
-		// 		if(typeof _this.lineCache[this.id] !=='undefined' && 
-		// 			typeof _this.lineCache[this.id].oldStart !=='undefined'){
-
-		// 			if(((new Date()).getTime() - _this.lineCache[this.id].startCallTime) >1000){
-		// 				_this.lineCache[this.id].startCallTime = (new Date()).getTime();
-		// 				// _this.lineCache[this.id].oldStart = pos.start();
-		// 				_this.lineCache[this.id].oldStart = _this.calcLineStartPos(item.fromNode,item.toNode);
-
-		// 			}
-
-		// 			// return _this.lineCache[this.id].oldStart;
-
-		// 		}else{
-		// 			if(typeof _this.lineCache[this.id] =='undefined'){
-		// 				_this.lineCache[this.id] = {
-		// 					startCallTime : (new Date()).getTime(),
-		// 					// oldStart : pos.start()
-		// 					oldStart:_this.calcLineStartPos(item.fromNode,item.toNode)
-		// 				}
-		// 			}else{
-		// 				_this.lineCache[this.id].startCallTime = (new Date()).getTime();
-		// 				// _this.lineCache[this.id].oldStart = pos.start();
-		// 				_this.lineCache[this.id].oldStart =_this.calcLineStartPos(item.fromNode,item.toNode)
-		// 			}
+			// 	}else{
+			// 		if(typeof _this.lineCache[this.id] =='undefined'){
+			// 			_this.lineCache[this.id] = {
+			// 				startCallTime : (new Date()).getTime(),
+			// 				// oldStart : pos.start()
+			// 				oldStart:_this.calcLineStartPos(item.fromNode,item.toNode)
+			// 			}
+			// 		}else{
+			// 			_this.lineCache[this.id].startCallTime = (new Date()).getTime();
+			// 			// _this.lineCache[this.id].oldStart = pos.start();
+			// 			_this.lineCache[this.id].oldStart =_this.calcLineStartPos(item.fromNode,item.toNode)
+			// 		}
 					
 					
-		// 			// return _this.lineCache[this.id].oldStart;
+			// 		// return _this.lineCache[this.id].oldStart;
 
-		// 		}
+			// 	}
 
-		// 		return _this.lineCache[this.id].oldStart;
+			// 	return _this.lineCache[this.id].oldStart;
 
-		// 		// if(typeof this.callTime !=='undefined'){
-		// 		// 	if(((new Date()).getTime() - this.callTime) >300){
-		// 		// 		this.callTime = (new Date()).getTime();
-		// 		// 		this.oldStart = pos.start();
-		// 		// 	}
-		// 		// 	return this.oldStart;
-		// 		// }else{
-		// 		// 	this.callTime = (new Date()).getTime();
-		// 		// 	this.oldStart = pos.start();
-		// 		// 	return this.oldStart;
-		// 		// }
-		// 	},
-		// 	end:function(){
-		// 		if(typeof _this.lineCache[this.id] !=='undefined' && 
-		// 			typeof _this.lineCache[this.id].oldEnd !=='undefined'){
+			// 	// if(typeof this.callTime !=='undefined'){
+			// 	// 	if(((new Date()).getTime() - this.callTime) >300){
+			// 	// 		this.callTime = (new Date()).getTime();
+			// 	// 		this.oldStart = pos.start();
+			// 	// 	}
+			// 	// 	return this.oldStart;
+			// 	// }else{
+			// 	// 	this.callTime = (new Date()).getTime();
+			// 	// 	this.oldStart = pos.start();
+			// 	// 	return this.oldStart;
+			// 	// }
+			// },
+			// end:function(){
+			// 	if(typeof _this.lineCache[this.id] !=='undefined' && 
+			// 		typeof _this.lineCache[this.id].oldEnd !=='undefined'){
 
-		// 			if(((new Date()).getTime() - _this.lineCache[this.id].endCallTime) >1000){
-		// 				_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-		// 				// _this.lineCache[this.id].oldEnd = pos.end();
-		// 				_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
-		// 			}
+			// 		if(((new Date()).getTime() - _this.lineCache[this.id].endCallTime) >300){
+			// 			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
+			// 			// _this.lineCache[this.id].oldEnd = pos.end();
+			// 			_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
+			// 		}
 
-		// 			// return _this.lineCache[this.id].oldStart;
+			// 		// return _this.lineCache[this.id].oldStart;
 
-		// 		}else{
-		// 			if(typeof _this.lineCache[this.id] =='undefined'){
-		// 				_this.lineCache[this.id] = {
-		// 					endCallTime : (new Date()).getTime(),
-		// 					// oldEnd : pos.end()
-		// 					oldEnd:_this.calcLineEndPos(item.fromNode,item.toNode)
-		// 				}
-		// 			}else{
-		// 				_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-		// 				// _this.lineCache[this.id].oldEnd = pos.end();
-		// 				_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
+			// 	}else{
+			// 		if(typeof _this.lineCache[this.id] =='undefined'){
+			// 			_this.lineCache[this.id] = {
+			// 				endCallTime : (new Date()).getTime(),
+			// 				// oldEnd : pos.end()
+			// 				oldEnd:_this.calcLineEndPos(item.fromNode,item.toNode)
+			// 			}
+			// 		}else{
+			// 			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
+			// 			// _this.lineCache[this.id].oldEnd = pos.end();
+			// 			_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
 
-		// 			}
+			// 		}
 					
-		// 		}
+			// 	}
 
-		// 		return _this.lineCache[this.id].oldEnd;
+			// 	return _this.lineCache[this.id].oldEnd;
 
-		// 		// return pos.end()
-		// 	},
-		// 	width:1,
-		// 	// pointerEvent:'none',
-		// 	drag:false,
-		// 	like:item.attr.like,
-		// });
+			// 	// return pos.end()
+			// },
+			width:1,
+			// pointerEvent:'none',
+			drag:false,
+			like:item.attr.like,
+		});
 
-		// _this.lineLayer.push(tmp);
+		_this.lineLayer.push(tmp);
 
 
 	})
@@ -1175,15 +1206,19 @@ Qflow.prototype.getMiddleCoordinate = function(s,e) {
  
 	var start=[s.x,s.y],end=[e.x,e.y];
 
-	return {
-		x:(start[0] < end[0] ? start[0]:end[0])+Math.abs(start[0]-end[0]) * 0.5,
-		y:(start[1] < end[1] ? start[1]:end[1])+Math.abs(start[1]-end[1]) * 0.5,
-	};
+	// return {
+	// 	x:(start[0] < end[0] ? start[0]:end[0])+Math.abs(start[0]-end[0]) * 0.5,
+	// 	y:(start[1] < end[1] ? start[1]:end[1])+Math.abs(start[1]-end[1]) * 0.5,
+	// };
+	return [
+		(start[0] < end[0] ? start[0]:end[0])+Math.abs(start[0]-end[0]) * 0.5,
+		(start[1] < end[1] ? start[1]:end[1])+Math.abs(start[1]-end[1]) * 0.5,
+	]
 };
 Qflow.prototype.createRangePoints = function(polyPoints) {
 	var tmp = [];
 	for (var i = 0; i < polyPoints.length; i++) {
-		tmp.push(polyPoints[i]);
+		tmp.push([polyPoints[i].x,polyPoints[i].y]);
 		tmp.push(this.getMiddleCoordinate(polyPoints[i],polyPoints[i+1==polyPoints.length?0:i+1]));
 	}
 
