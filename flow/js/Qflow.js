@@ -654,68 +654,135 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	var _this = this;
 	// console.log(startNode.getRangePoints()); //8个边界点
 	// 8个点的示意图
-	// 0__1__2
-	// |     |
-	// 7 节点 3
-	// |     |
-	// 6__5__4
-	//根据两个节点的相对位置（通过中心点坐标比较） 判断需要哪个点做为连线的起点
-	// var A_center = A.centerPoints();
-	// var B_center = B.centerPoints();
-	// var rangePos = A.getRangePoints(); 
+	// 0__1__2    0__1__2
+	// |     |	  |     |
+	// 7 节点 3	  7 节点 3
+	// |     |    |     |
+	// 6__5__4	  6__5__4
+	
 
 
-	// if(A_center.y>B_center.y){
-	// 	return [rangePos[1].x,rangePos[1].y];
-	// }
-
-
-
-	// var tmp = A.polyPoints();
-
-	// // // return [tmp.x,tmp.y];
-	// return [tmp[0].x,tmp[0].y];
-	// 
 	var F = function(){
+
 		var A_center = A.centerPoints();
 		var B_center = B.centerPoints();
 		var A_rangePos = A.getRangePoints(); 
-		// var B_rangePos = B.getRangePoints(); 
+		var B_rangePos = B.getRangePoints(); 
+ 
+ 
+		var startPos = [0,0];
+	    var endPos = [0,0];
+
+
+	    //第一种情况（A在下 B在上）
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  B	 3	 
+	    // |     |    
+	    // 6__5__4	  
+	    //	  ↑
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  A  3	 
+	    // |     |    
+	    // 6__5__4	  
+	    if(A_center.y >= B_center.y){
+
+	        //两点节点上下没有间距
+	        if(A_rangePos[0][1] <= B_rangePos[6][1]){ 
+
+	            //A点在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+
+	                startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A点在B的左侧
+	                startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+
+	                startPos = A_rangePos[1];
+	                endPos = B_rangePos[1];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距）
  
 
-		var pos = [0,0];
+	             //A点在B的右下侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+
+	                startPos = A_rangePos[0];
+	                endPos = B_rangePos[4];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[2][0]){
+	                //A点在B的左下侧
+	                startPos = A_rangePos[2];
+	                endPos = B_rangePos[6];
+
+	            }else{
+
+	                startPos = A_rangePos[1];
+	                endPos = B_rangePos[5];
+	            }
+	        }
+	    }else{
+	        //第二种情况 （A在上 B在下）
+	        // 0__1__2    
+			// |     |	  
+			// 7  A	 3	 
+			// |     |    
+			// 6__5__4	  
+			//	  ↓
+			// 0__1__2    
+			// |     |	  
+			// 7  B  3	 
+			// |     |    
+			// 6__5__4
+
+	        //两点节点上下没有间距
+	        if(B_rangePos[0][1]<=A_rangePos[6][1]){ 
+	            //A在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左侧
+	                startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+	                startPos = A_rangePos[5];
+	                endPos = B_center[5];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距）
+ 
+
+	            //A在B的右上方
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                startPos = A_rangePos[6];
+	                endPos = B_rangePos[2];
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左上方
+	                startPos = A_rangePos[4];
+	                endPos = B_rangePos[0];
+	            }else{
+	                startPos = A_rangePos[5];
+	                endPos = B_rangePos[1];
+	            }
 
 
-		//B
-		//↑
-		//A
-		if(A_center.y>=B_center.y){
-			pos = A_rangePos[1];
 
-			if(B_center.x < (A_center.x-(A.width*0.5))){
-				pos = A_rangePos[0];
-			}else if(B_center.x > A_center.x+(A.width*0.5)){
-				pos = A_rangePos[2]
-			}
+	        }
+	    }
 
-		//A
-		//↓
-		//B	
-		}else{  
-
-			pos = A_rangePos[5];
-
-			if(B_center.x < (A_center.x-(A.width*0.5))){
-				pos = A_rangePos[6];
-			}else if(B_center.x > A_center.x+(A.width*0.5)){
-				pos = A_rangePos[4]
-			}
-		}
-
-
-
-
-		return pos;
+	    return startPos;
 	}
 	
 	if(typeof this.lineCache[nodeId] !=='undefined' &&
@@ -737,64 +804,135 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 
 	}
 
-	return _this.lineCache[this.id].oldStart;
-
-	
+	return _this.lineCache[this.id].oldStart; 
 
 	
 };
 Qflow.prototype.calcLineEndPos = function(A,B,nodeId) {
-	var _this = this;
-
-	// 8个点的示意图
-	// 0__1__2
-	// |     |
-	// 7 节点 3
-	// |     |
-	// 6__5__4
-	// var tmp = endNode.polyPoints();
-
-
-	// return [tmp[0].x,tmp[0].y];
+	var _this = this; 
 	
 	var F = function(){
 
 		var A_center = A.centerPoints();
 		var B_center = B.centerPoints();
-		// var A_rangePos = A.getRangePoints(); 
-		var B_rangePos = B.getRangePoints(); 
+		var A_rangePos = A.getRangePoints(); 
+		var B_rangePos = B.getRangePoints();  
 
-		var pos = [0,0];
 
-		//B
-		//↑
-		//A
-		if(A_center.y>B_center.y){
-			pos = B_rangePos[5];
+		var startPos = [0,0];
+	    var endPos = [0,0];
 
-			if(B_center.x < (A_center.x-(A.width*0.5))){
-				pos = B_rangePos[4];
-			}else if(B_center.x > A_center.x+(A.width*0.5)){
-				pos = B_rangePos[6]
-			}
 
-		//A
-		//↓
-		//B		
-		}else{
+	    //第一种情况（A在下 B在上）
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  B	 3	 
+	    // |     |    
+	    // 6__5__4	  
+	    //	  ↑
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  A  3	 
+	    // |     |    
+	    // 6__5__4	  
+	    if(A_center.y >= B_center.y){
 
-			pos = B_rangePos[1];
+	        //两点节点上下没有间距
+	        if(A_rangePos[0][1] <= B_rangePos[6][1]){ 
 
-			if(B_center.x < (A_center.x-(A.width*0.5))){
-				pos = B_rangePos[0];
-			}else if(B_center.x > A_center.x+(A.width*0.5)){
+	            //A点在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
 
-				pos = B_rangePos[2];
+	                startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A点在B的左侧
+	                startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+
+	                startPos = A_rangePos[1];
+	                endPos = B_rangePos[1];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距） 
+
+	             //A点在B的右下侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+
+	                startPos = A_rangePos[0];
+	                endPos = B_rangePos[4];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[2][0]){
+	                //A点在B的左下侧
+	                startPos = A_rangePos[2];
+	                endPos = B_rangePos[6];
+
+	            }else{
+
+	                startPos = A_rangePos[1];
+	                endPos = B_rangePos[5];
+	            }
+	        }
+	    }else{
+	        //第二种情况 （A在上 B在下）
+	        // 0__1__2    
+			// |     |	  
+			// 7  A	 3	 
+			// |     |    
+			// 6__5__4	  
+			//	  ↓
+			// 0__1__2    
+			// |     |	  
+			// 7  B  3	 
+			// |     |    
+			// 6__5__4
+
+	        //两点节点上下没有间距
+	        if(B_rangePos[0][1]<=A_rangePos[6][1]){
  
-			}
-		}
 
-		return pos;
+	            //A在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左侧
+	                startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+	                startPos = A_rangePos[5];
+	                endPos = B_rangePos[5];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距）
+
+
+	            //A在B的右上方
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                startPos = A_rangePos[6];
+	                endPos = B_rangePos[2];
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左上方
+	                startPos = A_rangePos[4];
+	                endPos = B_rangePos[0];
+	            }else{
+	                startPos = A_rangePos[5];
+	                endPos = B_rangePos[1];
+	            }
+
+
+
+	        }
+	    }
+
+	    return endPos;
 
 	}
 
@@ -817,9 +955,7 @@ Qflow.prototype.calcLineEndPos = function(A,B,nodeId) {
 
 	}
 
-	return _this.lineCache[this.id].oldEnd;
-
-
+	return _this.lineCache[this.id].oldEnd; 
 };
 Qflow.prototype.solveLink = function() {
 	var _this = this;
@@ -837,84 +973,6 @@ Qflow.prototype.initLink = function() {
 		var tmp = _this.qcanvas.qline.line({
 			start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
 			end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
-			// start:function(){
-
-			// 	if(typeof _this.lineCache[this.id] !=='undefined' && 
-			// 		typeof _this.lineCache[this.id].oldStart !=='undefined'){
-
-			// 		if(((new Date()).getTime() - _this.lineCache[this.id].startCallTime) >300){
-			// 			_this.lineCache[this.id].startCallTime = (new Date()).getTime();
-			// 			// _this.lineCache[this.id].oldStart = pos.start();
-			// 			_this.lineCache[this.id].oldStart = _this.calcLineStartPos(item.fromNode,item.toNode);
-
-			// 		}
-
-			// 		// return _this.lineCache[this.id].oldStart;
-
-			// 	}else{
-			// 		if(typeof _this.lineCache[this.id] =='undefined'){
-			// 			_this.lineCache[this.id] = {
-			// 				startCallTime : (new Date()).getTime(),
-			// 				// oldStart : pos.start()
-			// 				oldStart:_this.calcLineStartPos(item.fromNode,item.toNode)
-			// 			}
-			// 		}else{
-			// 			_this.lineCache[this.id].startCallTime = (new Date()).getTime();
-			// 			// _this.lineCache[this.id].oldStart = pos.start();
-			// 			_this.lineCache[this.id].oldStart =_this.calcLineStartPos(item.fromNode,item.toNode)
-			// 		}
-					
-					
-			// 		// return _this.lineCache[this.id].oldStart;
-
-			// 	}
-
-			// 	return _this.lineCache[this.id].oldStart;
-
-			// 	// if(typeof this.callTime !=='undefined'){
-			// 	// 	if(((new Date()).getTime() - this.callTime) >300){
-			// 	// 		this.callTime = (new Date()).getTime();
-			// 	// 		this.oldStart = pos.start();
-			// 	// 	}
-			// 	// 	return this.oldStart;
-			// 	// }else{
-			// 	// 	this.callTime = (new Date()).getTime();
-			// 	// 	this.oldStart = pos.start();
-			// 	// 	return this.oldStart;
-			// 	// }
-			// },
-			// end:function(){
-			// 	if(typeof _this.lineCache[this.id] !=='undefined' && 
-			// 		typeof _this.lineCache[this.id].oldEnd !=='undefined'){
-
-			// 		if(((new Date()).getTime() - _this.lineCache[this.id].endCallTime) >300){
-			// 			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-			// 			// _this.lineCache[this.id].oldEnd = pos.end();
-			// 			_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
-			// 		}
-
-			// 		// return _this.lineCache[this.id].oldStart;
-
-			// 	}else{
-			// 		if(typeof _this.lineCache[this.id] =='undefined'){
-			// 			_this.lineCache[this.id] = {
-			// 				endCallTime : (new Date()).getTime(),
-			// 				// oldEnd : pos.end()
-			// 				oldEnd:_this.calcLineEndPos(item.fromNode,item.toNode)
-			// 			}
-			// 		}else{
-			// 			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-			// 			// _this.lineCache[this.id].oldEnd = pos.end();
-			// 			_this.lineCache[this.id].oldEnd = _this.calcLineEndPos(item.fromNode,item.toNode)
-
-			// 		}
-					
-			// 	}
-
-			// 	return _this.lineCache[this.id].oldEnd;
-
-			// 	// return pos.end()
-			// },
 			width:1,
 			// pointerEvent:'none',
 			drag:false,
