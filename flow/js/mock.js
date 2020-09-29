@@ -71,6 +71,13 @@ var jsonData = [
 						attr:{
 							like:'->'
 						}
+					},
+					{
+						fromId:4,
+						toId:5,
+						attr:{
+							like:'->'
+						}
 					}
 				] 
 			}

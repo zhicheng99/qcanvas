@@ -1105,6 +1105,9 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 dashed:jsonObj.attr && jsonObj.attr.dashed?jsonObj.attr.dashed:false,  
 				 drag:false,
 				 ownerId:parentNode.nodeId,
+				 getRangePoints:function(){ //返回rect边上的8个点的坐标 
+				 	return _this.createRangePoints(this.polyPoints());
+				 },
 				 mouseenter:function(){ 
 					_this.settingIcoShow(this);
 
@@ -1294,9 +1297,8 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 borderColor:jsonObj.attr.borderColor, 
 		 fillColor:jsonObj.attr.fillColor, 
 		 dashed:jsonObj.attr.dashed,  
-		 getRangePoints:function(){ //返回rect边上的8个点的坐标
-		 	var polyPoints = this.polyPoints(); 
-		 	return _this.createRangePoints(polyPoints);
+		 getRangePoints:function(){ //返回rect边上的8个点的坐标 
+		 	return _this.createRangePoints(this.polyPoints());
 		 },
 		 mouseenter:function(){ 
 		 	_this.settingIcoShow(this);
