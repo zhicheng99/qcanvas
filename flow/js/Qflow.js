@@ -74,8 +74,8 @@ function Qflow(options){
 
 
 	//右击菜单layer对象
-	this.contextMenuLayer = this.qcanvas.qlayer.layer();
-	this.contextMenuLayer.setDisplay('none');
+	this.contextSettingLayer = this.qcanvas.qlayer.layer();
+	this.contextSettingLayer.setDisplay('none');
 
 	//右击显示半透明覆盖层
 	this.initContextCover();
@@ -84,6 +84,7 @@ function Qflow(options){
 	//初始化设置按钮（鼠标划过元素时显示）
 	this.settingIco = null;
 	this.initSettingIco();
+
 
 }
 Qflow.prototype.initSettingIco = function() {
@@ -104,7 +105,7 @@ Qflow.prototype.initSettingIco = function() {
 			_this.contextMenuNode = this.contextMenuNode;
  
 
-			_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+			_this.qcanvas.raiseToTop(_this.contextSettingLayer);
 			// _this.contextMenuShow.call(_this.contextMenuNode,{x:this.sStart[0],y:this.sStart[1]});
 			// _this.contextMenuShow({x:this.sStart[0],y:this.sStart[1]});
 			_this.contextMenuShow(pos);
@@ -114,6 +115,7 @@ Qflow.prototype.initSettingIco = function() {
 	}); 
 };
 Qflow.prototype.settingIcoShow = function(node) {
+	// console.log('settingIcoShow');
 	var start = this.qcanvas.isFun(node.start)?node.start():node.start;
  	var x = start[0]+node.width - 15;
 	var y = start[1]+5; 
@@ -132,7 +134,7 @@ Qflow.prototype.settingIcoHide = function() {
 Qflow.prototype.initContextCover = function() {
 	var _this = this;
 	//半透明层覆盖整个画布
-	this.contextMenuLayer.push(this.qcanvas.qrect.rect({
+	this.contextSettingLayer.push(this.qcanvas.qrect.rect({
 			 start:[0,0],  
 			 width:this.qcanvas.stage.width,
 			 height:this.qcanvas.stage.height,
@@ -164,7 +166,7 @@ Qflow.prototype.contextMenuShow = function(pos) {
 	//删除按钮
 	this.initDelBtn();
 
-	this.contextMenuLayer.setDisplay('block');
+	this.contextSettingLayer.setDisplay('block');
  
 };
 Qflow.prototype.delNode = function() {
@@ -172,9 +174,9 @@ Qflow.prototype.delNode = function() {
 };
 Qflow.prototype.initDelBtn = function() {
 	var _this = this;
-	var ele = this.contextMenuLayer.elements[1];
+	var ele = this.contextSettingLayer.elements[1];
 
-	this.contextMenuLayer.push(
+	this.contextSettingLayer.push(
 		this.qcanvas.qrect.rect({
 			start:[ele.start[0]+ele.width-70,ele.start[1]+ele.height-40],
 			width:60,
@@ -209,13 +211,13 @@ Qflow.prototype.modiTitle = function(v) {
 };
 Qflow.prototype.initModiTitleNode = function() {
 
-	var ele = this.contextMenuLayer.elements[1];
+	var ele = this.contextSettingLayer.elements[1];
 	var x = ele.start[0]+10;
 	var y = ele.start[1]+10;
 	var w = ele.width - 20;
 	var h = 30;
 
-	this.contextMenuLayer.push(this.qcanvas.qrect.rect({
+	this.contextSettingLayer.push(this.qcanvas.qrect.rect({
 			start:[x,y],
 			width:w,
 			height:h,
@@ -249,7 +251,7 @@ Qflow.prototype.contextMenuHide = function() {
 
 	this.contextMenuNode = null;
 	this.modiTitleObj = null;
-	this.contextMenuLayer.setDisplay('none'); 
+	this.contextSettingLayer.setDisplay('none'); 
 
 	var d = document.getElementById('titleInput'); 
 	d.style.display = 'none';
@@ -257,11 +259,11 @@ Qflow.prototype.contextMenuHide = function() {
 
 	//保留每一个半透明覆盖层对象 下次弹出右键菜单 内容重新初始化
 	var tmp = [];
-	for (var i = 1; i < this.contextMenuLayer.elements.length; i++) {
-		tmp.push(this.contextMenuLayer.elements[i]);
+	for (var i = 1; i < this.contextSettingLayer.elements.length; i++) {
+		tmp.push(this.contextSettingLayer.elements[i]);
 	}
 	tmp.forEach(function(item){
-		_this.contextMenuLayer.removeEle(item);
+		_this.contextSettingLayer.removeEle(item);
 	})
 
 
@@ -275,7 +277,7 @@ Qflow.prototype.initColorRect = function() {
 	var rectW = 20;
 	var rectH = 20;
 
-	var tmp = this.contextMenuLayer.elements[1];
+	var tmp = this.contextSettingLayer.elements[1];
 
 
 	//暂时排4行5列 
@@ -298,7 +300,7 @@ Qflow.prototype.initColorRect = function() {
 	}
 
 	for (var i = 0; i < color.length; i++) {
-		this.contextMenuLayer.push(this.qcanvas.qrect.rect({
+		this.contextSettingLayer.push(this.qcanvas.qrect.rect({
 			start:[pos[i].x,pos[i].y],
 			width:rectW,
 			height:rectH,
@@ -409,7 +411,7 @@ Qflow.prototype.updateInitDataAttr = function(v) {
 
 Qflow.prototype.initContextMenuTab = function() {
 	var _this = this;
-	var tmp = this.contextMenuLayer.elements[1];
+	var tmp = this.contextSettingLayer.elements[1];
 
 	var textArr = [
 		{text:'边框颜色', aimAttr:'borderColor'},
@@ -435,7 +437,7 @@ Qflow.prototype.initContextMenuTab = function() {
 			aimAttr:item.aimAttr,
 			mouseup:function(){   
 				var _self = this; 
-				_this.contextMenuLayer.elements.forEach(function(item){
+				_this.contextSettingLayer.elements.forEach(function(item){
 
 					if(item.TYPE == "text"){
 						item.color = '#ccc';
@@ -451,7 +453,7 @@ Qflow.prototype.initContextMenuTab = function() {
 		});
 
 
-		_this.contextMenuLayer.push(c);
+		_this.contextSettingLayer.push(c);
 	})
 	
 };
@@ -468,7 +470,7 @@ Qflow.prototype.initContextMenuArea = function(pos) {
 		drag:'false'
 	})
 
-	this.contextMenuLayer.push(tmp);
+	this.contextSettingLayer.push(tmp);
 	
 };
 Qflow.prototype.getContainerNodes = function() {
@@ -1123,7 +1125,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 		_this.contextMenuNode = this;
 
 				 		//右键菜单层级放到最高
-				 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+				 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
 
 				 		_this.contextMenuShow.call(_this,pos);
 
@@ -1248,7 +1250,7 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
  		_this.contextMenuNode = container;
 
  		//右键菜单层级放到最高
- 		_this.qcanvas.raiseToTop(_this.contextMenuLayer);
+ 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
 
  		_this.contextMenuShow(pos);
 
