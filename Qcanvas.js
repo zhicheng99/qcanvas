@@ -341,14 +341,14 @@ Qline.prototype.splitText = function(obj){
 	
 
 	var _this = this;
-	this.qcanvas.qtext.text({
+	var tmp = this.qcanvas.qtext.text({
 			TYPE:'text',
 			text:obj.withText,
 			color:obj.color,
 			withTextAlign:obj.withTextAlign?obj.withTextAlign:'center',
 			start:function(){return _this.getMiddleCoordinates.call(_this,obj)}
 	});
-		
+	obj.withTextId = tmp.id;
 }	
 	
 Qline.prototype.paintLine  = function(obj){

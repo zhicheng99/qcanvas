@@ -61,6 +61,19 @@ var jsonData = [
 							 fillColor:'',
 							 dashed:true, 
 						}
+					},
+					{	
+						id:6,
+						nodeType:'node', //普通节点
+						x:350,
+						y:50,
+						text:'标题',
+						attr:{
+							 borderColor:'red', 
+							 color:'red', 
+							 fillColor:'',
+							 dashed:true, 
+						}
 					}
 
 				],

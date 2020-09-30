@@ -89,12 +89,148 @@ function Qflow(options){
 	//右键菜单
 	this.contextMenuLayer = this.qcanvas.qlayer.layer();
 	this.contextMenuLayer.setDisplay('none');
-	this.contextMenuNode = null; //右键菜单
+	this.contextMenuNode = null; //右键菜单对象
 
+	this.initMenu();
 
+	this.tmpLine = null;   //创建临时的连接线
 
 
 }
+Qflow.prototype.updateTmpLineEndPos = function(pos) {
+
+	if(this.tmpLine !== null){
+		this.tmpLine.setEnd([pos.x,pos.y]);
+	}
+	
+};
+Qflow.prototype.delTmpLine = function() {
+	if(this.tmpLine !== null){
+		// console.log(this.tmpLine);
+		 
+		 
+		 //同时删除线上所带的文字
+		 var text = this.qcanvas.getEleById(this.tmpLine.withTextId);
+		 this.qcanvas.removeEle(this.tmpLine);
+		 this.qcanvas.removeEle(text);
+
+		 this.tmpLine =null;
+	}
+};
+/**
+ * [createNewLine description]
+ * @param  {[type]} node    [目标对象]
+ * @param  {[type]} jsonObj [目标对象json]
+ * @return {[type]}         [description]
+ */
+Qflow.prototype.createNewLine = function(node,jsonObj) {
+	var _this = this;
+	//开始创建新的连线
+	if(this.contextMenuNode!== null){
+		console.log(this.contextMenuNode);
+		var fromJSON = this.getJsonObj(this.contextMenuNode.id);
+		console.log(fromJSON.id);
+
+		this.options.initData.link.push({
+			fromId:fromJSON.id,
+			toId:jsonObj.id,
+			attr:{
+				like:'->'
+			}
+		})
+		this.solveLink();
+
+
+		var json = this.options.initData.link[this.options.initData.link.length -1];
+		this.lineLayer.push(_this.qcanvas.qline.line({
+			start:function(){return _this.calcLineStartPos(json.fromNode,json.toNode,this.id)},
+			end:function(){return _this.calcLineEndPos(json.fromNode,json.toNode,this.id)}, 
+			width:1,
+			// pointerEvent:'none',
+			drag:false,
+			like:json.attr.like,
+			withText:'连接关系'
+		}));
+
+
+
+		this.contextMenuNode = null;
+	}
+};
+Qflow.prototype.createTmpLine = function(pos) {
+
+	//start:this.contextMenuNode的中心点
+	//end:[pos.x,pos.y]
+	var centerPos = this.contextMenuNode.centerPoints();
+	this.tmpLine = this.qcanvas.qline.line({
+	    start:[centerPos.x,centerPos.y],
+	    end:[pos.x,pos.y],
+	    width:1,
+	    like:'->',
+	    color:'gray',
+	    withText:'line4',
+	    withTextAlign:'left',
+	    pointerEvent:'none'
+	});
+
+};
+Qflow.prototype.initMenu = function() { 
+	var _this = this;
+	var area = this.qcanvas.qrect.rect({
+			 start:[0,0],  
+			 width:100,
+			 height:50,
+			 borderColor:'', 
+			 fillColor:'#fff',  
+			 drag:false, 
+			})
+    var linkRect = this.qcanvas.qrect.rect({
+			 start:function(){
+
+			 	return area.start
+			 },
+			 width:100,
+			 height:25,
+			 borderColor:'', 
+			 fillColor:'#fff',   
+			 drag:false, 
+			 mouseup:function(e,pos){ 
+			 	_this.menuLayerHide();
+			 	_this.createTmpLine(pos);
+			 }
+			})
+    var linkTxt = this.qcanvas.qtext.text({
+			text:'连接到',
+			start:function(){
+				return [_this.contextMenuLayer.elements[0].start[0]+_this.contextMenuLayer.elements[0].width*0.5,_this.contextMenuLayer.elements[0].start[1]+25*0.5];
+			},
+			fontSize:'12px',
+			color:'#000',
+			pointerEvent:'none'
+		})
+
+    this.contextMenuLayer.push(area,linkRect,linkTxt);
+
+};
+Qflow.prototype.menuLayerShow = function(pos) {
+
+	// var start = this.qcanvas.isFun(node.start)?node.start():node.start;
+ // 	var x = start[0]+node.width - 15;
+	// var y = start[1]+5; 
+
+	// this.contextMenuNode = node; 
+	
+	this.contextMenuLayer.elements[0].setStart([pos.x,pos.y]);
+	this.contextMenuLayer.setDisplay('block');
+	this.qcanvas.raiseToTop(this.contextMenuLayer);
+ 
+};
+
+Qflow.prototype.menuLayerHide = function() {
+	// this.contextMenuNode = null;
+	this.contextMenuLayer.setDisplay('none');
+
+};
 Qflow.prototype.initSettingIco = function() {
 	var _this = this;
 	this.settingIco = this.qcanvas.qimg.img({
@@ -1122,7 +1258,10 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 
 				 },
 				 mousedown:function(){ 
+				 		_this.delTmpLine();
+				 		_this.createNewLine(this,jsonObj);
 
+				 		_this.menuLayerHide();
 					 	_this.draging = true;
 				 },
 				 mouseup:function(e,pos){
@@ -1132,18 +1271,21 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 	_this.draging = false;
 				 	//右击显示菜单
 				 	if(e.button == '2'){
-				 		_this.contextSettingNode = this;
+				 		_this.contextMenuNode = this;
+				 		_this.menuLayerShow(pos);
+				 		// _this.contextSettingNode = this;
 
-				 		//右键菜单层级放到最高
-				 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
+				 		// //右键菜单层级放到最高
+				 		// _this.qcanvas.raiseToTop(_this.contextSettingLayer);
 
-				 		_this.contextSettingShow.call(_this,pos);
+				 		// _this.contextSettingShow.call(_this,pos);
 
 				 	}
 
 				 },
-				 mousemove:function(){ 
+				 mousemove:function(e,pos){ 
 
+				 	_this.updateTmpLineEndPos(pos);
 
 					_this.settingIcoShow(this);
 
@@ -1256,13 +1398,15 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
 
  	//右击显示菜单
  	if(e.button == '2'){ 
+ 		_this.contextMenuNode = container;
+ 		_this.menuLayerShow(pos);
 
- 		_this.contextSettingNode = container;
+ 		// _this.contextSettingNode = container;
 
- 		//右键菜单层级放到最高
- 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
+ 		// //右键菜单层级放到最高
+ 		// _this.qcanvas.raiseToTop(_this.contextSettingLayer);
 
- 		_this.contextSettingShow(pos);
+ 		// _this.contextSettingShow(pos);
 
  	}
 };
@@ -1314,6 +1458,11 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 },
 		 mousedown:function(){ 
 
+		 	_this.delTmpLine();
+	 		_this.createNewLine(this,jsonObj);
+
+
+		 	_this.menuLayerHide();
 		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
 		 mouseup:function(e,pos){
@@ -1321,9 +1470,9 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
-		 mousemove:function(){
+		 mousemove:function(e,pos){
+		 	_this.updateTmpLineEndPos(pos);
 		 	_this.settingIcoShow(this);
-
 
 		 	_this.containerMouseMove.call(_this,this,jsonObj); 
 
@@ -1371,9 +1520,9 @@ Qflow.prototype.initCanvas = function() {
 		id:this.options.id,
 		width:this.options.width,
 		height:this.options.height,
-		mousedown:this.canvasDownFun,
-		mousemove:this.canvasMoveFun,
-		mouseup:this.canvasUpFun
+		mousedown:this.canvasDownFun.bind(this),
+		mousemove:this.canvasMoveFun.bind(this),
+		mouseup:this.canvasUpFun.bind(this)
 
 	});
 	// this.toolLayer = this.qcanvas.qlayer.layer();
@@ -1660,11 +1809,13 @@ Qflow.prototype.addEle = function(obj) {
 Qflow.prototype.canvasUpFun = function() {
 	console.log('canvasUpFun');
 };
-Qflow.prototype.canvasMoveFun = function() {
-	// console.log('canvasMoveFun');
+Qflow.prototype.canvasMoveFun = function(e,pos) { 
+	this.updateTmpLineEndPos(pos);
 };
 Qflow.prototype.canvasDownFun = function() {
 	// console.log('canvasDownFun');
+	this.delTmpLine();
+	this.menuLayerHide();
 };
 
 Qflow.prototype.rectDown = function(pos) {
