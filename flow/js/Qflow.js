@@ -101,8 +101,51 @@ function Qflow(options){
 	this.contextLineMenuLayer.setDisplay('none');
 	this.contextLineMenuNode = null; //右键菜单对象
 
+	this.initLineMenu();
  
 }
+Qflow.prototype.initContextLineMenuArea = function(pos) {
+	var _this = this; 
+
+	//右击显示的菜单块
+	var tmp = this.qcanvas.qrect.rect({
+		start:[pos.x,pos.y],
+		width:200,
+		height:200,
+		borderColor:'',
+		fillColor:'yellow',
+		drag:'false'
+	})
+
+	this.contextLineMenuLayer.push(tmp);
+};
+Qflow.prototype.initLineMenu = function(pos) {
+
+	//初始化contextMenu右键菜单区rect
+	this.initContextLineMenuArea({x:0,y:0});
+
+	//修改标题框(用于定位一个input框)
+	// this.initModiTitleNode();
+
+	//初始化contextMenu中的tab项
+	// this.initContextMenuTab();
+
+	//17颜色块画到右击菜单区
+	// this.initColorRect();
+
+	//删除按钮
+	// this.initDelBtn();
+
+	// this.contextLineMenuLayer.setDisplay('block');
+
+};
+Qflow.prototype.lineMenuLayerShow = function() {
+
+	this.contextLineMenuLayer.setDisplay('block');
+};
+Qflow.prototype.lineMenuLayerHide = function() {
+	this.contextLineMenuLayer.setDisplay('none');
+};
 Qflow.prototype.updateTmpLineEndPos = function(pos) {
 
 	if(this.tmpLine !== null){
@@ -330,22 +373,22 @@ Qflow.prototype.delNode = function() {
 		delNodeObj.push(this.getNodeObj(nodeJson.nodeId));
 
 	}
-	console.log('需要删除的node');
-	console.log(delNodeObj);
+	// console.log('需要删除的node');
+	// console.log(delNodeObj);
 
 	var delLineObj = this.getDelLineObj(delNodeObj); //连线对象(在this.lineLayer上)
 	var delWithTextObj = this.getWithTextObj(delLineObj); //连线上的文字对象（在this.lineLayer上）
 	var delTextObj = this.getDelTextObj(delNodeObj); //节点上的文字对象
 
 
-	console.log('需要删除的line');
-	console.log(delLineObj);
+	// console.log('需要删除的line');
+	// console.log(delLineObj);
 
-	console.log('需要删除的text');
-	console.log(delTextObj);
+	// console.log('需要删除的text');
+	// console.log(delTextObj);
 
-	console.log('需要删除的line上withText');
-	console.log(delWithTextObj);
+	// console.log('需要删除的line上withText');
+	// console.log(delWithTextObj);
 
 
 
@@ -1362,7 +1405,16 @@ Qflow.prototype.initLink = function() {
 			// pointerEvent:'none',
 			drag:false,
 			like:item.attr.like,
-			withText:'连接关系'
+			withText:'连接关系',
+			mouseup:function(e,pos){
+
+				//右击显示菜单
+				if(e.button == '2'){ 
+
+
+				}
+
+			}
 		});
 
 		item.lineId = tmp.id;
@@ -1591,7 +1643,10 @@ Qflow.prototype.getJsonObj = function(nodeId) {
 Qflow.prototype.containerMouseDown = function(container,jsonObj) {
 	var _this = this;
 	//提高元素层级
- 	_this.qcanvas.raiseToTop(container);
+ 	this.qcanvas.raiseToTop(container);
+
+ 	//保证连线layer在最高层
+ 	this.qcanvas.raiseToTop(this.lineLayer);
 
  	//同时提高标题节点层级 
  	var titleNode = _this.getNodeObj(jsonObj.attr.titleId);
@@ -1613,6 +1668,10 @@ Qflow.prototype.containerMouseDown = function(container,jsonObj) {
 
 		 	} 
  		})
+
+ 		//保证连线layer在最高层
+	 	this.qcanvas.raiseToTop(this.lineLayer);
+
  	}
  	
 
