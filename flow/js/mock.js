@@ -54,7 +54,7 @@ var jsonData = [
 						nodeType:'node', //普通节点
 						x:200,
 						y:50,
-						text:'标题',
+						text:'标题1',
 						attr:{
 							 borderColor:'red', 
 							 color:'red', 
@@ -67,7 +67,7 @@ var jsonData = [
 						nodeType:'node', //普通节点
 						x:350,
 						y:50,
-						text:'标题',
+						text:'标题2',
 						attr:{
 							 borderColor:'red', 
 							 color:'red', 

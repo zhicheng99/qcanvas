@@ -73,11 +73,11 @@ function Qflow(options){
 	this.initLink();
 
 
-	//右击菜单layer对象
+	//点击设置按钮出现菜单layer对象
 	this.contextSettingLayer = this.qcanvas.qlayer.layer();
 	this.contextSettingLayer.setDisplay('none');
 
-	//右击显示半透明覆盖层
+	//点击设置按钮显示半透明覆盖层
 	this.initContextCover();
 
 
@@ -86,7 +86,7 @@ function Qflow(options){
 	this.initSettingIco();
 
 
-	//右键菜单
+	//节点右键菜单
 	this.contextMenuLayer = this.qcanvas.qlayer.layer();
 	this.contextMenuLayer.setDisplay('none');
 	this.contextMenuNode = null; //右键菜单对象
@@ -96,6 +96,12 @@ function Qflow(options){
 	this.tmpLine = null;   //创建临时的连接线
 
 
+	//线的右键菜单
+	this.contextLineMenuLayer = this.qcanvas.qlayer.layer();
+	this.contextLineMenuLayer.setDisplay('none');
+	this.contextLineMenuNode = null; //右键菜单对象
+
+ 
 }
 Qflow.prototype.updateTmpLineEndPos = function(pos) {
 
@@ -126,10 +132,16 @@ Qflow.prototype.delTmpLine = function() {
 Qflow.prototype.createNewLine = function(node,jsonObj) {
 	var _this = this;
 	//开始创建新的连线
-	if(this.contextMenuNode!== null){
-		console.log(this.contextMenuNode);
-		var fromJSON = this.getJsonObj(this.contextMenuNode.id);
-		console.log(fromJSON.id);
+	if(this.contextMenuNode!== null){ 
+
+
+		var fromJSON = this.getJsonObj(this.contextMenuNode.id); 
+
+		if(fromJSON.id == jsonObj.id){ //指向自已的连线 后期再实现
+			this.contextMenuNode = null;
+
+			return false;
+		}
 
 		this.options.initData.link.push({
 			fromId:fromJSON.id,
@@ -142,7 +154,7 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 
 
 		var json = this.options.initData.link[this.options.initData.link.length -1];
-		this.lineLayer.push(_this.qcanvas.qline.line({
+		var tmp = this.qcanvas.qline.line({
 			start:function(){return _this.calcLineStartPos(json.fromNode,json.toNode,this.id)},
 			end:function(){return _this.calcLineEndPos(json.fromNode,json.toNode,this.id)}, 
 			width:1,
@@ -150,8 +162,10 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 			drag:false,
 			like:json.attr.like,
 			withText:'连接关系'
-		}));
+		})
+		this.lineLayer.push(tmp);
 
+		json.lineId = tmp.id;
 
 
 		this.contextMenuNode = null;
@@ -173,6 +187,208 @@ Qflow.prototype.createTmpLine = function(pos) {
 	    pointerEvent:'none'
 	});
 
+};
+Qflow.prototype.getLineObj = function(nodeId) {
+	var tmp = this.lineLayer.elements.filter(function(item){
+ 		return item.id == nodeId;
+ 	})
+
+ 	if(tmp.length>0){
+ 		return tmp[0];
+ 	}else{
+ 		return null;
+ 	}
+};
+Qflow.prototype.getDelLineObj = function(nodeObj) {
+	var _this = this;
+	//在this.options.initData.link中找到与nodeObj节点有关系的线
+	var lineObj = [];
+
+	nodeObj.forEach(function(item){
+
+		_this.options.initData.link.forEach(function(l){
+
+			if(l.fromNode.id == item.id || 
+				l.toNode.id == item.id 
+				){
+
+				lineObj.push(_this.getLineObj(l.lineId));
+
+			}
+
+		})
+
+	})
+
+	return lineObj;
+
+};
+Qflow.prototype.getDelTextObj = function(nodeObj) {
+	var _this = this;
+	//在this.qcanvas.elements里找到与nodeObj节点有关联的标题节点
+	var textObj = [];
+
+	var allTextObj = this.qcanvas.elements.filter(function(item){
+		return item.TYPE == 'text'
+	})
+
+	nodeObj.forEach(function(item){
+
+		allTextObj.forEach(function(t){
+
+			if(typeof t.ownerId !== 'undefined' && t.ownerId == item.id){
+				textObj.push(t);
+			}
+
+		})
+
+	})
+
+	return textObj;
+};
+Qflow.prototype.getWithTextObj = function(nodeObj) {
+	var _this = this;
+	var textObj = [];
+	nodeObj.forEach(function(item){
+
+		_this.lineLayer.elements.forEach(function(t){
+
+			if(typeof item.withTextId !== 'undefined' && t.id == item.withTextId){
+				textObj.push(t);
+			}
+		})
+
+	})
+
+	return textObj;
+	
+};
+Qflow.prototype.updateNodeJsonAfterDelNode = function(nodeObj) {
+	var _this = this;
+
+
+	nodeObj.forEach(function(item){
+		var node = _this.getJsonObj(item.id);
+		node.isDel = true;
+	})
+ 	
+ 	var tmp =[];
+	//搜索父 子项
+	for (var i = 0; i < this.options.initData.node.length; i++) {
+
+		if(typeof this.options.initData.node[i].isDel !='undefined' &&  
+			this.options.initData.node[i].isDel){
+			continue;
+		}else{
+			tmp.push(this.options.initData.node[i]);
+
+			if(typeof tmp[tmp.length-1].child !='undefined'){
+				tmp[tmp.length-1].child = tmp[tmp.length-1].child.filter(function(item){
+
+					return  typeof item.isDel == 'undefined' || !item.isDel;
+				})
+			}
+		}
+		
+	}
+
+
+	this.options.initData.node = tmp;
+};
+Qflow.prototype.updatelinkJsonAfterDelNode = function(nodeObj) {
+	var _this = this;
+	nodeObj.forEach(function(l){
+
+		_this.options.initData.link.forEach(function(item){
+			if(item.lineId == l.id){
+				item.isDel = true;
+			}
+		})
+	})
+
+	this.options.initData.link = this.options.initData.link.filter(function(item){
+		return typeof item.isDel == 'undefined' || !item.isDel;
+	})
+	
+};
+Qflow.prototype.delNode = function() {
+	var _this = this;
+	//通过this.contextMenuNode找出需要删除的元素（与它联系的所有元素）
+	//如果是container 标题及它的子项也一并删除（在主画布上）
+	//如果有连线关系(指向它的或是它指向别的节点的) 需要把线也一并删除（在lineLayer上）
+	var nodeId = this.contextMenuNode.id;
+	this.contextMenuNode = null;
+	var nodeJson = this.getJsonObj(nodeId);
+
+
+	var delNodeObj = [];
+	if(nodeJson.nodeType == 'container'){
+		delNodeObj = delNodeObj.concat(nodeJson.childNodes);
+		delNodeObj.push(this.getNodeObj(nodeJson.nodeId));
+	}else{
+
+		delNodeObj.push(this.getNodeObj(nodeJson.nodeId));
+
+	}
+	console.log('需要删除的node');
+	console.log(delNodeObj);
+
+	var delLineObj = this.getDelLineObj(delNodeObj); //连线对象(在this.lineLayer上)
+	var delWithTextObj = this.getWithTextObj(delLineObj); //连线上的文字对象（在this.lineLayer上）
+	var delTextObj = this.getDelTextObj(delNodeObj); //节点上的文字对象
+
+
+	console.log('需要删除的line');
+	console.log(delLineObj);
+
+	console.log('需要删除的text');
+	console.log(delTextObj);
+
+	console.log('需要删除的line上withText');
+	console.log(delWithTextObj);
+
+
+
+	//同步json对象
+	this.updateNodeJsonAfterDelNode(delNodeObj);
+	this.updatelinkJsonAfterDelNode(delLineObj);
+
+
+	//删除对象 （顺序：连线上的文字->连线->node上的标题文字->node）
+	delWithTextObj.forEach(function(item){
+		_this.lineLayer.removeEle(item);
+	})
+
+	delLineObj.forEach(function(item){
+		_this.lineLayer.removeEle(item);
+	})
+	delTextObj.forEach(function(item){
+		_this.qcanvas.removeEle(item);
+	})
+
+	delNodeObj.forEach(function(item){
+		if(typeof item.ownerId !='undefined'){ //删除的是容器里的节点 需要更新json对象中的childNodes数组
+			var jsonObj = _this.getJsonObj(item.ownerId);
+
+			jsonObj.childNodes.forEach(function(c){
+				if(c.id == item.id ){
+					c.isDel = true;
+				}
+			})
+			jsonObj.childNodes = jsonObj.childNodes.filter(function(item){
+				return typeof item.isDel == 'undefined' || !item.isDel;
+			})
+
+			jsonObj.childNodes.forEach(function(item,index){
+				item.sort = index;
+			})
+
+
+		}
+		_this.qcanvas.removeEle(item);
+	})
+
+	
 };
 Qflow.prototype.initMenu = function() { 
 	var _this = this;
@@ -208,8 +424,34 @@ Qflow.prototype.initMenu = function() {
 			color:'#000',
 			pointerEvent:'none'
 		})
+    var delRect = this.qcanvas.qrect.rect({
+			 start:function(){
 
-    this.contextMenuLayer.push(area,linkRect,linkTxt);
+			 	return [area.start[0],area.start[1]+25];
+			 },
+			 width:100,
+			 height:25,
+			 borderColor:'', 
+			 fillColor:'#fff',   
+			 drag:false, 
+			 mouseup:function(e,pos){ 
+			 	console.log('删除');
+			 	_this.menuLayerHide();
+
+			 	_this.delNode();
+			 }
+			})
+    var delTxt = this.qcanvas.qtext.text({
+			text:'删除',
+			start:function(){
+				return [_this.contextMenuLayer.elements[0].start[0]+_this.contextMenuLayer.elements[0].width*0.5,_this.contextMenuLayer.elements[0].start[1]+25+25*0.5];
+			},
+			fontSize:'12px',
+			color:'#000',
+			pointerEvent:'none'
+		})
+
+    this.contextMenuLayer.push(area,linkRect,linkTxt,delRect,delTxt);
 
 };
 Qflow.prototype.menuLayerShow = function(pos) {
@@ -311,10 +553,7 @@ Qflow.prototype.contextSettingShow = function(pos) {
 
 	this.contextSettingLayer.setDisplay('block');
  
-};
-Qflow.prototype.delNode = function() {
-	console.log('delNode');
-};
+}; 
 Qflow.prototype.initDelBtn = function() {
 	var _this = this;
 	var ele = this.contextSettingLayer.elements[1];
@@ -1126,6 +1365,8 @@ Qflow.prototype.initLink = function() {
 			withText:'连接关系'
 		});
 
+		item.lineId = tmp.id;
+
 		_this.lineLayer.push(tmp);
 
 
@@ -1266,6 +1507,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 },
 				 mouseup:function(e,pos){
 				 	_this.settingIcoHide(); 
+				 	_this.menuLayerHide();
 					
 
 				 	_this.draging = false;
@@ -1467,6 +1709,8 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 },
 		 mouseup:function(e,pos){
 		 	_this.settingIcoHide(); 
+		 	_this.menuLayerHide();
+		 	
 		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
@@ -1743,9 +1987,10 @@ Qflow.prototype.rayCasting = function(p, poly) {
 Qflow.prototype.inContainer = function(obj) {   
 
 	var ele = this.qcanvas.elements; 
+	console.log(ele);
 	var aim = null;
 	for (var i = ele.length - 1; i >= 0; i--) {
-		if(ele[i].display !='none' && this.rayCasting({x:obj.x,y:obj.y},ele[i].polyPoints()) == 'in'){
+		if(ele[i].display !='none' && ele[i].TYPE !='layer' && this.rayCasting({x:obj.x,y:obj.y},ele[i].polyPoints()) == 'in'){
 			console.log('找到了');
 			aim = ele[i];
 			break;

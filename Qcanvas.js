@@ -2819,12 +2819,19 @@ function Qlayer(p){
 					if((arguments[i].TYPE == 'layer') || (arguments[i].TYPE == 'group')){   
 						continue;
 					}
-
-					var tmp = [];
+ 
 					if(this.pcanvas.isObj(arguments[i])){
 						this.pcanvas.removeEle.call(this.pcanvas,arguments[i]);
 						this.elements.push(arguments[i]);
 						// this.qcanvas.elements.push(arguments[i]);
+						
+						if(arguments[i].TYPE =='line' && typeof arguments[i].withTextId !='undefined'){  
+							//如果线段上带有文本 也需要把文本加入到该layer里 
+							var withTextObj = this.pcanvas.getEleById.call(this.pcanvas,arguments[i].withTextId);
+							this.pcanvas.removeEle.call(this.pcanvas,withTextObj);
+							this.elements.push(withTextObj);
+
+						}
 					}
 
 				}
