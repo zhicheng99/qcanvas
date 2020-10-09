@@ -2864,6 +2864,7 @@ function Qlayer(p){
 			lowerToBottom: this.pcanvas.lowerToBottom,
 			raise: this.pcanvas.raise,
 			raiseToTop: this.pcanvas.raiseToTop,
+			destroy:this.pcanvas.destroy
 
 		}
 		

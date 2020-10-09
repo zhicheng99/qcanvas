@@ -64,7 +64,9 @@
 			float: right;
 			font-size: 12px;
 		}
-		#titleInput{
+		#titleInput,
+		#lineTitleInput,
+		#lineLike{
 			position: absolute;
 			left:0;
 			top:0;
@@ -91,6 +93,11 @@
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
 			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle">
+			<input type="text" id="lineTitleInput" v-model="lineNodeTitle" @input="modiLineTitle">
+			<select id="lineLike" v-model="lineLike">
+				<option v-for="item in lineStyleList" :value="item.value">{{item.name}}</option> 
+			</select>
+
 			<div class="sheetLay">
 				<span v-for="item in sheets">{{item.name}}</span>
 			</div>
@@ -119,6 +126,34 @@
 		  		}
 		  	],
   			nodeTitle:'',
+  			lineNodeTitle:'标题',
+  			lineLike:'',
+  			lineStyleList:[
+  				{
+  					name:'-',
+  					value:'-'
+  				},
+  				{
+  					name:'->',
+  					value:'->'
+  				},
+  				{
+  					name:'<->',
+  					value:'<->'
+  				},
+  				{
+  					name:'--',
+  					value:'--'
+  				},
+  				{
+  					name:'-->',
+  					value:'-->'
+  				},
+  				{
+  					name:'<-->',
+  					value:'<-->'
+  				},
+  			]
 
 		  },
 		  methods:{
@@ -127,6 +162,9 @@
 		  	},	
 		  	modiTitle:function(){
 		  		qflow.modiTitle(this.nodeTitle);
+		  	},
+		  	modiLineTitle:function(){
+
 		  	},
 		  	init:function(){
 		  		qflow = new Qflow({

@@ -101,7 +101,7 @@ function Qflow(options){
 	this.contextLineMenuLayer.setDisplay('none');
 	this.contextLineMenuNode = null; //右键菜单对象
 
-	this.initLineMenu();
+	// this.initLineMenu();
  
 }
 Qflow.prototype.initContextLineMenuArea = function(pos) {
@@ -110,41 +110,226 @@ Qflow.prototype.initContextLineMenuArea = function(pos) {
 	//右击显示的菜单块
 	var tmp = this.qcanvas.qrect.rect({
 		start:[pos.x,pos.y],
-		width:200,
-		height:200,
+		width:150,
+		height:150,
 		borderColor:'',
 		fillColor:'yellow',
-		drag:'false'
+		drag:false
 	})
 
 	this.contextLineMenuLayer.push(tmp);
 };
+Qflow.prototype.resetPosOfLineModiTitleNode = function() {
+	var ele = this.contextLineMenuLayer.elements[0];
+	var x = ele.start[0]+5;
+	var y = ele.start[1]+5; 
+	var w = (ele.width - 10)*0.5;
+	var h = 30;
+
+	var d = document.getElementById('lineTitleInput');
+	d.style.left = x+'px';
+	d.style.top = y+'px';
+	d.style.width = w+'px';
+	d.style.height = h+'px';
+	d.style.display = 'block';
+};
+Qflow.prototype.initLineModiTitleNode = function() {
+
+	var ele = this.contextLineMenuLayer.elements[0];
+	var x = ele.start[0]+5;
+	var y = ele.start[1]+5;
+	var w = (ele.width - 10)*0.5;
+	var h = 30;
+
+	// this.contextSettingLayer.push(this.qcanvas.qrect.rect({
+	// 		start:[x,y],
+	// 		width:w,
+	// 		height:h,
+	// 		fillColor:'#fff',
+	// 		drag:false,
+	// 		pointerEvent:'none'
+	// 	}));
+
+	var d = document.getElementById('lineTitleInput');
+	d.style.left = x+'px';
+	d.style.top = y+'px';
+	d.style.width = w+'px';
+	d.style.height = h+'px';
+	d.style.display = 'block';
+
+	// console.log(this.contextSettingNode);
+
+	// var rectJsonObj = this.getJsonObj(this.contextSettingNode.id);
+	// console.log(rectJsonObj);
+
+	// if(rectJsonObj.attr && rectJsonObj.attr.titleId){
+	// 	this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
+		
+	// 	d.value = this.modiTitleObj.text;
+	// }	
+
+
+};
+Qflow.prototype.resetPosOfLineLikeNode = function() {
+	var ele = this.contextLineMenuLayer.elements[0];
+	var x = ele.start[0]+ele.width*0.5;
+	var y = ele.start[1]+5;
+	var w = (ele.width - 10)*0.5;
+	var h = 30;
+
+	var d = document.getElementById('lineLike');
+	d.style.left = x+'px';
+	d.style.top = y+'px';
+	d.style.width = w+'px';
+	d.style.height = h+'px';
+	d.style.display = 'block';
+};
+Qflow.prototype.initLineLikeNode = function() {
+	var ele = this.contextLineMenuLayer.elements[0];
+	var x = ele.start[0]+ele.width*0.5;
+	var y = ele.start[1]+5;
+	var w = (ele.width - 10)*0.5;
+	var h = 30;
+
+	var d = document.getElementById('lineLike');
+	d.style.left = x+'px';
+	d.style.top = y+'px';
+	d.style.width = w+'px';
+	d.style.height = h+'px';
+	d.style.display = 'block';
+
+
+};
+Qflow.prototype.initLineColorRect = function() {
+	var _this = this;
+	var disTop = 10;
+	var padding = 10;
+	var rectW = 13;
+	var rectH = 13;
+
+	var tmp = this.contextLineMenuLayer.elements[0];
+
+
+	//暂时排4行5列 
+	var areaPosition = [
+		{
+			x:tmp.start[0]+10,
+			y:tmp.start[1]+30+disTop
+		},
+		{
+			x:tmp.start[0]+tmp.width-10,
+			y:tmp.start[1]+tmp.height+30-10
+		}
+	];
+
+	var pos = this.childPositionByRow(4,6,areaPosition, rectW,rectH);
+
+	var color = [];
+	for(var i in this.colorRect){
+		color.push(this.colorRect[i]);
+	}
+
+	for (var i = 0; i < color.length; i++) {
+		this.contextLineMenuLayer.push(this.qcanvas.qrect.rect({
+			start:[pos[i].x,pos[i].y],
+			width:rectW,
+			height:rectH,
+			fillColor:color[i],
+			drag:false,
+			mouseup:function(){
+
+				// if(_this.contextAimAttr == 'color'){
+				// 	//设置节点标题颜色
+				// 	_this.updateNodeTitleColor(this.fillColor);
+
+
+				// }else{
+
+				// 	_this.contextSettingNode[_this.contextAimAttr] = this.fillColor;
+					 
+				// }
+
+				// 	//更新json数据相关属性值
+				// 	_this.updateInitDataAttr(this.fillColor);
+
+
+			}
+		}))
+	}
+};
+Qflow.prototype.initLineDelBtn = function() {
+	var _this = this;
+	var ele = this.contextLineMenuLayer.elements[0];
+
+	this.contextLineMenuLayer.push(
+		this.qcanvas.qrect.rect({
+			start:[ele.start[0]+ele.width-70,ele.start[1]+ele.height-40],
+			width:60,
+			height:30,
+			fillColor:'#fff',
+			drag:false,  
+			mouseup:function(){
+				console.log('del');
+				//删除操作
+				// _this.delNode();
+
+				// _this.contextSettingHide();
+			}
+		}),
+		this.qcanvas.qtext.text({
+			text:'删除',
+			start:[ele.start[0]+ele.width-40,ele.start[1]+ele.height-25],
+			fontSize:'12px',
+			color:'#000',
+			pointerEvent:'none'
+		})
+	);
+
+};
 Qflow.prototype.initLineMenu = function(pos) {
 
-	//初始化contextMenu右键菜单区rect
-	this.initContextLineMenuArea({x:0,y:0});
+	this.lineMenuLayerHide();
+	
+
+	//初始化contextLineMenu右键菜单区rect
+	this.initContextLineMenuArea(pos);
 
 	//修改标题框(用于定位一个input框)
-	// this.initModiTitleNode();
+	this.initLineModiTitleNode();
+
+	//修改样式select框定位
+	this.initLineLikeNode();
 
 	//初始化contextMenu中的tab项
 	// this.initContextMenuTab();
 
 	//17颜色块画到右击菜单区
-	// this.initColorRect();
+	this.initLineColorRect();
 
 	//删除按钮
-	// this.initDelBtn();
+	this.initLineDelBtn();
 
 	// this.contextLineMenuLayer.setDisplay('block');
 
 };
-Qflow.prototype.lineMenuLayerShow = function() {
+Qflow.prototype.lineMenuLayerShow = function(pos) { 
 
-	this.contextLineMenuLayer.setDisplay('block');
+
+	this.contextLineMenuLayer.setDisplay('block'); 
 };
 Qflow.prototype.lineMenuLayerHide = function() {
 	this.contextLineMenuLayer.setDisplay('none');
+	this.contextLineMenuLayer.destroy();
+
+	var d1 = document.getElementById('lineTitleInput'); 
+	var d2 = document.getElementById('lineLike'); 
+
+	
+	d1.style.display = 'none';
+	d2.style.display = 'none';
+
+
+
 };
 Qflow.prototype.updateTmpLineEndPos = function(pos) {
 
@@ -1407,10 +1592,15 @@ Qflow.prototype.initLink = function() {
 			like:item.attr.like,
 			withText:'连接关系',
 			mouseup:function(e,pos){
-
+				console.log(pos);
 				//右击显示菜单
 				if(e.button == '2'){ 
 
+					_this.contextLineMenuNode = this;
+
+					_this.qcanvas.raiseToTop(_this.contextLineMenuLayer);
+					_this.initLineMenu(pos);
+					_this.lineMenuLayerShow();
 
 				}
 
@@ -2120,6 +2310,7 @@ Qflow.prototype.canvasDownFun = function() {
 	// console.log('canvasDownFun');
 	this.delTmpLine();
 	this.menuLayerHide();
+	this.lineMenuLayerHide()
 };
 
 Qflow.prototype.rectDown = function(pos) {
