@@ -133,6 +133,23 @@ Qflow.prototype.resetPosOfLineModiTitleNode = function() {
 	d.style.height = h+'px';
 	d.style.display = 'block';
 };
+Qflow.prototype.modiLineTitle = function(v) {
+	if(this.modiTitleObj !== null){
+		this.modiTitleObj.setText(v);
+	}
+
+	var json = this.getLineJsonByNodeId(this.contextLineMenuNode.id);
+  	json.attr.text = v;
+
+};
+Qflow.prototype.modiLineLike = function(v) { 
+
+	this.contextLineMenuNode.setLike(v);
+
+
+	var json = this.getLineJsonByNodeId(this.contextLineMenuNode.id);
+  	json.attr.like = v;
+};
 Qflow.prototype.initLineModiTitleNode = function() {
 
 	var ele = this.contextLineMenuLayer.elements[0];
@@ -140,15 +157,7 @@ Qflow.prototype.initLineModiTitleNode = function() {
 	var y = ele.start[1]+5;
 	var w = (ele.width - 10)*0.5;
 	var h = 30;
-
-	// this.contextSettingLayer.push(this.qcanvas.qrect.rect({
-	// 		start:[x,y],
-	// 		width:w,
-	// 		height:h,
-	// 		fillColor:'#fff',
-	// 		drag:false,
-	// 		pointerEvent:'none'
-	// 	}));
+ 
 
 	var d = document.getElementById('lineTitleInput');
 	d.style.left = x+'px';
@@ -156,34 +165,14 @@ Qflow.prototype.initLineModiTitleNode = function() {
 	d.style.width = w+'px';
 	d.style.height = h+'px';
 	d.style.display = 'block';
+ 
 
-	// console.log(this.contextSettingNode);
-
-	// var rectJsonObj = this.getJsonObj(this.contextSettingNode.id);
-	// console.log(rectJsonObj);
-
-	// if(rectJsonObj.attr && rectJsonObj.attr.titleId){
-	// 	this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
-		
-	// 	d.value = this.modiTitleObj.text;
-	// }	
+	this.modiTitleObj = this.lineLayer.getEleById(this.contextLineMenuNode.withTextId);
+	d.value = this.modiTitleObj.text;
+ 
 
 
-};
-Qflow.prototype.resetPosOfLineLikeNode = function() {
-	var ele = this.contextLineMenuLayer.elements[0];
-	var x = ele.start[0]+ele.width*0.5;
-	var y = ele.start[1]+5;
-	var w = (ele.width - 10)*0.5;
-	var h = 30;
-
-	var d = document.getElementById('lineLike');
-	d.style.left = x+'px';
-	d.style.top = y+'px';
-	d.style.width = w+'px';
-	d.style.height = h+'px';
-	d.style.display = 'block';
-};
+}; 
 Qflow.prototype.initLineLikeNode = function() {
 	var ele = this.contextLineMenuLayer.elements[0];
 	var x = ele.start[0]+ele.width*0.5;
@@ -197,6 +186,9 @@ Qflow.prototype.initLineLikeNode = function() {
 	d.style.width = w+'px';
 	d.style.height = h+'px';
 	d.style.display = 'block';
+
+	d.value = this.contextLineMenuNode.like;
+
 
 
 };
@@ -238,6 +230,15 @@ Qflow.prototype.initLineColorRect = function() {
 			drag:false,
 			mouseup:function(){
 
+				_this.contextLineMenuNode.setColor(this.fillColor);
+
+				var json = _this.getLineJsonByNodeId(_this.contextLineMenuNode.id);
+			  	json.attr.color = this.fillColor;
+
+
+			  	var textObj = _this.lineLayer.getEleById(_this.contextLineMenuNode.withTextId);
+				textObj.setColor(this.fillColor);
+
 				// if(_this.contextAimAttr == 'color'){
 				// 	//设置节点标题颜色
 				// 	_this.updateNodeTitleColor(this.fillColor);
@@ -257,6 +258,24 @@ Qflow.prototype.initLineColorRect = function() {
 		}))
 	}
 };
+Qflow.prototype.delLineNode = function() {
+	var _this = this;
+	//更新json数据
+	var tmp = this.options.initData.link.filter(function(item){
+		return item.lineId != _this.contextLineMenuNode.id;
+	})
+	this.options.initData.link = tmp;
+
+
+	//如果有通过withText生成的文字对象 先删除文字
+	if(typeof this.contextLineMenuNode.withTextId != 'undefined'){
+		var textObj = this.lineLayer.getEleById(this.contextLineMenuNode.withTextId);
+		this.lineLayer.removeEle(textObj);
+	}
+	
+	this.lineLayer.removeEle(this.contextLineMenuNode);
+
+};
 Qflow.prototype.initLineDelBtn = function() {
 	var _this = this;
 	var ele = this.contextLineMenuLayer.elements[0];
@@ -271,9 +290,9 @@ Qflow.prototype.initLineDelBtn = function() {
 			mouseup:function(){
 				console.log('del');
 				//删除操作
-				// _this.delNode();
-
-				// _this.contextSettingHide();
+				_this.delLineNode();
+ 				
+ 				_this.lineMenuLayerHide();
 			}
 		}),
 		this.qcanvas.qtext.text({
@@ -289,7 +308,6 @@ Qflow.prototype.initLineDelBtn = function() {
 Qflow.prototype.initLineMenu = function(pos) {
 
 	this.lineMenuLayerHide();
-	
 
 	//初始化contextLineMenu右键菜单区rect
 	this.initContextLineMenuArea(pos);
@@ -300,8 +318,6 @@ Qflow.prototype.initLineMenu = function(pos) {
 	//修改样式select框定位
 	this.initLineLikeNode();
 
-	//初始化contextMenu中的tab项
-	// this.initContextMenuTab();
 
 	//17颜色块画到右击菜单区
 	this.initLineColorRect();
@@ -320,6 +336,7 @@ Qflow.prototype.lineMenuLayerShow = function(pos) {
 Qflow.prototype.lineMenuLayerHide = function() {
 	this.contextLineMenuLayer.setDisplay('none');
 	this.contextLineMenuLayer.destroy();
+	this.modiTitleObj = null;
 
 	var d1 = document.getElementById('lineTitleInput'); 
 	var d2 = document.getElementById('lineLike'); 
@@ -389,7 +406,19 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 			// pointerEvent:'none',
 			drag:false,
 			like:json.attr.like,
-			withText:'连接关系'
+			withText:'连接关系',
+			mouseup:function(e,pos) {
+				//右击显示菜单
+				if(e.button == '2'){ 
+
+					_this.contextLineMenuNode = this;
+
+					_this.qcanvas.raiseToTop(_this.contextLineMenuLayer);
+					_this.initLineMenu(pos);
+					_this.lineMenuLayerShow();
+
+				}
+			}
 		})
 		this.lineLayer.push(tmp);
 
@@ -427,6 +456,19 @@ Qflow.prototype.getLineObj = function(nodeId) {
  		return null;
  	}
 };
+
+Qflow.prototype.getLineJsonByNodeId = function(nodeId) {
+	var tmp = this.options.initData.link.filter(function(item){
+		return item.lineId == nodeId;
+	})
+
+	if(tmp.length>0){
+ 		return tmp[0];
+ 	}else{
+ 		return null;
+ 	}
+};
+
 Qflow.prototype.getDelLineObj = function(nodeObj) {
 	var _this = this;
 	//在this.options.initData.link中找到与nodeObj节点有关系的线
@@ -1590,9 +1632,9 @@ Qflow.prototype.initLink = function() {
 			// pointerEvent:'none',
 			drag:false,
 			like:item.attr.like,
-			withText:'连接关系',
+			color:item.attr.color?item.attr.color:'#000',
+			withText:item.attr.text,
 			mouseup:function(e,pos){
-				console.log(pos);
 				//右击显示菜单
 				if(e.button == '2'){ 
 

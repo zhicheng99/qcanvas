@@ -94,7 +94,7 @@
 			<canvas id="qcanvas"></canvas>
 			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle">
 			<input type="text" id="lineTitleInput" v-model="lineNodeTitle" @input="modiLineTitle">
-			<select id="lineLike" v-model="lineLike">
+			<select id="lineLike" v-model="lineLike" @change="modiLineLike">
 				<option v-for="item in lineStyleList" :value="item.value">{{item.name}}</option> 
 			</select>
 
@@ -164,7 +164,10 @@
 		  		qflow.modiTitle(this.nodeTitle);
 		  	},
 		  	modiLineTitle:function(){
-
+		  		qflow.modiLineTitle(this.lineNodeTitle);
+		  	},
+		  	modiLineLike:function(){
+		  		qflow.modiLineLike(this.lineLike);
 		  	},
 		  	init:function(){
 		  		qflow = new Qflow({
