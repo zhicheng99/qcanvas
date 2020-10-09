@@ -863,6 +863,10 @@ Qflow.prototype.modiTitle = function(v) {
 };
 Qflow.prototype.initModiTitleNode = function() {
 
+
+	var rectJsonObj = this.getJsonObj(this.contextSettingNode.id);
+	console.log(rectJsonObj);
+
 	var ele = this.contextSettingLayer.elements[1];
 	var x = ele.start[0]+10;
 	var y = ele.start[1]+10;
@@ -878,17 +882,16 @@ Qflow.prototype.initModiTitleNode = function() {
 			pointerEvent:'none'
 		}));
 
+	
+
 	var d = document.getElementById('titleInput');
 	d.style.left = x+'px';
 	d.style.top = y+'px';
-	d.style.width = w+'px';
+	d.style.width = rectJsonObj.nodeType =='container'? w * 0.5+'px':w+'px';
+
 	d.style.height = h+'px';
 	d.style.display = 'block';
-
-	console.log(this.contextSettingNode);
-
-	var rectJsonObj = this.getJsonObj(this.contextSettingNode.id);
-	console.log(rectJsonObj);
+ 
 
 	if(rectJsonObj.attr && rectJsonObj.attr.titleId){
 		this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
@@ -896,7 +899,26 @@ Qflow.prototype.initModiTitleNode = function() {
 		d.value = this.modiTitleObj.text;
 	}	
 
+	//显示容器列的input框
+	if(rectJsonObj.nodeType == 'container'){
 
+		this.contextSettingLayer.push(this.qcanvas.qtext.text({
+			start:[x+w*0.5+15,y+15],
+			text:'列:',
+			color:'#000'
+		}))
+
+
+		var c = document.getElementById('containerGridColumn');
+		c.style.left = x+w*0.5+30+'px';
+		c.style.top = y+'px';
+		c.style.width = w*0.5-30+'px';
+		c.style.height = h+'px';
+		c.style.display = 'block';
+
+		c.value = rectJsonObj.grid[1];
+
+	}
 };
 Qflow.prototype.contextSettingHide = function() {
 	var _this = this;
@@ -907,6 +929,10 @@ Qflow.prototype.contextSettingHide = function() {
 
 	var d = document.getElementById('titleInput'); 
 	d.style.display = 'none';
+
+	var c = document.getElementById('containerGridColumn');
+	c.style.display = 'none';
+
 
 
 	//保留每一个半透明覆盖层对象 下次弹出右键菜单 内容重新初始化
@@ -2135,6 +2161,40 @@ Qflow.prototype.addContainer = function(obj) {
 	this.initContainerTitle(jsonObj,tmp);
 	
 	
+};
+Qflow.prototype.modiContainerGridColumn = function(column) { 
+	var containerNode = this.getNodeObj(this.contextSettingNode.id);
+	var parentJsonNode = this.getJsonObj(this.contextSettingNode.id);
+
+	parentJsonNode.width = this.childNodeWidth*column+(column+1)*this.containerChildMargin;
+
+	// parentJsonNode.grid[1] = column;
+
+	if(parentJsonNode.attr.titlePosition == 'top-center'){
+		var startPlaceHolderY = (this.containerTitleHeight+this.containerPadding);
+		var row = Math.ceil(parentJsonNode.child.length/column);
+		parentJsonNode.height = startPlaceHolderY + this.childNodeHeight*row+(row)*this.containerChildMargin;
+		parentJsonNode.grid = [row,column];
+
+	}
+ 
+	containerNode.setWidth(parentJsonNode.width);
+	containerNode.setHeight(parentJsonNode.height);
+
+
+	//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+	var childAreaPosition = this.getChildAreaPosition(parentJsonNode); 
+
+
+
+	// //可以摆放子项的区域位置 计算出各个格子的坐标
+	var childPosition = this.getChildPosition(parentJsonNode,childAreaPosition);
+
+
+	// //把格子坐标添加到attr里
+	parentJsonNode.attr.gridPosition = childPosition;
+
+
 };
 Qflow.prototype.inSertToContainer = function(obj,aim) {
 	//添加节点到container

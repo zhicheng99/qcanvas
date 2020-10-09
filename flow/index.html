@@ -66,6 +66,7 @@
 		}
 		#titleInput,
 		#lineTitleInput,
+		#containerGridColumn,
 		#lineLike{
 			position: absolute;
 			left:0;
@@ -93,6 +94,7 @@
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
 			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle">
+			<input type="text" id="containerGridColumn" v-model.number="containerGridColumn" @input="modiContainerGridColumn">
 			<input type="text" id="lineTitleInput" v-model="lineNodeTitle" @input="modiLineTitle">
 			<select id="lineLike" v-model="lineLike" @change="modiLineLike">
 				<option v-for="item in lineStyleList" :value="item.value">{{item.name}}</option> 
@@ -153,7 +155,8 @@
   					name:'<-->',
   					value:'<-->'
   				},
-  			]
+  			],
+  			containerGridColumn:1
 
 		  },
 		  methods:{
@@ -168,6 +171,17 @@
 		  	},
 		  	modiLineLike:function(){
 		  		qflow.modiLineLike(this.lineLike);
+		  	},
+		  	modiContainerGridColumn:function(){
+
+		  		if(this.containerGridColumn =='' || 
+		  			this.containerGridColumn ==0){
+
+		  			return false;
+		  		} 
+			  	qflow.modiContainerGridColumn(this.containerGridColumn);
+		  		
+
 		  	},
 		  	init:function(){
 		  		qflow = new Qflow({
