@@ -2884,7 +2884,7 @@ function Qlayer(p){
 
 	this.paintLayer = function(o){
 		this.start(o);
-		this.pcanvas.context.drawImage(t,0,0,this.pcanvas.stage.width*this.dpr,this.pcanvas.stage.height*this.dpr,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
+		o.display == 'block' &&  this.pcanvas.context.drawImage(t,0,0,this.pcanvas.stage.width*this.dpr,this.pcanvas.stage.height*this.dpr,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
 	}
 
 	this.paint = function(layer){
@@ -2899,7 +2899,6 @@ function Qlayer(p){
 					this.TypeGroup[o.TYPE].call(this,o); 
 							
 				}
-	 			
 	 		}
 			
 

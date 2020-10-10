@@ -10,15 +10,16 @@ function Qflow(options){
 	this.qnodes = [];  //qcanvas rect对象
 	this.containerPadding = 10;     //容器内边距
 	this.containerChildMargin = 10; //子项外边距
-	this.containerTitleHeight = 30; //容器标题文本占的高度
+	this.containerTitleHeight = 20; //容器标题文本占的高度
 
 	//初始普通节点大小
-	this.childNodeHeight = 50;
 	this.childNodeWidth = 100;
+	this.childNodeHeight = 30;
+
 
 	//初始容器大小
 	this.containerNodeWidth = 120;
-	this.containerNodeHeight = 100;
+	this.containerNodeHeight = 70;
 
 
 	this.draging = false;
@@ -49,6 +50,11 @@ function Qflow(options){
 		"silver":"#C0C0C0",
 		"teal":"#008080",
 	};
+
+	this.lineColor = '#FF912D';
+	this.childNodeFillColor = '#585DCB';
+	this.childNodeBorderColor = '#70BDC4';
+	this.containerFillColor = "#9093DC";
 
 	
 
@@ -392,9 +398,11 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 	var _this = this;
 	//开始创建新的连线
 	if(this.contextMenuNode!== null){ 
-
+		console.log(this.contextMenuNode);
 
 		var fromJSON = this.getJsonObj(this.contextMenuNode.id); 
+
+		console.log(fromJSON);
 
 		if(fromJSON.id == jsonObj.id){ //指向自已的连线 后期再实现
 			this.contextMenuNode = null;
@@ -406,7 +414,8 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 			fromId:fromJSON.id,
 			toId:jsonObj.id,
 			attr:{
-				like:'->'
+				like:'->',
+				color:this.lineColor
 			}
 		})
 		this.solveLink();
@@ -420,6 +429,7 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 			// pointerEvent:'none',
 			drag:false,
 			like:json.attr.like,
+			color:json.attr.color,
 			withText:'连接关系',
 			mouseup:function(e,pos) {
 				//右击显示菜单
@@ -452,8 +462,8 @@ Qflow.prototype.createTmpLine = function(pos) {
 	    end:[pos.x,pos.y],
 	    width:1,
 	    like:'->',
-	    color:'gray',
-	    withText:'line4',
+	    color:this.lineColor,
+	    withText:'连接关系',
 	    withTextAlign:'left',
 	    pointerEvent:'none'
 	});
@@ -650,22 +660,26 @@ Qflow.prototype.delNode = function() {
 		_this.qcanvas.removeEle(item);
 	})
 
+	console.log(delNodeObj)
 	delNodeObj.forEach(function(item){
 		if(typeof item.ownerId !='undefined'){ //删除的是容器里的节点 需要更新json对象中的childNodes数组
 			var jsonObj = _this.getJsonObj(item.ownerId);
 
-			jsonObj.childNodes.forEach(function(c){
-				if(c.id == item.id ){
-					c.isDel = true;
-				}
-			})
-			jsonObj.childNodes = jsonObj.childNodes.filter(function(item){
-				return typeof item.isDel == 'undefined' || !item.isDel;
-			})
+			if(jsonObj !== null){
 
-			jsonObj.childNodes.forEach(function(item,index){
-				item.sort = index;
-			})
+				jsonObj.childNodes.forEach(function(c){
+					if(c.id == item.id ){
+						c.isDel = true;
+					}
+				})
+				jsonObj.childNodes = jsonObj.childNodes.filter(function(item){
+					return typeof item.isDel == 'undefined' || !item.isDel;
+				})
+
+				jsonObj.childNodes.forEach(function(item,index){
+					item.sort = index;
+				})
+			}
 
 
 		}
@@ -1690,6 +1704,11 @@ Qflow.prototype.solveLink = function() {
 		item.fromNode =  _this.getNodeObj(_this.getNodeIdFromJsonById(item.fromId));
 		item.toNode = _this.getNodeObj(_this.getNodeIdFromJsonById(item.toId));
 
+		if(typeof item.attr.color == 'undefined'){
+
+			item.attr.color = _this.lineColor;
+		}
+
 	})
 };
 Qflow.prototype.initLink = function() {
@@ -1703,7 +1722,7 @@ Qflow.prototype.initLink = function() {
 			// pointerEvent:'none',
 			drag:false,
 			like:item.attr.like,
-			color:item.attr.color?item.attr.color:'#000',
+			color:item.attr.color?item.attr.color:this.lineColor,
 			withText:item.attr.text,
 			mouseup:function(e,pos){
 				//右击显示菜单
@@ -1839,13 +1858,14 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 },
 				 sort:index,
 				 nodeType:jsonObj.nodeType,
-				 width:jsonObj.width?jsonObj.width:100,
-				 height:jsonObj.height?jsonObj.height:50,
-				 borderColor:jsonObj.attr && jsonObj.attr.borderColor?jsonObj.attr.borderColor:'red', 
-				 fillColor:jsonObj.attr && jsonObj.attr.fillColor?jsonObj.attr.fillColor:'', 
+				 width:jsonObj.width?jsonObj.width:this.childNodeWidth,
+				 height:jsonObj.height?jsonObj.height:this.childNodeHeight,
+				 borderColor:jsonObj.attr && jsonObj.attr.borderColor?jsonObj.attr.borderColor:this.childNodeBorderColor, 
+				 fillColor:jsonObj.attr && jsonObj.attr.fillColor?jsonObj.attr.fillColor:this.childNodeFillColor, 
 				 dashed:jsonObj.attr && jsonObj.attr.dashed?jsonObj.attr.dashed:false,  
 				 drag:false,
 				 ownerId:parentNode.nodeId,
+				 lineWidth:1,
 				 getRangePoints:function(){ //返回rect边上的8个点的坐标 
 				 	return _this.createRangePoints(this.polyPoints());
 				 },
@@ -1895,7 +1915,11 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 	_this.settingIcoHide(); 
 				 }
 				})
-	// //qcanvas和数据作关联
+	//qcanvas和数据作关联 
+	console.log(jsonObj);
+	if(typeof jsonObj.id == 'undefined'){
+		jsonObj.id = tmp.id
+	}
 	jsonObj.nodeId = tmp.id;
 	parentNode.childNodes?parentNode.childNodes.push(tmp):(parentNode.childNodes = [tmp]);
 
@@ -1903,6 +1927,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 
 
 	this.initNodeTitle(jsonObj,tmp);
+ 
 
 
 };
@@ -2049,8 +2074,8 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var tmp = this.qcanvas.qrect.rect({
 		 start:[jsonObj.x,jsonObj.y], 
 		 nodeType:jsonObj.nodeType,
-		 width:jsonObj.width?jsonObj.width:100,
-		 height:jsonObj.height?jsonObj.height:50,
+		 width:jsonObj.width?jsonObj.width:this.childNodeWidth,
+		 height:jsonObj.height?jsonObj.height:this.childNodeHeight,
 		 borderColor:jsonObj.attr.borderColor, 
 		 fillColor:jsonObj.attr.fillColor, 
 		 dashed:jsonObj.attr.dashed,  
@@ -2144,9 +2169,9 @@ Qflow.prototype.addContainer = function(obj) {
 		 start:[obj.x,obj.y],
 		 width:this.containerNodeWidth,
 		 height:this.containerNodeHeight,
-		 borderColor:'red', 
-		 fillColor:'',
-		 dashed:true, 
+		 borderColor:this.containerFillColor, 
+		 fillColor:this.containerFillColor,
+		 dashed:false, 
 		 // getRangePoints:function(){ //返回rect边上的8个点的坐标 
 		 // 	return _this.createRangePoints(this.polyPoints());
 		 // },
@@ -2226,9 +2251,9 @@ Qflow.prototype.addContainer = function(obj) {
 		childNodes:[], //qcanvas元素对象
 		attr:{
 			 titlePosition:'top-center',
-			 color:'red', //标题文字的颜色
-			 borderColor:'red', 
-			 fillColor:'',
+			 color:'#fff', //标题文字的颜色
+			 borderColor:this.containerFillColor,
+			 fillColor:this.containerFillColor,
 			 dashed:false, 
 		}
 	}
@@ -2310,12 +2335,12 @@ Qflow.prototype.inSertToContainer = function(obj,aim) {
 			nodeType:'node',
 			text:'我是新来的',
 			attr:{
-				color:'red'
+				color:'#fff'
 			}
 	}
 
 	this.createChildsOfContainer(parentJsonNode,jsonObj,parentJsonNode.child.length);
-
+	
 	parentJsonNode.child.push(jsonObj); 
 
 
@@ -2329,9 +2354,9 @@ Qflow.prototype.addNode = function(obj) {
 		 start:[obj.x,obj.y],
 		 width:this.childNodeWidth,
 		 height:this.childNodeHeight,
-		 borderColor:'red', 
-		 fillColor:'',
-		 dashed:true, 
+		 borderColor:this.childNodeBorderColor, 
+		 fillColor:this.childNodeFillColor, 
+		 dashed:false, 
 		 // mousedown:function(){
 
 		 // 	_this.containerMouseDown.call(_this,this,jsonObj); 
@@ -2392,10 +2417,10 @@ Qflow.prototype.addNode = function(obj) {
 			y:obj.y,
 			text:'标题',
 			attr:{
-				 borderColor:'red', 
-				 color:'red', 
-				 fillColor:'',
-				 dashed:true, 
+				 borderColor:this.childNodeBorderColor, 
+				 color:'#fff',
+				 fillColor:this.childNodeFillColor,
+				 dashed:false, 
 			}
 	}
 

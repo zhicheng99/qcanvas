@@ -19,7 +19,7 @@ var jsonData = [
 								nodeType:'node',
 								text:'我是容器里的1',
 								attr:{
-									color:'red'
+									color:'#fff'
 								}
 							},
 							{	
@@ -27,7 +27,7 @@ var jsonData = [
 								nodeType:'node',
 								text:'我是容器里的2',
 								attr:{
-									color:'red'
+									color:'#fff'
 								}
 							},
 							{	
@@ -35,7 +35,7 @@ var jsonData = [
 								nodeType:'node',
 								text:'我是容器里的3',
 								attr:{
-									color:'red'
+									color:'#fff'
 								}
 
 							}
@@ -43,9 +43,9 @@ var jsonData = [
 						],
 						attr:{
 							 titlePosition:'top-center',
-							 color:'red', //标题文字的颜色
-							 borderColor:'red', 
-							 fillColor:'',
+							 color:'#fff', //标题文字的颜色
+							 borderColor:'#9093DC', 
+							 fillColor:'#9093DC',
 							 dashed:false, 
 						}
 					},
@@ -56,10 +56,10 @@ var jsonData = [
 						y:50,
 						text:'标题1',
 						attr:{
-							 borderColor:'red', 
-							 color:'red', 
-							 fillColor:'',
-							 dashed:true, 
+							 borderColor:'#7EC8CE', 
+							 color:'#fff', 
+							 fillColor:'#585DCB',
+							 dashed:false, 
 						}
 					},
 					{	
@@ -69,10 +69,10 @@ var jsonData = [
 						y:50,
 						text:'标题2',
 						attr:{
-							 borderColor:'red', 
-							 color:'red', 
-							 fillColor:'',
-							 dashed:true, 
+							 borderColor:'#7EC8CE', 
+							 color:'#fff', 
+							 fillColor:'#585DCB',
+							 dashed:false, 
 						}
 					}
 
