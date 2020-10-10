@@ -104,6 +104,20 @@ function Qflow(options){
 	// this.initLineMenu();
  
 }
+Qflow.prototype.returnSaveData = function() {
+	var tmp = JSON.parse(JSON.stringify(this.options.initData));
+
+	tmp.node && tmp.node.forEach(function(item){
+		delete item.childNodes
+	})
+
+	tmp.link && tmp.link.forEach(function(item){
+		delete item.fromNode;
+		delete item.toNode;
+	})
+
+	return tmp;
+};
 Qflow.prototype.initContextLineMenuArea = function(pos) {
 	var _this = this; 
 
@@ -745,12 +759,38 @@ Qflow.prototype.menuLayerHide = function() {
 };
 Qflow.prototype.initSettingIco = function() {
 	var _this = this;
-	this.settingIco = this.qcanvas.qimg.img({
-		img:'./img/setting.png',
-		sStart:[0,0],
-		tStart:[0,0],
-		tWidth:10,
-		tHeight:10,
+	// this.settingIco = this.qcanvas.qimg.img({
+	// 	img:'./img/setting.png',
+	// 	sStart:[0,0],
+	// 	tStart:[0,0],
+	// 	tWidth:10,
+	// 	tHeight:10,
+	// 	display:'none',
+	// 	drag:false,
+	// 	mousemove:function(){
+	// 		this.setDisplay('block');
+	// 	},
+	// 	mouseup:function(e,pos){ 
+	// 		_this.contextSettingNode = this.contextSettingNode;
+ 
+
+	// 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
+	// 		// _this.contextSettingShow.call(_this.contextSettingNode,{x:this.sStart[0],y:this.sStart[1]});
+	// 		// _this.contextSettingShow({x:this.sStart[0],y:this.sStart[1]});
+	// 		_this.contextSettingShow(pos);
+
+
+	// 	}
+	// }); 
+
+	this.settingIco = this.qcanvas.qarc.arc({
+		start:[0,0],
+		sAngle:0,
+		eAngle:360,
+		borderColor:'red',
+		fillColor:'red',
+		opacity:0.5,
+		r:5,
 		display:'none',
 		drag:false,
 		mousemove:function(){
@@ -767,17 +807,22 @@ Qflow.prototype.initSettingIco = function() {
 
 
 		}
-	}); 
+	});	
+
+
+
 };
 Qflow.prototype.settingIcoShow = function(node) {
 	// console.log('settingIcoShow');
 	var start = this.qcanvas.isFun(node.start)?node.start():node.start;
- 	var x = start[0]+node.width - 15;
-	var y = start[1]+5; 
+ 	var x = start[0]+node.width - 8;
+	var y = start[1]+8; 
 
 
 	this.settingIco.contextSettingNode = node;
-	this.settingIco.setTStart([x,y]);
+	// this.settingIco.setTStart([x,y]);
+	this.settingIco.setStart([x,y]);
+
 	this.settingIco.setDisplay('block');
 	this.qcanvas.raiseToTop(this.settingIco);
 };
@@ -2102,29 +2147,64 @@ Qflow.prototype.addContainer = function(obj) {
 		 borderColor:'red', 
 		 fillColor:'',
 		 dashed:true, 
+		 // getRangePoints:function(){ //返回rect边上的8个点的坐标 
+		 // 	return _this.createRangePoints(this.polyPoints());
+		 // },
+		 // mouseenter:function(){ 
+		 // 	_this.settingIcoShow(this);
+		 // },
+		 // mousedown:function(){
+
+		 // 	_this.containerMouseDown.call(_this,this,jsonObj); 
+		 // },
+		 // mouseup:function(e,pos){
+
+		 // 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
+
+		 // },
+		 // mousemove:function(){
+		 // 	_this.settingIcoShow(this);
+
+		 // 	_this.containerMouseMove.call(_this,this,jsonObj); 
+		 // },
+		 // mouseout:function(){ 
+		 // 	_this.settingIcoHide(this);
+		 // },
+
+
+		 ///
 		 getRangePoints:function(){ //返回rect边上的8个点的坐标 
 		 	return _this.createRangePoints(this.polyPoints());
 		 },
 		 mouseenter:function(){ 
 		 	_this.settingIcoShow(this);
 		 },
-		 mousedown:function(){
+		 mousedown:function(){ 
 
+		 	_this.delTmpLine();
+	 		_this.createNewLine(this,jsonObj);
+
+
+		 	_this.menuLayerHide();
 		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
 		 mouseup:function(e,pos){
-
+		 	_this.settingIcoHide(); 
+		 	_this.menuLayerHide();
+		 	
 		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
-		 mousemove:function(){
+		 mousemove:function(e,pos){
+		 	_this.updateTmpLineEndPos(pos);
 		 	_this.settingIcoShow(this);
 
 		 	_this.containerMouseMove.call(_this,this,jsonObj); 
+
 		 },
-		 mouseout:function(){ 
-		 	_this.settingIcoHide(this);
-		 },
+		 mouseout:function(){
+		 	_this.settingIcoHide(); 
+		 }
 
 	})
 
@@ -2252,19 +2332,51 @@ Qflow.prototype.addNode = function(obj) {
 		 borderColor:'red', 
 		 fillColor:'',
 		 dashed:true, 
-		 mousedown:function(){
+		 // mousedown:function(){
 
+		 // 	_this.containerMouseDown.call(_this,this,jsonObj); 
+		 // },
+		 // mouseup:function(e,pos){
+
+		 // 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
+
+		 // },
+		 // mousemove:function(){
+
+		 // 	_this.containerMouseMove.call(_this,this,jsonObj); 
+
+		 // }
+		 getRangePoints:function(){ //返回rect边上的8个点的坐标 
+		 	return _this.createRangePoints(this.polyPoints());
+		 },
+		 mouseenter:function(){ 
+		 	_this.settingIcoShow(this);
+		 },
+		 mousedown:function(){ 
+
+		 	_this.delTmpLine();
+	 		_this.createNewLine(this,jsonObj);
+
+
+		 	_this.menuLayerHide();
 		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
 		 mouseup:function(e,pos){
-
+		 	_this.settingIcoHide(); 
+		 	_this.menuLayerHide();
+		 	
 		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
 
 		 },
-		 mousemove:function(){
+		 mousemove:function(e,pos){
+		 	_this.updateTmpLineEndPos(pos);
+		 	_this.settingIcoShow(this);
 
 		 	_this.containerMouseMove.call(_this,this,jsonObj); 
 
+		 },
+		 mouseout:function(){
+		 	_this.settingIcoHide(); 
 		 }
 	})
 

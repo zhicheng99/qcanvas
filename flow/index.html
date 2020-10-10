@@ -77,19 +77,30 @@
 			text-indent: 5px;
 			font-size: 12px;
 		}
+		#qflow_lay{ 
+			height: 100%;
+			width: 100%;
+			position: relative;
+		}
 	</style>
 </head>
-<body>
-	<div id="app">
+<body> 
+ 
+
+	<div id="qflow_lay">
 		<div class="tool">
 			<span class="drag_ele" data-id="-1">
-				<img src="img/container.svg" height="20" alt="" draggable="false">
+				<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjAyMjk3NTk0ODc5IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIxNDciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PGRlZnM+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48L3N0eWxlPjwvZGVmcz48cGF0aCBkPSJNMjU2IDI4OGg2NHY2NGgtNjR6IG0xMjggMzg0aDM4NHY2NEgzODR6TTI1NiA0ODBoNjR2NjRoLTY0eiBtMCAxOTJoNjR2NjRoLTY0eiIgZmlsbD0iIzMzMzMzMyIgcC1pZD0iMjE0OCI+PC9wYXRoPjxwYXRoIGQ9Ik04MzIgNjRIMTkyYy0zNS4yIDAtNjQgMjguOC02NCA2NHY3NjhjMCAzNS4yIDI4LjggNjQgNjQgNjRoNjQwYzM1LjIgMCA2NC0yOC44IDY0LTY0VjEyOGMwLTM1LjItMjguOC02NC02NC02NHogbTAgODAwYzAgMTkuMi0xNiAzMi0zMiAzMkgyMjRjLTE2IDAtMzItMTIuOC0zMi0zMlYxNjBjMC0xOS4yIDE2LTMyIDMyLTMyaDU3NmMxNiAwIDMyIDEyLjggMzIgMzJ2NzA0eiIgZmlsbD0iIzMzMzMzMyIgcC1pZD0iMjE0OSI+PC9wYXRoPjxwYXRoIGQ9Ik0zODQgNDgwaDM4NHY2NEgzODR6IG0wLTE5MmgzODR2NjRIMzg0eiIgZmlsbD0iIzMzMzMzMyIgcC1pZD0iMjE1MCI+PC9wYXRoPjwvc3ZnPg==" height="20" alt="" draggable="false">
 			</span>
 			<span class="drag_ele" data-id="1">
-				<img src="img/container.svg" height="20" alt="" draggable="false">
+				<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjAyMjk3ODY3NDcwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjM1MjYiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PGRlZnM+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48L3N0eWxlPjwvZGVmcz48cGF0aCBkPSJNNDU4LjIgMzcxSDExMi42Qzg2LjkgMzcxIDY2IDM1MC4xIDY2IDMyNC41VjE2NC45YzAtMjUuNyAyMC45LTQ2LjUgNDYuNS00Ni41aDM0NS42YzI1LjcgMCA0Ni41IDIwLjkgNDYuNSA0Ni41djE1OS41YzAuMSAyNS43LTIwLjggNDYuNi00Ni40IDQ2LjZ6TTExMi42IDE1OC4zYy0zLjYgMC02LjYgMy02LjYgNi42djE1OS41YzAgMy42IDMgNi42IDYuNiA2LjZoMzQ1LjZjMy42IDAgNi42LTMgNi42LTYuNlYxNjQuOWMwLTMuNi0zLTYuNi02LjYtNi42SDExMi42ek05MTAuMSA5MDhIMjU4LjhjLTI1LjcgMC00Ni41LTIwLjktNDYuNS00Ni41VjUxNS45YzAtMjUuNyAyMC45LTQ2LjUgNDYuNS00Ni41aDY1MS4zYzI1LjcgMCA0Ni41IDIwLjkgNDYuNSA0Ni41djM0NS42YzAgMjUuNy0yMC44IDQ2LjUtNDYuNSA0Ni41ek0yNTguOCA1MDkuMmMtMy42IDAtNi42IDMtNi42IDYuNnYzNDUuNmMwIDMuNiAzIDYuNiA2LjYgNi42aDY1MS4zYzMuNiAwIDYuNi0zIDYuNi02LjZWNTE1LjljMC0zLjYtMy02LjYtNi42LTYuNkgyNTguOHoiIGZpbGw9IiM0RjRGNEYiIHAtaWQ9IjM1MjciPjwvcGF0aD48cGF0aCBkPSJNMjI1LjUgNjk1LjNoLTU5LjNjLTE4LjMgMC0zMy4yLTE0LjktMzMuMi0zMy4xbC0wLjUtMzA1LjhjMC0xMSA4LjktMjAgMTkuOS0yMCAxMSAwIDE5LjkgOC45IDE5LjkgMTkuOWwwLjUgMjk5LjFoNTIuN2MxMSAwIDE5LjkgOC45IDE5LjkgMTkuOXMtOC44IDIwLTE5LjkgMjB6IiBmaWxsPSIjNEY0RjRGIiBwLWlkPSIzNTI4Ij48L3BhdGg+PC9zdmc+" height="20" alt="" draggable="false">
 			</span>
 
-			<span class="save" @click="save">保存</span>
+			<span class="save" @click="save">
+				<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjAyMjk4MDA1NzAyIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjQ0MTQiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PGRlZnM+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48L3N0eWxlPjwvZGVmcz48cGF0aCBkPSJNODk1LjgzIDYyLjEwMmMzMS43NjEgNS4yOTQgNTIuOTM1IDI2LjQ2OCA2MC44NzYgNTIuOTM1IDcuOTQgMTguNTI3IDUuMjk0IDgyLjA0OSA1LjI5NCAxMDguNTE3djYxNi42OTVjMCAxOC41MjcgMCA0Mi4zNDktMi42NDcgNTUuNTgyLTIuNjQ3IDMxLjc2MS0yMy44MjEgNTIuOTM1LTUwLjI4OCA2MC44NzYtMTguNTI3IDcuOTQtODQuNjk3IDUuMjk0LTEwOC41MTcgNS4yOTQtMjA2LjQ0NyAwLTQxMi44OTUgMC02MTkuMzQyIDAtMTUuODgxIDAtMzkuNzAxIDAtNTUuNTgyLTIuNjQ3LTI5LjExNS0yLjY0Ny01Mi45MzUtMjMuODIxLTYwLjg3Ni01MC4yODgtNS4yOTQtMTguNTI3LTIuNjQ3LTg0LjY5Ny0yLjY0Ny0xMDguNTE3di02MTkuMzQyYzAtMTUuODgxIDAtMzcuMDU1IDAtNTIuOTM1IDUuMjk0LTMxLjc2MSAyNi40NjctNTIuOTM1IDUyLjkzNS02My41MjIgMTguNTI3LTUuMjk0IDgyLjA0OS0yLjY0NyAxMDguNTE3LTIuNjQ3IDIwNi40NDcgMCA0MTAuMjQ4IDAgNjE2LjY5NSAwIDE1Ljg4MSAwIDM5LjcwMSAwIDU1LjU4MiAwek0zMzQuNzE5IDM2MS4xODZoMzU0LjY2NmMxMC41ODcgMCAxMy4yMzQtNS4yOTQgMTMuMjM0LTEzLjIzNHYtMjMwLjI2OGgtMzgxLjEzM3YyMjIuMzI4YzAgMTUuODgxLTIuNjQ3IDIxLjE3MyAxMy4yMzQgMjEuMTczek03NTguMiAxMTcuNjg0djI0OC43OTZjMCAzNy4wNTUtNy45NCA1MC4yODgtNDQuOTk0IDUwLjI4OC05Ny45MyAwLTM3MC41NDYgMC00MTguMTg4IDAtMjEuMTczIDAtMjkuMTE1LTEwLjU4Ny0yOS4xMTUtMzcuMDU1di0yNjIuMDI5Yy0zMS43NjEgMC04NC42OTcgMC0xMTYuNDU4IDAtMTUuODgxIDAtMjYuNDY3IDAtMjkuMTE1IDEwLjU4Ny0yLjY0NyA3Ljk0LTIuNjQ3IDEzNy42MzItMi42NDcgMTU2LjE1OHY1OTIuODc0YzAgMTMuMjM0IDAgMjMuODIxIDEzLjIzNCAyNi40NjcgNS4yOTQgMi42NDcgMTM3LjYzMiAyLjY0NyAxNTYuMTU4IDIuNjQ3IDUyLjkzNSAwIDU4LjIyOCAwIDExMS4xNjQgMHYtMTc5Ljk3OWgyMjcuNjIxdjE3OS45NzljNzQuMTA5IDAgMTExLjE2NCAwIDE4Ny45MiAwIDEwLjU4NyAwIDc0LjEwOSAwIDc5LjQwMy0yLjY0NyAxMC41ODctMi42NDcgMTMuMjM0LTEwLjU4NyAxMy4yMzQtMjYuNDY3di02NjkuNjNjMC0xMy4yMzQgMC02OC44MTUtMi42NDctNzYuNzU2LTIuNjQ3LTEzLjIzNC0xOC41MjctMTMuMjM0LTI2LjQ2Ny0xMy4yMzQtMzQuNDA4IDAtODQuNjk3IDIuNjQ3LTExOS4xMDQgMHpNNDUzLjgyMyA5MDMuNzcybDExNi40NTggMi42NDd2LTEyNC4zOThoLTExNi40NTh2MTIxLjc1MXoiIHAtaWQ9IjQ0MTUiPjwvcGF0aD48L3N2Zz4="
+				height="20" alt="" draggable="false">
+
+			</span>
 		</div>
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
@@ -119,7 +130,7 @@
 	
 	  var qflow;
 	  var v =	new Vue({
-		  el: '#app',
+		  el: '#qflow_lay',
 		  data: {
 		  	curr:0,
 		  	sheets:[
@@ -161,7 +172,9 @@
 		  },
 		  methods:{
 		  	save:function(){
-		  		console.log(qflow.options.initData);
+		  		// console.log(qflow.options.initData);
+
+		  		console.log(qflow.returnSaveData());
 		  	},	
 		  	modiTitle:function(){
 		  		qflow.modiTitle(this.nodeTitle);
@@ -186,8 +199,10 @@
 		  	init:function(){
 		  		qflow = new Qflow({
 					id:'qcanvas',
-					width:document.body.offsetWidth,
-					height:document.body.offsetHeight,
+					// width:document.body.offsetWidth,
+					// height:document.body.offsetHeight,
+					width:1000,
+					height:500,
 					initData:jsonData[this.curr]
 					// initData:null
 					});

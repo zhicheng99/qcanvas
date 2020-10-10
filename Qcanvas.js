@@ -2887,16 +2887,21 @@ function Qlayer(p){
 		this.pcanvas.context.drawImage(t,0,0,this.pcanvas.stage.width*this.dpr,this.pcanvas.stage.height*this.dpr,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
 	}
 
-	this.paint = function(layer){ 
-			for(var i = 0; i<layer.elements.length; i++){
-				var o = layer.elements[i];
+	this.paint = function(layer){
 
-				if(o.display=='none'){
-					continue;
+	 		if(layer.display == 'block'){
+				for(var i = 0; i<layer.elements.length; i++){
+					var o = layer.elements[i];
+
+					if(o.display=='none'){
+						continue;
+					}
+					this.TypeGroup[o.TYPE].call(this,o); 
+							
 				}
-				this.TypeGroup[o.TYPE].call(this,o); 
-						
-			}
+	 			
+	 		}
+			
 
 
 		// this.pcanvas.context.drawImage(t,0,0);

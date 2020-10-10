@@ -40,7 +40,7 @@ Drag.prototype.init = function(){
 Drag.prototype.createDragDom = function(x,y,w,h,domId){ 
     var d = document.createElement('div');
     d.id="dragDom";
-    d.style.position = 'fixed';
+    d.style.position = 'absolute';
     d.style.zIndex = 9999;
     d.style.border = 'dashed red 1px';
     d.style.boxSizing = 'border-box';
@@ -53,7 +53,8 @@ Drag.prototype.createDragDom = function(x,y,w,h,domId){
 
 
 
-    document.body.appendChild(d);
+    document.getElementById('qflow_lay').appendChild(d);
+    // document.body.appendChild(d);
 
     this.drag = d; 
     _this = this;
@@ -65,20 +66,52 @@ Drag.prototype.createDragDom = function(x,y,w,h,domId){
             var x = e.pageX || e.clientX + scrollX;
             var y = e.pageY || e.clientY + scrollY;
 
+            // var layX = document.getElementById('qflow_lay').offsetLeft;
+            // var layY = document.getElementById('qflow_lay').offsetTop;
+
+            var layX = _this.getElementLeft(document.getElementById('qflow_lay'));
+            var layY = _this.getElementTop(document.getElementById('qflow_lay'));
+
+
 
         _this.disX = 0;
         _this.disY = 0;
         _this.removeEvents(d,'mouseup',null);
         document.getElementById('dragDom') && 
-        document.body.removeChild(document.getElementById('dragDom'));
+        document.getElementById('qflow_lay').removeChild(document.getElementById('dragDom'));
+        // document.body.removeChild(document.getElementById('dragDom'));
  
-        _this.options.upFun({x:x,y:y,id:_this.drag.getAttribute('data-id')});
+        _this.options.upFun({x:x-layX,y:y-layY,id:_this.drag.getAttribute('data-id')});
         _this.drag = null; 
 
 
     })
 
 }
+
+Drag.prototype.getElementLeft = function(element){
+　　　　var actualLeft = element.offsetLeft;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualLeft += current.offsetLeft;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualLeft;
+　　}
+Drag.prototype.getElementTop = function(element){
+
+　　　　var actualTop = element.offsetTop;
+　　　　var current = element.offsetParent;
+
+　　　　while (current !== null){
+　　　　　　actualTop += current.offsetTop;
+　　　　　　current = current.offsetParent;
+　　　　}
+
+　　　　return actualTop;
+　　}
 
 Drag.prototype.mouseMove = function(){
     var _this = this;
@@ -122,9 +155,15 @@ Drag.prototype.mouseMove = function(){
             _this.disY = y - e.target.offsetTop;
 
 
+            // var layX = document.getElementById('qflow_lay').offsetLeft;
+            // var layY = document.getElementById('qflow_lay').offsetTop;
+
+
+
             _this.createDragDom(
                 e.target.offsetLeft-scrollX,
-                e.target.offsetTop-scrollY,
+                e.target.offsetTop-scrollY, 
+
                 e.target.offsetWidth,
                 e.target.offsetHeight,
                 e.target.getAttribute('data-id')
@@ -144,6 +183,10 @@ Drag.prototype.mouseMove = function(){
             var scrollY = document.documentElement.scrollTop || document.body.scrollTop;
             var x = e.pageX || e.clientX + scrollX;
             var y = e.pageY || e.clientY + scrollY;  
+
+
+            // var layX = document.getElementById('qflow_lay').offsetLeft;
+            // var layY = document.getElementById('qflow_lay').offsetTop;
 
                 _this.drag.style.left = (x - _this.disX - scrollX)+'px';
                 _this.drag.style.top = (y - _this.disY - scrollY)+'px';
