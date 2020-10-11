@@ -1054,8 +1054,6 @@ Qflow.prototype.initModiTitleNode = function() {
 	if(rectJsonObj.attr && rectJsonObj.attr.titleId){
 		this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
 
-		console.log(this.modiTitleObj);
-		
 		d.value = this.modiTitleObj.text;
 	}	
 
@@ -1542,18 +1540,18 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
 
 	                startPos = A_rangePos[7];
-	                endPos = B_rangePos[3];
+	                // endPos = B_rangePos[3];
 
 	                
 	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
 	                //A点在B的左侧
 	                startPos = A_rangePos[3];
-	                endPos = B_rangePos[7];
+	                // endPos = B_rangePos[7];
 
 	            }else{
 
 	                startPos = A_rangePos[1];
-	                endPos = B_rangePos[1];
+	                // endPos = B_rangePos[1];
 	            }
 
 	        }else{ //上下没有叠加（上下有间距）
@@ -1563,18 +1561,18 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
 
 	                startPos = A_rangePos[0];
-	                endPos = B_rangePos[4];
+	                // endPos = B_rangePos[4];
 
 	                
 	            }else if(A_rangePos[2][0] <= B_rangePos[2][0]){
 	                //A点在B的左下侧
 	                startPos = A_rangePos[2];
-	                endPos = B_rangePos[6];
+	                // endPos = B_rangePos[6];
 
 	            }else{
 
 	                startPos = A_rangePos[1];
-	                endPos = B_rangePos[5];
+	                // endPos = B_rangePos[5];
 	            }
 	        }
 	    }else{
@@ -1596,16 +1594,16 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	            //A在B的右侧
 	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
 	                startPos = A_rangePos[7];
-	                endPos = B_rangePos[3];
+	                // endPos = B_rangePos[3];
 
 	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
 	                //A在B的左侧
 	                startPos = A_rangePos[3];
-	                endPos = B_rangePos[7];
+	                // endPos = B_rangePos[7];
 
 	            }else{
 	                startPos = A_rangePos[5];
-	                endPos = B_center[5];
+	                // endPos = B_center[5];
 	            }
 
 	        }else{ //上下没有叠加（上下有间距）
@@ -1614,14 +1612,14 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	            //A在B的右上方
 	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
 	                startPos = A_rangePos[6];
-	                endPos = B_rangePos[2];
+	                // endPos = B_rangePos[2];
 	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
 	                //A在B的左上方
 	                startPos = A_rangePos[4];
-	                endPos = B_rangePos[0];
+	                // endPos = B_rangePos[0];
 	            }else{
 	                startPos = A_rangePos[5];
-	                endPos = B_rangePos[1];
+	                // endPos = B_rangePos[1];
 	            }
 
 
@@ -1632,34 +1630,194 @@ Qflow.prototype.calcLineStartPos = function(A,B,nodeId) {
 	    return startPos;
 	}
 	
-	if(typeof this.lineCache[nodeId] !=='undefined' &&
-		typeof this.lineCache[nodeId].oldStart !=='undefined'){
+	if(typeof this.lineCache['"'+nodeId+'"'] !=='undefined' &&
+		typeof this.lineCache['"'+nodeId+'"'].oldStart !=='undefined'){
 
-		if(((new Date()).getTime() - _this.lineCache[this.id].startCallTime) >300){
-			_this.lineCache[this.id].startCallTime = (new Date()).getTime();
-			_this.lineCache[this.id].oldStart = F();	
+		if(((new Date()).getTime() - _this.lineCache['"'+nodeId+'"'].startCallTime) >300){
+			_this.lineCache['"'+nodeId+'"'].startCallTime = (new Date()).getTime();
+			_this.lineCache['"'+nodeId+'"'].oldStart = F();	
 
 		}
 
 
 	}else{
 
-		_this.lineCache[this.id] = {
-			startCallTime:(new Date()).getTime(),
-			oldStart: F()
+		if(typeof _this.lineCache['"'+nodeId+'"'] == 'undefined'){
+
+			_this.lineCache['"'+nodeId+'"'] = {};
 		}
+
+		_this.lineCache['"'+nodeId+'"'].startCallTime = (new Date()).getTime();
+		_this.lineCache['"'+nodeId+'"'].oldStart = F();
+
+		
 
 	}
 
-	return _this.lineCache[this.id].oldStart; 
+	return _this.lineCache['"'+nodeId+'"'].oldStart; 
 
 	
 };
 Qflow.prototype.calcLineEndPos = function(A,B,nodeId) {
 	var _this = this; 
+
+	// console.log(nodeId);
 	
 	var F = function(){
 
+		var A_center = A.centerPoints();
+		var B_center = B.centerPoints();
+		var A_rangePos = A.getRangePoints(); 
+		var B_rangePos = B.getRangePoints();  
+
+
+		var startPos = [0,0];
+	    var endPos = [0,0];
+
+
+	    //第一种情况（A在下 B在上）
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  B	 3	 
+	    // |     |    
+	    // 6__5__4	  
+	    //	  ↑
+	    // 0__1__2    
+	    // |     |	  
+	    // 7  A  3	 
+	    // |     |    
+	    // 6__5__4	  
+	    if(A_center.y >= B_center.y){
+
+	        //两点节点上下没有间距
+	        if(A_rangePos[0][1] <= B_rangePos[6][1]){ 
+
+	            //A点在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+
+	                // startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A点在B的左侧
+	                // startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+
+	                // startPos = A_rangePos[1];
+	                endPos = B_rangePos[1];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距） 
+
+	             //A点在B的右下侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+
+	                // startPos = A_rangePos[0];
+	                endPos = B_rangePos[4];
+
+	                
+	            }else if(A_rangePos[2][0] <= B_rangePos[2][0]){
+	                //A点在B的左下侧
+	                // startPos = A_rangePos[2];
+	                endPos = B_rangePos[6];
+
+	            }else{
+
+	                // startPos = A_rangePos[1];
+	                endPos = B_rangePos[5];
+	            }
+	        }
+	    }else{
+	        //第二种情况 （A在上 B在下）
+	        // 0__1__2    
+			// |     |	  
+			// 7  A	 3	 
+			// |     |    
+			// 6__5__4	  
+			//	  ↓
+			// 0__1__2    
+			// |     |	  
+			// 7  B  3	 
+			// |     |    
+			// 6__5__4
+
+	        //两点节点上下没有间距
+	        if(B_rangePos[0][1]<=A_rangePos[6][1]){
+ 
+
+	            //A在B的右侧
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                // startPos = A_rangePos[7];
+	                endPos = B_rangePos[3];
+
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左侧
+	                // startPos = A_rangePos[3];
+	                endPos = B_rangePos[7];
+
+	            }else{
+	                // startPos = A_rangePos[5];
+	                endPos = B_rangePos[5];
+	            }
+
+	        }else{ //上下没有叠加（上下有间距）
+
+
+	            //A在B的右上方
+	            if(A_rangePos[0][0] >= B_rangePos[2][0]){
+	                // startPos = A_rangePos[6];
+	                endPos = B_rangePos[2];
+	            }else if(A_rangePos[2][0] <= B_rangePos[0][0]){
+	                //A在B的左上方
+	                // startPos = A_rangePos[4];
+	                endPos = B_rangePos[0];
+	            }else{
+	                // startPos = A_rangePos[5];
+	                endPos = B_rangePos[1];
+	            }
+
+
+
+	        }
+	    }
+
+	    return endPos;
+
+	}
+
+
+
+	if(typeof this.lineCache['"'+nodeId+'"'] !=='undefined' &&
+		typeof this.lineCache['"'+nodeId+'"'].oldEnd !=='undefined'){
+
+		if(((new Date()).getTime() - _this.lineCache['"'+nodeId+'"'].endCallTime) >300){
+			_this.lineCache['"'+nodeId+'"'].endCallTime = (new Date()).getTime();
+			_this.lineCache['"'+nodeId+'"'].oldEnd = F();	
+		}
+
+
+	}else{
+
+		if(typeof _this.lineCache['"'+nodeId+'"'] == 'undefined'){
+
+			_this.lineCache['"'+nodeId+'"'] = {};
+		}
+		_this.lineCache['"'+nodeId+'"'].endCallTime = (new Date()).getTime();
+		_this.lineCache['"'+nodeId+'"'].oldEnd = F();
+ 
+
+	}
+
+
+	return _this.lineCache['"'+nodeId+'"'].oldEnd; 
+};
+Qflow.prototype.calcLinePos = function(A,B,nodeId) {
+
+
+	var F = function(){
 		var A_center = A.centerPoints();
 		var B_center = B.centerPoints();
 		var A_rangePos = A.getRangePoints(); 
@@ -1779,30 +1937,34 @@ Qflow.prototype.calcLineEndPos = function(A,B,nodeId) {
 	        }
 	    }
 
-	    return endPos;
+	    return {
+	    	start:startPos,
+	    	end:endPos
+	    }
 
+		
 	}
 
+	if(typeof this.lineCache['"'+nodeId+'"'] !=='undefined'){
 
+		if(((new Date()).getTime() - this.lineCache['"'+nodeId+'"'].callTime) >300){
 
-	if(typeof this.lineCache[nodeId] !=='undefined' &&
-		typeof this.lineCache[nodeId].oldEnd !=='undefined'){
-
-		if(((new Date()).getTime() - _this.lineCache[this.id].endCallTime) >300){
-			_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-			_this.lineCache[this.id].oldEnd = F();	
-
+			this.lineCache['"'+nodeId+'"'].callTime = (new Date()).getTime();
+			this.lineCache['"'+nodeId+'"'].position = F();
 		}
 
 
 	}else{
-		_this.lineCache[this.id].endCallTime = (new Date()).getTime();
-		_this.lineCache[this.id].oldEnd = F();
- 
+
+		this.lineCache['"'+nodeId+'"'] = {
+			callTime:(new Date()).getTime(),
+			position:F()
+		}
 
 	}
 
-	return _this.lineCache[this.id].oldEnd; 
+	return this.lineCache['"'+nodeId+'"'].position;
+
 };
 Qflow.prototype.solveLink = function() {
 	var _this = this;
@@ -1823,8 +1985,18 @@ Qflow.prototype.initLink = function() {
 	this.options.initData.link.forEach(function(item){ 
 
 		var tmp = _this.qcanvas.qline.line({
-			start:function(){return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)},
-			end:function(){return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)}, 
+			start:function(){
+				var tmp = _this.calcLinePos(item.fromNode,item.toNode,this.id);
+
+				return tmp.start;
+				// return _this.calcLineStartPos(item.fromNode,item.toNode,this.id)
+			},
+			end:function(){
+				var tmp = _this.calcLinePos(item.fromNode,item.toNode,this.id);
+
+				return tmp.end;
+				// return _this.calcLineEndPos(item.fromNode,item.toNode,this.id)
+			}, 
 			width:1,
 			// pointerEvent:'none',
 			drag:false,
@@ -1849,6 +2021,7 @@ Qflow.prototype.initLink = function() {
 		});
 
 		item.lineId = tmp.id;
+		// _this.lineCache[tmp.id] = tmp;
 
 		_this.lineLayer.push(tmp);
 
