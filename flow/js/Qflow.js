@@ -382,7 +382,7 @@ Qflow.prototype.lineMenuLayerShow = function(pos) {
 Qflow.prototype.lineMenuLayerHide = function() {
 	this.contextLineMenuLayer.setDisplay('none');
 	this.contextLineMenuLayer.destroy();
-	this.modiTitleObj = null;
+	// this.modiTitleObj = null;
 
 	var d1 = document.getElementById('lineTitleInput'); 
 	var d2 = document.getElementById('lineLike'); 
@@ -713,14 +713,62 @@ Qflow.prototype.delNode = function() {
 		_this.qcanvas.removeEle(item);
 	})
 
+
+	_this.contextMenuNode = null;
+
 	
+};
+Qflow.prototype.cloneNode = function() {
+	var _this = this;
+	var nodeObj = this.contextMenuNode;
+	var nodeJsonObj = this.getJsonObj(nodeObj.id);
+	// console.log(nodeObj);
+	// console.log(nodeJsonObj);
+
+	if(nodeJsonObj.nodeType =='node'){
+
+		if(typeof nodeObj.ownerId =='undefined'){//复制节点
+
+			this.addNode({x:nodeJsonObj.x+20,y:nodeJsonObj.y+20},nodeJsonObj.text);
+
+		}else{ //复制容器里的节点
+
+			this.inSertToContainer({},{id:nodeObj.ownerId},nodeJsonObj.text);
+
+		}
+
+
+	}
+
+
+	if(nodeJsonObj.nodeType == 'container'){
+		var id = this.addContainer(
+				{x:nodeJsonObj.x+20,y:nodeJsonObj.y+20},
+				{
+					text:nodeJsonObj.text,
+					grid:nodeJsonObj.grid,
+					width:nodeJsonObj.width,
+					height:nodeJsonObj.height
+				}
+			);
+		// console.log(id);
+
+		nodeJsonObj.child.forEach(function(item){
+			_this.inSertToContainer({},{id:id},item.text);
+			// inSertToContainer = function(obj,aim,text)
+		})
+	}
+
+
+
+	this.contextMenuNode = null;
 };
 Qflow.prototype.initMenu = function() { 
 	var _this = this;
 	var area = this.qcanvas.qrect.rect({
 			 start:[0,0],  
 			 width:100,
-			 height:50,
+			 height:75,
 			 borderColor:'', 
 			 fillColor:'#fff',  
 			 drag:false, 
@@ -749,7 +797,7 @@ Qflow.prototype.initMenu = function() {
 			color:'#000',
 			pointerEvent:'none'
 		})
-    var delRect = this.qcanvas.qrect.rect({
+    var cloneRect = this.qcanvas.qrect.rect({
 			 start:function(){
 
 			 	return [area.start[0],area.start[1]+25];
@@ -760,8 +808,40 @@ Qflow.prototype.initMenu = function() {
 			 fillColor:'#fff',   
 			 drag:false, 
 			 mouseup:function(e,pos){ 
+			 	console.log('clone');
+			 	_this.menuLayerHide();
+
+			 	_this.cloneNode();
+			 }
+			})
+    var cloneText = this.qcanvas.qtext.text({
+			text:'克隆',
+			start:function(){
+				return [
+				_this.contextMenuLayer.elements[0].start[0]+_this.contextMenuLayer.elements[0].width*0.5,
+				_this.contextMenuLayer.elements[0].start[1]+25+25*0.5
+				];
+			},
+			fontSize:'12px',
+			color:'#000',
+			pointerEvent:'none'
+		})
+
+    var delRect = this.qcanvas.qrect.rect({
+			 start:function(){
+
+			 	return [area.start[0],area.start[1]+50];
+			 },
+			 width:100,
+			 height:25,
+			 borderColor:'', 
+			 fillColor:'#fff',   
+			 drag:false, 
+			 mouseup:function(e,pos){ 
 			 	console.log('删除');
 			 	_this.menuLayerHide();
+			 	// _this.contextMenuNode = null;
+
 
 			 	_this.delNode();
 			 }
@@ -769,14 +849,17 @@ Qflow.prototype.initMenu = function() {
     var delTxt = this.qcanvas.qtext.text({
 			text:'删除',
 			start:function(){
-				return [_this.contextMenuLayer.elements[0].start[0]+_this.contextMenuLayer.elements[0].width*0.5,_this.contextMenuLayer.elements[0].start[1]+25+25*0.5];
+				return [
+				_this.contextMenuLayer.elements[0].start[0]+_this.contextMenuLayer.elements[0].width*0.5,
+				_this.contextMenuLayer.elements[0].start[1]+50+25*0.5
+				];
 			},
 			fontSize:'12px',
 			color:'#000',
 			pointerEvent:'none'
 		})
 
-    this.contextMenuLayer.push(area,linkRect,linkTxt,delRect,delTxt);
+    this.contextMenuLayer.push(area,linkRect,linkTxt,cloneRect,cloneText,delRect,delTxt);
 
 };
 Qflow.prototype.menuLayerShow = function(pos) {
@@ -927,6 +1010,7 @@ Qflow.prototype.initDelBtn = function() {
 
 };
 Qflow.prototype.modiTitle = function(v) {
+	console.log(this.modiTitleObj);
 	if(this.modiTitleObj){
 		this.modiTitleObj.setText(v);
 	}
@@ -969,6 +1053,8 @@ Qflow.prototype.initModiTitleNode = function() {
 
 	if(rectJsonObj.attr && rectJsonObj.attr.titleId){
 		this.modiTitleObj = this.getNodeObj(rectJsonObj.attr.titleId);
+
+		console.log(this.modiTitleObj);
 		
 		d.value = this.modiTitleObj.text;
 	}	
@@ -2195,40 +2281,20 @@ Qflow.prototype.initCanvas = function() {
 	// this.initTool();
 
 };
-Qflow.prototype.addContainer = function(obj) {
+Qflow.prototype.addContainer = function(obj,attrObj) {
+
 	var _this = this;
 
 	//添加容器
 	var tmp = this.qcanvas.qrect.rect({
 		 start:[obj.x,obj.y],
-		 width:this.containerNodeWidth,
-		 height:this.containerNodeHeight,
+		 // width:this.containerNodeWidth,
+		 // height:this.containerNodeHeight,
+		 width:(attrObj && attrObj.width)?attrObj.width:this.containerNodeWidth,
+		height:(attrObj && attrObj.height)?attrObj.height:this.containerNodeHeight,
 		 borderColor:this.containerFillColor, 
 		 fillColor:this.containerFillColor,
-		 dashed:false, 
-		 // getRangePoints:function(){ //返回rect边上的8个点的坐标 
-		 // 	return _this.createRangePoints(this.polyPoints());
-		 // },
-		 // mouseenter:function(){ 
-		 // 	_this.settingIcoShow(this);
-		 // },
-		 // mousedown:function(){
-
-		 // 	_this.containerMouseDown.call(_this,this,jsonObj); 
-		 // },
-		 // mouseup:function(e,pos){
-
-		 // 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
-
-		 // },
-		 // mousemove:function(){
-		 // 	_this.settingIcoShow(this);
-
-		 // 	_this.containerMouseMove.call(_this,this,jsonObj); 
-		 // },
-		 // mouseout:function(){ 
-		 // 	_this.settingIcoHide(this);
-		 // },
+		 dashed:false,  
 
 
 		 ///
@@ -2277,10 +2343,10 @@ Qflow.prototype.addContainer = function(obj) {
 		nodeType:'container',  //容器类型
 		x:obj.x,
 		y:obj.y,
-		text:'容器标题',
-		width:this.containerNodeWidth,
-		height:this.containerNodeHeight,
-		grid:[1,1], //行 列
+		text:(attrObj && attrObj.text)?attrObj.text:'容器标题',
+		width:(attrObj && attrObj.width)?attrObj.width:this.containerNodeWidth,
+		height:(attrObj && attrObj.height)?attrObj.height:this.containerNodeHeight,
+		grid:(attrObj && attrObj.grid)?attrObj.grid:[1,1], //行 列
 		child:[],
 		childNodes:[], //qcanvas元素对象
 		attr:{
@@ -2299,6 +2365,8 @@ Qflow.prototype.addContainer = function(obj) {
 	//添加容器的标题
 	this.initContainerTitle(jsonObj,tmp);
 	
+
+	return tmp.id;
 	
 };
 Qflow.prototype.modiContainerGridColumn = function(column) { 
@@ -2335,7 +2403,7 @@ Qflow.prototype.modiContainerGridColumn = function(column) {
 
 
 };
-Qflow.prototype.inSertToContainer = function(obj,aim) {
+Qflow.prototype.inSertToContainer = function(obj,aim,text) {
 	//添加节点到container
 	//根据container里的位置 初始化节点位置
 	console.log('创建的节点需要初始到容器里');
@@ -2367,7 +2435,7 @@ Qflow.prototype.inSertToContainer = function(obj,aim) {
 
 	var jsonObj = {
 			nodeType:'node',
-			text:'我是新来的',
+			text:text?text:'我是新来的',
 			attr:{
 				color:'#fff'
 			}
@@ -2379,7 +2447,7 @@ Qflow.prototype.inSertToContainer = function(obj,aim) {
 
 
 };
-Qflow.prototype.addNode = function(obj) {
+Qflow.prototype.addNode = function(obj,title) {
 
 	var _this = this;
 
@@ -2390,21 +2458,7 @@ Qflow.prototype.addNode = function(obj) {
 		 height:this.childNodeHeight,
 		 borderColor:this.childNodeBorderColor, 
 		 fillColor:this.childNodeFillColor, 
-		 dashed:false, 
-		 // mousedown:function(){
-
-		 // 	_this.containerMouseDown.call(_this,this,jsonObj); 
-		 // },
-		 // mouseup:function(e,pos){
-
-		 // 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
-
-		 // },
-		 // mousemove:function(){
-
-		 // 	_this.containerMouseMove.call(_this,this,jsonObj); 
-
-		 // }
+		 dashed:false,  
 		 getRangePoints:function(){ //返回rect边上的8个点的坐标 
 		 	return _this.createRangePoints(this.polyPoints());
 		 },
@@ -2449,7 +2503,7 @@ Qflow.prototype.addNode = function(obj) {
 			nodeType:'node', //普通节点
 			x:obj.x,
 			y:obj.y,
-			text:'标题',
+			text:title?title:'标题',
 			attr:{
 				 borderColor:this.childNodeBorderColor, 
 				 color:'#fff',
@@ -2554,7 +2608,11 @@ Qflow.prototype.addEle = function(obj) {
 
 	switch(obj.id){
 		case '-1':
-			this.addContainer(obj);
+			var id = this.addContainer(obj);
+
+			//默认加一个节点进容器
+			this.inSertToContainer({},{id:id},'标题');
+
 		break;
 		case '1':
 			var tmp = this.inContainer(obj);//判断是否拖动到某了个容器里
