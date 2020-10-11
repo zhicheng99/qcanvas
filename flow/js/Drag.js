@@ -122,7 +122,9 @@ Drag.prototype.mouseMove = function(){
         _this.drag = null; 
 
          document.getElementById('dragDom') && 
-        document.body.removeChild(document.getElementById('dragDom'));
+        document.getElementById('qflow_lay').removeChild(document.getElementById('dragDom'));
+         
+        // document.body.removeChild(document.getElementById('dragDom'));
     })
 
     this.addEvents(document,'mouseup',function(event){
@@ -133,7 +135,9 @@ Drag.prototype.mouseMove = function(){
         _this.drag = null; 
 
          document.getElementById('dragDom') && 
-        document.body.removeChild(document.getElementById('dragDom'));
+        document.getElementById('qflow_lay').removeChild(document.getElementById('dragDom'));
+
+        // document.body.removeChild(document.getElementById('dragDom'));
     })
 
 

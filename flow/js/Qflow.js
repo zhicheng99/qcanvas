@@ -84,7 +84,7 @@ function Qflow(options){
 	this.contextSettingLayer.setDisplay('none');
 
 	//点击设置按钮显示半透明覆盖层
-	this.initContextCover();
+	// this.initContextCover();
 
 
 	//初始化设置按钮（鼠标划过元素时显示）
@@ -108,6 +108,7 @@ function Qflow(options){
 	this.contextLineMenuNode = null; //右键菜单对象
 
 	// this.initLineMenu();
+	// console.log(this.qcanvas);
  
 }
 Qflow.prototype.returnSaveData = function() {
@@ -348,6 +349,31 @@ Qflow.prototype.initLineMenu = function(pos) {
 	// this.contextLineMenuLayer.setDisplay('block');
 
 };
+Qflow.prototype.download = function() {
+	var obj = document.getElementById(this.options.id); 
+
+	var tmp = document.createElement('canvas');
+	var context = tmp.getContext('2d');
+	tmp.width = this.options.width;
+	tmp.height = this.options.height;
+	tmp.style.width = this.options.width+'px';
+	tmp.style.height = this.options.height+'px';
+
+	context.drawImage(obj,0,0,parseInt(obj.style.width),parseInt(obj.style.height));
+
+
+	var oA = document.createElement("a");
+    oA.download = '';// 设置下载的文件名，默认是'下载'
+    oA.href = tmp.toDataURL("image/png",1.0);
+    document.body.appendChild(oA);
+    oA.click();
+    oA.remove(); // 下载之后把创建的元素删除
+	
+};
+Qflow.prototype.destroy = function() {
+	this.qcanvas.destroy();
+	
+};
 Qflow.prototype.lineMenuLayerShow = function(pos) { 
 
 
@@ -397,13 +423,10 @@ Qflow.prototype.delTmpLine = function() {
 Qflow.prototype.createNewLine = function(node,jsonObj) {
 	var _this = this;
 	//开始创建新的连线
-	if(this.contextMenuNode!== null){ 
-		console.log(this.contextMenuNode);
+	if(this.contextMenuNode!== null){  
 
 		var fromJSON = this.getJsonObj(this.contextMenuNode.id); 
-
-		console.log(fromJSON);
-
+ 
 		if(fromJSON.id == jsonObj.id){ //指向自已的连线 后期再实现
 			this.contextMenuNode = null;
 
@@ -415,7 +438,8 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 			toId:jsonObj.id,
 			attr:{
 				like:'->',
-				color:this.lineColor
+				color:this.lineColor,
+				text:'连线关系'
 			}
 		})
 		this.solveLink();
@@ -440,6 +464,9 @@ Qflow.prototype.createNewLine = function(node,jsonObj) {
 					_this.qcanvas.raiseToTop(_this.contextLineMenuLayer);
 					_this.initLineMenu(pos);
 					_this.lineMenuLayerShow();
+
+					_this.contextSettingHide();
+
 
 				}
 			}
@@ -660,7 +687,7 @@ Qflow.prototype.delNode = function() {
 		_this.qcanvas.removeEle(item);
 	})
 
-	console.log(delNodeObj)
+	// console.log(delNodeObj)  
 	delNodeObj.forEach(function(item){
 		if(typeof item.ownerId !='undefined'){ //删除的是容器里的节点 需要更新json对象中的childNodes数组
 			var jsonObj = _this.getJsonObj(item.ownerId);
@@ -772,30 +799,7 @@ Qflow.prototype.menuLayerHide = function() {
 
 };
 Qflow.prototype.initSettingIco = function() {
-	var _this = this;
-	// this.settingIco = this.qcanvas.qimg.img({
-	// 	img:'./img/setting.png',
-	// 	sStart:[0,0],
-	// 	tStart:[0,0],
-	// 	tWidth:10,
-	// 	tHeight:10,
-	// 	display:'none',
-	// 	drag:false,
-	// 	mousemove:function(){
-	// 		this.setDisplay('block');
-	// 	},
-	// 	mouseup:function(e,pos){ 
-	// 		_this.contextSettingNode = this.contextSettingNode;
- 
-
-	// 		_this.qcanvas.raiseToTop(_this.contextSettingLayer);
-	// 		// _this.contextSettingShow.call(_this.contextSettingNode,{x:this.sStart[0],y:this.sStart[1]});
-	// 		// _this.contextSettingShow({x:this.sStart[0],y:this.sStart[1]});
-	// 		_this.contextSettingShow(pos);
-
-
-	// 	}
-	// }); 
+	var _this = this; 
 
 	this.settingIco = this.qcanvas.qarc.arc({
 		start:[0,0],
@@ -811,6 +815,12 @@ Qflow.prototype.initSettingIco = function() {
 			this.setDisplay('block');
 		},
 		mouseup:function(e,pos){ 
+			_this.contextSettingHide();
+
+			//如果取消连线关系
+			_this.delTmpLine();
+			_this.contextMenuNode = null;
+
 			_this.contextSettingNode = this.contextSettingNode;
  
 
@@ -819,6 +829,8 @@ Qflow.prototype.initSettingIco = function() {
 			// _this.contextSettingShow({x:this.sStart[0],y:this.sStart[1]});
 			_this.contextSettingShow(pos);
 
+
+			_this.lineMenuLayerHide();
 
 		}
 	});	
@@ -881,6 +893,9 @@ Qflow.prototype.contextSettingShow = function(pos) {
 	// this.initDelBtn();
 
 	this.contextSettingLayer.setDisplay('block');
+
+	// console.log(this.contextSettingLayer);
+	// console.log(this.qcanvas);
  
 }; 
 Qflow.prototype.initDelBtn = function() {
@@ -924,9 +939,9 @@ Qflow.prototype.initModiTitleNode = function() {
 
 
 	var rectJsonObj = this.getJsonObj(this.contextSettingNode.id);
-	console.log(rectJsonObj);
+	// console.log(rectJsonObj);
 
-	var ele = this.contextSettingLayer.elements[1];
+	var ele = this.contextSettingLayer.elements[0];
 	var x = ele.start[0]+10;
 	var y = ele.start[1]+10;
 	var w = ele.width - 20;
@@ -987,22 +1002,28 @@ Qflow.prototype.contextSettingHide = function() {
 	this.contextSettingLayer.setDisplay('none'); 
 
 	var d = document.getElementById('titleInput'); 
-	d.style.display = 'none';
-
 	var c = document.getElementById('containerGridColumn');
+	d.style.display = 'none';
 	c.style.display = 'none';
 
 
 
-	//保留每一个半透明覆盖层对象 下次弹出右键菜单 内容重新初始化
-	var tmp = [];
-	for (var i = 1; i < this.contextSettingLayer.elements.length; i++) {
-		tmp.push(this.contextSettingLayer.elements[i]);
-	}
-	tmp.forEach(function(item){
-		_this.contextSettingLayer.removeEle(item);
-	})
 
+	//保留每一个半透明覆盖层对象 下次弹出右键菜单 内容重新初始化
+	// this.contextSettingLayer.elements.length == 1;
+	// var tmp = [];
+	// for (var i = 1; i < this.contextSettingLayer.elements.length; i++) {
+	// 	tmp.push(this.contextSettingLayer.elements[i]);
+	// }
+	// tmp.forEach(function(item){
+	// 	_this.contextSettingLayer.removeEle(item);
+	// })
+
+	this.contextSettingLayer.destroy();
+
+
+	// console.log(this.contextSettingLayer);
+	// console.log(this.qcanvas);
 
 	
 };
@@ -1014,7 +1035,7 @@ Qflow.prototype.initColorRect = function() {
 	var rectW = 20;
 	var rectH = 20;
 
-	var tmp = this.contextSettingLayer.elements[1];
+	var tmp = this.contextSettingLayer.elements[0];
 
 
 	//暂时排4行5列 
@@ -1148,7 +1169,7 @@ Qflow.prototype.updateInitDataAttr = function(v) {
 
 Qflow.prototype.initContextMenuTab = function() {
 	var _this = this;
-	var tmp = this.contextSettingLayer.elements[1];
+	var tmp = this.contextSettingLayer.elements[0];
 
 	var textArr = [
 		{text:'边框颜色', aimAttr:'borderColor'},
@@ -1734,6 +1755,8 @@ Qflow.prototype.initLink = function() {
 					_this.initLineMenu(pos);
 					_this.lineMenuLayerShow();
 
+					_this.contextSettingHide();
+
 				}
 
 			}
@@ -1753,16 +1776,28 @@ Qflow.prototype.updateInitData = function(obj,jsonObj) {
 
 
 	if(jsonObj.nodeType == 'container'){
-		//每一步 更新attr.gridPosition 
-		//先实现top-center
-		//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
-		var childAreaPosition = this.getChildAreaPosition(jsonObj);
 
-		//可以摆放子项的区域位置 计算出各个格子的坐标
-		var childPosition = this.getChildPosition(jsonObj,childAreaPosition);
+		//降低执行的频度
+		// if((typeof jsonObj.attr.callTime != 'undefined' && 
+		// 	((new Date()).getTime() - jsonObj.attr.callTime >200)) || 
+		// 	typeof jsonObj.attr.callTime == 'undefined'
+		// 	){
 
-		//把格子坐标添加到ettr里
-		jsonObj.attr.gridPosition = childPosition;
+			//每一步 更新attr.gridPosition 
+			//先实现top-center
+			//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+			var childAreaPosition = this.getChildAreaPosition(jsonObj);
+
+			//可以摆放子项的区域位置 计算出各个格子的坐标
+			var childPosition = this.getChildPosition(jsonObj,childAreaPosition);
+
+			//把格子坐标添加到ettr里
+			jsonObj.attr.gridPosition = childPosition;
+
+			// jsonObj.attr.callTime = (new Date()).getTime();
+		// }
+
+		
 
 		//第二步 更新子项位置 
 		// jsonObj.childNodes && jsonObj.childNodes.forEach(function(item,index){
@@ -1916,7 +1951,6 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 }
 				})
 	//qcanvas和数据作关联 
-	console.log(jsonObj);
 	if(typeof jsonObj.id == 'undefined'){
 		jsonObj.id = tmp.id
 	}
@@ -2475,7 +2509,7 @@ Qflow.prototype.rayCasting = function(p, poly) {
 Qflow.prototype.inContainer = function(obj) {   
 
 	var ele = this.qcanvas.elements; 
-	console.log(ele);
+	// console.log(ele);
 	var aim = null;
 	for (var i = ele.length - 1; i >= 0; i--) {
 		if(ele[i].display !='none' && ele[i].TYPE !='layer' && this.rayCasting({x:obj.x,y:obj.y},ele[i].polyPoints()) == 'in'){
@@ -2524,7 +2558,7 @@ Qflow.prototype.addEle = function(obj) {
 		break;
 		case '1':
 			var tmp = this.inContainer(obj);//判断是否拖动到某了个容器里
-			console.log(tmp);
+			// console.log(tmp);
 			if(tmp.sign){
 				this.inSertToContainer(obj,tmp.aim);
 			}else{
@@ -2548,13 +2582,17 @@ Qflow.prototype.canvasMoveFun = function(e,pos) {
 Qflow.prototype.canvasDownFun = function() {
 	// console.log('canvasDownFun');
 	this.delTmpLine();
+	this.contextMenuNode = null;
+
 	this.menuLayerHide();
-	this.lineMenuLayerHide()
+	this.lineMenuLayerHide();
+
+	this.contextSettingHide();
 };
 
 Qflow.prototype.rectDown = function(pos) {
-	console.log(pos);
-	console.log(this);
+	// console.log(pos);
+	// console.log(this);
 };
 
 

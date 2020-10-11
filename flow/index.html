@@ -60,7 +60,9 @@
 			background: #fff;
 
 		}
-		.save{
+		.save,
+		.download
+		{
 			float: right;
 			font-size: 12px;
 		}
@@ -101,13 +103,16 @@
 				height="20" alt="" draggable="false">
 
 			</span>
+			<span class="download" @click="download">
+				<img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNjAyMzk1NTUzNjQwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjI0MDkiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PGRlZnM+PHN0eWxlIHR5cGU9InRleHQvY3NzIj48L3N0eWxlPjwvZGVmcz48cGF0aCBkPSJNODMyLjEgNTkyLjdjLTExIDAtMjAgOS0yMCAyMHYxNTEuMmMwIDExLTkgMjAtMjAgMjBIMjMxLjljLTExIDAtMjAtOS0yMC0yMFY2MTIuN2MwLTExLTktMjAtMjAtMjBzLTIwIDktMjAgMjB2MTUxLjJjMCAzMy4xIDI2LjkgNjAgNjAgNjBINzkyYzMzLjEgMCA2MC0yNi45IDYwLTYwVjYxMi43YzAuMS0xMS04LjktMjAtMTkuOS0yMHoiIHAtaWQ9IjI0MTAiPjwvcGF0aD48cGF0aCBkPSJNNDY4LjMgNjU4LjZjMTEuMyAxMS45IDI3LjIgMTguNyA0My42IDE4LjcgMTYuNCAwIDMyLjMtNi44IDQzLjYtMTguOGw5OS4xLTEwNC43YzcuNi04IDcuMi0yMC43LTAuOC0yOC4zLTgtNy42LTIwLjctNy4yLTI4LjMgMC44bC05My42IDk4LjlWMjIwYzAtMTEtOS0yMC0yMC0yMHMtMjAgOS0yMCAyMHY0MDUuMmwtOTMuNC05OC42Yy03LjYtOC0yMC4zLTguNC0yOC4zLTAuOC04IDcuNi04LjQgMjAuMy0wLjggMjguM2w5OC45IDEwNC41eiIgcC1pZD0iMjQxMSI+PC9wYXRoPjwvc3ZnPg==" height="20" alt="" draggable="false">
+			</span>
 		</div>
 		<div id="qcanvas_lay">
 			<canvas id="qcanvas"></canvas>
-			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle">
-			<input type="text" id="containerGridColumn" v-model.number="containerGridColumn" @input="modiContainerGridColumn">
-			<input type="text" id="lineTitleInput" v-model="lineNodeTitle" @input="modiLineTitle">
-			<select id="lineLike" v-model="lineLike" @change="modiLineLike">
+			<input type="text" id="titleInput" v-model="nodeTitle" @input="modiTitle" autocomplete="off">
+			<input type="text" id="containerGridColumn" v-model.number="containerGridColumn" @input="modiContainerGridColumn" autocomplete="off">
+			<input type="text" id="lineTitleInput" v-model="lineNodeTitle" @input="modiLineTitle" autocomplete="off">
+			<select id="lineLike" v-model="lineLike" @change="modiLineLike" autocomplete="off">
 				<option v-for="item in lineStyleList" :value="item.value">{{item.name}}</option> 
 			</select>
 
@@ -171,6 +176,9 @@
 
 		  },
 		  methods:{
+		  	download:function(){
+		  		qflow.download();
+		  	},
 		  	save:function(){
 		  		// console.log(qflow.options.initData);
 

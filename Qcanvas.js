@@ -346,7 +346,8 @@ Qline.prototype.splitText = function(obj){
 			text:obj.withText,
 			color:obj.color,
 			withTextAlign:obj.withTextAlign?obj.withTextAlign:'center',
-			start:function(){return _this.getMiddleCoordinates.call(_this,obj)}
+			start:function(){return _this.getMiddleCoordinates.call(_this,obj)},
+			pointerEvent:'none'
 	});
 	obj.withTextId = tmp.id;
 }	
