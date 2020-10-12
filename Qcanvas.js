@@ -3384,6 +3384,7 @@ function Qcanvas(options){
 	
 	var doc = document;
 	var dpr = window.devicePixelRatio; // 假设dpr为2
+	this.delayRender = false;  //是否延时执行 (如果元素以静态为主 建议开启 增加渲染效率)
 
 	if(this.isArr(options)){
 		if(options.length<3 ){
@@ -3435,7 +3436,7 @@ function Qcanvas(options){
 		this.mouseout = options.mouseout || function(){};
 		this.mouseenter = options.mouseenter || function(){};
 
-
+		this.delayRender = typeof options.delayRender !='undefined'?options.delayRender :false;
 	}
 
 
@@ -3731,8 +3732,37 @@ Qcanvas.prototype.Tween = {
 	
 	//启动
 Qcanvas.prototype.start = function(){
-	this.clear();
-	this.paint();			
+	 
+	
+	if(this.delayRender){ 
+		if(typeof this.renderTime == 'undefined'){
+			this.renderTime = (new Date()).getTime();
+			this.clear();
+			this.paint();
+
+			if(((new Date()).getTime() - this.renderTime)> 16){
+				// console.log('渲染超过16ms了，重新更新时间');
+				this.renderTime = (new Date()).getTime();
+			}
+
+		}else if(((new Date()).getTime() - this.renderTime)> 16){
+			this.renderTime = (new Date()).getTime();
+			this.clear();
+			this.paint();
+			if(((new Date()).getTime() - this.renderTime)> 16){
+				// console.log('渲染超过16ms了，重新更新时间');
+				this.renderTime = (new Date()).getTime();
+			}
+		}/*else{
+			console.log('不需要重新 等下一个16ms');
+		}*/
+
+	}else{
+		this.clear();
+		this.paint();
+	}
+	
+	
 	//requestNextAnimationFrame.call(this,[arguments.callee]);
 	
 	var currentLoop = (new Date()).getMilliseconds();

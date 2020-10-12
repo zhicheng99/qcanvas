@@ -109,8 +109,20 @@ function Qflow(options){
 
 	// this.initLineMenu();
 	// console.log(this.qcanvas);
+	
+	// this.createFps();
  
 }
+Qflow.prototype.createFps = function() {
+	var _this = this;
+	this.qcanvas.qtext.text({
+		text:function(){
+			return 'FPS:'+_this.qcanvas.currFps+'';
+		},
+		start:[20,50],
+		pointerEvent:'none'
+	})
+};
 Qflow.prototype.returnSaveData = function() {
 	var tmp = JSON.parse(JSON.stringify(this.options.initData));
 
@@ -2471,7 +2483,8 @@ Qflow.prototype.initCanvas = function() {
 		height:this.options.height,
 		mousedown:this.canvasDownFun.bind(this),
 		mousemove:this.canvasMoveFun.bind(this),
-		mouseup:this.canvasUpFun.bind(this)
+		mouseup:this.canvasUpFun.bind(this),
+		delayRender:true
 
 	});
 	// this.toolLayer = this.qcanvas.qlayer.layer();
