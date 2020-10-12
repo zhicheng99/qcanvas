@@ -3729,30 +3729,27 @@ Qcanvas.prototype.Tween = {
         }
     }
 }	
-	
-	//启动
+
+Qcanvas.prototype.delayRenderFun = function() {
+	this.renderTime = (new Date()).getTime();
+	this.clear();
+	this.paint();
+
+	if(((new Date()).getTime() - this.renderTime)> 16){
+		// console.log('渲染超过16ms了，重新更新时间');
+		this.renderTime = (new Date()).getTime();
+	}
+
+};
+//启动
 Qcanvas.prototype.start = function(){
 	 
-	
 	if(this.delayRender){ 
 		if(typeof this.renderTime == 'undefined'){
-			this.renderTime = (new Date()).getTime();
-			this.clear();
-			this.paint();
-
-			if(((new Date()).getTime() - this.renderTime)> 16){
-				// console.log('渲染超过16ms了，重新更新时间');
-				this.renderTime = (new Date()).getTime();
-			}
+			this.delayRenderFun();
 
 		}else if(((new Date()).getTime() - this.renderTime)> 16){
-			this.renderTime = (new Date()).getTime();
-			this.clear();
-			this.paint();
-			if(((new Date()).getTime() - this.renderTime)> 16){
-				// console.log('渲染超过16ms了，重新更新时间');
-				this.renderTime = (new Date()).getTime();
-			}
+			this.delayRenderFun();
 		}/*else{
 			console.log('不需要重新 等下一个16ms');
 		}*/
