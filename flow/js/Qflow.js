@@ -1314,6 +1314,7 @@ Qflow.prototype.initContextMenuTab = function() {
 
 			color:index==0?'#000':'#ccc',
 			aimAttr:item.aimAttr,
+			drag:false,
 			mouseup:function(){   
 				var _self = this; 
 				_this.contextSettingLayer.elements.forEach(function(item){
@@ -1339,17 +1340,15 @@ Qflow.prototype.initContextMenuTab = function() {
 Qflow.prototype.initContextMenuArea = function(pos) {
 	var _this = this; 
 
-	//右击显示的菜单块
-	var tmp = this.qcanvas.qrect.rect({
+	//右击显示的菜单块 
+	this.contextSettingLayer.push(this.qcanvas.qrect.rect({
 		start:[pos.x,pos.y],
 		width:200,
 		height:200,
 		borderColor:'',
 		fillColor:'yellow',
-		drag:'false'
-	})
-
-	this.contextSettingLayer.push(tmp);
+		drag:false
+	}));
 	
 };
 Qflow.prototype.getContainerNodes = function() {
