@@ -689,7 +689,10 @@ Qflow.prototype.delNode = function() {
 
 	// console.log(delNodeObj)  
 	delNodeObj.forEach(function(item){
-		if(typeof item.ownerId !='undefined'){ //删除的是容器里的节点 需要更新json对象中的childNodes数组
+		if(typeof item.ownerId !='undefined'){ 
+		//删除的是容器里的节点 
+		//需要更新json对象中的childNodes数组
+		//更新容器的高度
 			var jsonObj = _this.getJsonObj(item.ownerId);
 
 			if(jsonObj !== null){
@@ -706,9 +709,31 @@ Qflow.prototype.delNode = function() {
 				jsonObj.childNodes.forEach(function(item,index){
 					item.sort = index;
 				})
+
+				//更新高度
+				if(jsonObj.attr.titlePosition == 'top-center'){
+					var startPlaceHolderY = (_this.containerTitleHeight+_this.containerPadding);
+					var row = Math.ceil((jsonObj.child.length == 0?1:jsonObj.child.length)/jsonObj.grid[1]);
+					jsonObj.height = startPlaceHolderY + _this.childNodeHeight*row+(row)*_this.containerChildMargin;
+					jsonObj.grid[0] = row;
+					var containerObj = _this.getNodeObj(item.ownerId);
+					containerObj.setHeight(jsonObj.height); 
+				}
+
+				//更新gridPostion--------
+					//可以摆放子项的区域位置[左上角开始位置，右下角结束位置]
+					var childAreaPosition = _this.getChildAreaPosition(jsonObj);
+
+					//可以摆放子项的区域位置 计算出各个格子的坐标
+					var childPosition = _this.getChildPosition(jsonObj,childAreaPosition);
+
+					//把格子坐标添加到attr里
+					jsonObj.attr.gridPosition = childPosition;
+
+				//----------------
+
+
 			}
-
-
 		}
 		_this.qcanvas.removeEle(item);
 	})
@@ -2552,7 +2577,7 @@ Qflow.prototype.modiContainerGridColumn = function(column) {
 
 	if(parentJsonNode.attr.titlePosition == 'top-center'){
 		var startPlaceHolderY = (this.containerTitleHeight+this.containerPadding);
-		var row = Math.ceil(parentJsonNode.child.length/column);
+		var row = Math.ceil((parentJsonNode.child.length==0?1:parentJsonNode.child.length)/column);
 		parentJsonNode.height = startPlaceHolderY + this.childNodeHeight*row+(row)*this.containerChildMargin;
 		parentJsonNode.grid = [row,column];
 
@@ -2591,6 +2616,12 @@ Qflow.prototype.inSertToContainer = function(obj,aim,text) {
 		//放大container的一行子节点的高度 同时重新生成JSON数据中的gridPostion
 		parentJsonNode.height += (this.childNodeHeight+this.containerChildMargin);
 		parentJsonNode.grid[0] += 1;
+
+
+		// var startPlaceHolderY = (this.containerTitleHeight+this.containerPadding);
+		// var row = Math.ceil((parentJsonNode.child.length==0?1:parentJsonNode.child.length)/column);
+		// parentJsonNode.height = startPlaceHolderY + this.childNodeHeight*row+(row)*this.containerChildMargin;
+		// parentJsonNode.grid = [row,column];
 
 		parentNode.setHeight(parentJsonNode.height);
 		
