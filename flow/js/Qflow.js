@@ -367,9 +367,7 @@ Qflow.prototype.download = function() {
 	var tmp = document.createElement('canvas');
 	var context = tmp.getContext('2d');
 	tmp.width = this.options.width;
-	tmp.height = this.options.height;
-	tmp.style.width = this.options.width+'px';
-	tmp.style.height = this.options.height+'px';
+	tmp.height = this.options.height; 
 
 	context.drawImage(obj,0,0,parseInt(obj.style.width),parseInt(obj.style.height));
 
