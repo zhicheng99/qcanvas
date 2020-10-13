@@ -2608,9 +2608,14 @@ Qevent.prototype.eventCallback = function(e,position){
 	  	this.executeMouseOutOrMouseEnter(aim,position);
 
 
-	  	//触发aim的事件(调用配置好的事件) 
+	  	//触发aim的事件(调用用户配置好的事件) 
 	  	(aim !== null) && (typeof aim[e.type] !='undefined') &&  aim[e.type](e,position);
 
+	  	// //模拟drag事件 
+	  	// (aim !== null) && 
+	  	// (this.qcanvas.dragAim !==null)  && 
+	  	// (e.type =='mousemove') && 
+	  	// (typeof aim['drag'] !='undefined') &&  aim['drag'](e,position);
 	  
 }	
 	
@@ -2786,7 +2791,9 @@ function Qlayer(p){
 	//重置context和elements属性
 	this.qcanvas.context = t.getContext('2d');
 	this.qcanvas.context.scale(this.dpr,this.dpr);
-	this.qcanvas.elements = []; 
+	this.qcanvas.elements = [];
+	// this.qcanvas.stage.canvas = t;
+	// this.qcanvas.stage.id = t.id;
  
 
 	this.layer = function(){ 
@@ -3401,6 +3408,7 @@ function Qcanvas(options){
 		
 		//舞台对象
 		this.stage = {
+			"canvas":c_obj,
 			"id":options[0],
 			"width":options[1],
 			"height":options[2]
@@ -3425,6 +3433,7 @@ function Qcanvas(options){
 		
 		//舞台对象
 		this.stage = {
+			"canvas":c_obj,
 			"id":options.id,
 			"width":options.width,
 			"height":options.height

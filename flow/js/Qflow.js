@@ -2472,7 +2472,36 @@ Qflow.prototype.initNode = function(parentNode) {
 
 	
 };
+Qflow.prototype.resizeCanvasByJsonData = function() {
+	var _this = this;
+    //取以下两个组的最大值
+    //x+元素宽
+    //y+元素高
+    var x=[],y=[];
+	this.options.initData.node.map(function(item){
+
+		if(item.nodeType == 'container'){
+			x.push(item.x+item.width);
+			y.push(item.y+item.height);
+		}else{
+
+			x.push(item.x+_this.childNodeWidth);
+			y.push(item.y+_this.childNodeHeight);
+		}
+	})
+
+	var maxX = Math.max.apply(null,x);
+	var maxY = Math.max.apply(null,y); 
+
+ 	this.options.width = maxX>=this.options.width?maxX:this.options.width;
+ 	this.options.height = maxY>=this.options.height?maxY:this.options.height; 
+
+};
 Qflow.prototype.initCanvas = function() {
+
+	//根据this.options.initData.node计算设置的canvas宽高是否可以放得下
+	//如果放不入 需要重置画布宽高
+	this.resizeCanvasByJsonData();
  
 	this.qcanvas = new Qcanvas({
 		id:this.options.id,

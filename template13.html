@@ -213,6 +213,16 @@ blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】
 		// drag:false,
 		borderColor:'green',
 		fillColor:'green', 
+		mousemove:function(){
+			console.log(qcanvas.dragAim);
+
+			// if(qcanvas.dragAim !== null && qcanvas.dragAim.id == this.id){
+			// 	console.log()
+			// }
+		},
+		drag:function(){
+			console.log('drag');
+		}
 	})
 
 	var redRect = qcanvas.qrect.rect({
