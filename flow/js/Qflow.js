@@ -56,9 +56,10 @@ function Qflow(options){
 	this.childNodeBorderColor = '#70BDC4';
 	this.containerFillColor = "#9093DC";
 
-	
-
-
+	this.init();
+ 
+}
+Qflow.prototype.init = function() {
 	//加工初始数据 重置画布size
 	this.reSizeByInitData();
 
@@ -111,8 +112,7 @@ function Qflow(options){
 	// console.log(this.qcanvas);
 	
 	// this.createFps();
- 
-}
+};
 Qflow.prototype.createFps = function() {
 	var _this = this;
 	this.qcanvas.qtext.text({
@@ -381,6 +381,13 @@ Qflow.prototype.download = function() {
 	
 };
 Qflow.prototype.destroy = function() {
+
+	this.qcanvas.elements.forEach(function(item){
+		if(item.TYPE == 'layer'){
+			item.destroy();
+		}
+	})
+
 	this.qcanvas.destroy();
 	
 };
@@ -1477,6 +1484,7 @@ Qflow.prototype.initChildPosition = function() {
 	
 };
 Qflow.prototype.reSizeByInitData = function() {
+	var _this = this;
 
 	if(this.options.initData === null){
 		return;
@@ -1487,23 +1495,27 @@ Qflow.prototype.reSizeByInitData = function() {
  		this.options.initData.node.length>0
  		){
 
- 		var nodes = this.options.initData.node;
- 		var xArr = [];
- 		var yArr = [];
- 		for (var i = 0; i < nodes.length; i++) {
- 			xArr.push(nodes[i].x + nodes[i].width);
- 			yArr.push(nodes[i].y + nodes[i].height);
- 		}
+	    //取以下两个组的最大值
+	    //x+元素宽
+	    //y+元素高
+	    var x=[],y=[];
+		this.options.initData.node.map(function(item){
 
- 		var maxX = Math.max.apply({},xArr);
- 		var maxY = Math.max.apply({},yArr);
+			if(item.nodeType == 'container'){
+				x.push(item.x+item.width);
+				y.push(item.y+item.height);
+			}else{
 
- 		if(maxX>this.options.width){
- 			this.options.width = maxX
- 		}
- 		if(maxY>this.options.height){
- 			this.options.height = maxY
- 		}
+				x.push(item.x+_this.childNodeWidth);
+				y.push(item.y+_this.childNodeHeight);
+			}
+		})
+
+		var maxX = Math.max.apply(null,x);
+		var maxY = Math.max.apply(null,y); 
+
+	 	this.options.width = maxX>=this.options.width?maxX:this.options.width;
+	 	this.options.height = maxY>=this.options.height?maxY:this.options.height; 
  	}
 };
 Qflow.prototype.getNodeIdFromJsonById = function(id) {
@@ -2227,6 +2239,7 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 
 				 	}
 
+
 				 },
 				 mousemove:function(e,pos){ 
 
@@ -2350,7 +2363,10 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
 
 		 	} 
  		})
+
  	}
+
+	 	this.isResizeCanvas(jsonObj.nodeId);
 
  	//右击显示菜单
  	if(e.button == '2'){ 
@@ -2365,7 +2381,80 @@ Qflow.prototype.containerMouseUp = function(container,e,pos,jsonObj) {
  		// _this.contextSettingShow(pos);
 
  	}
+
+
 };
+Qflow.prototype.resizeCanvas = function(width,height) {
+	var dpr = window.devicePixelRatio; // 假设dpr为2
+
+	var c_obj = this.qcanvas.stage.canvas;
+	c_obj.width = width*dpr;
+	c_obj.height = height*dpr;
+	c_obj.style.width = width+'px';
+	c_obj.style.height = height+'px';
+
+
+	var context = c_obj.getContext('2d');
+	// 需要将绘制比例放大
+    context.scale(dpr,dpr);
+
+
+
+    //layer的元素的临时canvas也得同步缩放
+    this.qcanvas.elements.forEach(function(item){
+    	if(item.TYPE == 'layer'){
+
+    		// console.log(item.canvasEle);
+    		var layer_canvas = item.canvasEle;
+    		layer_canvas.width = width*dpr;
+			layer_canvas.height = height*dpr;
+			var context = layer_canvas.getContext('2d');
+			// 需要将绘制比例放大
+		    context.scale(dpr,dpr);
+
+    	}
+    })
+
+
+
+	this.qcanvas.stage.width = width;
+	this.qcanvas.stage.height = height;
+
+
+
+};
+Qflow.prototype.isResizeCanvas = function(nodeId) {
+	var _this = this;
+	var F = function(){ 
+	
+		var obj = _this.getNodeObj(nodeId);
+		if(obj !== null){
+			var start = _this.qcanvas.isFun(obj.start)?obj.start():obj.start;
+
+			var maxX = start[0] + obj.width;
+			var maxY = start[1] + obj.height;
+
+			if(maxX > _this.options.width || 
+				maxY > _this.options.height){
+
+				console.log('需要重置canvas尺寸');
+
+				_this.resizeCanvas(maxX>_this.options.width?maxX:_this.options.width,maxY>_this.options.height?maxY:_this.options.height);
+
+			}
+
+
+		}
+
+
+
+	}
+	setTimeout(F,200);
+
+
+	
+};
+
 Qflow.prototype.containerMouseMove = function(container,jsonObj) {
 
 	// this.settingIcoShow(container);
@@ -2472,36 +2561,7 @@ Qflow.prototype.initNode = function(parentNode) {
 
 	
 };
-Qflow.prototype.resizeCanvasByJsonData = function() {
-	var _this = this;
-    //取以下两个组的最大值
-    //x+元素宽
-    //y+元素高
-    var x=[],y=[];
-	this.options.initData.node.map(function(item){
-
-		if(item.nodeType == 'container'){
-			x.push(item.x+item.width);
-			y.push(item.y+item.height);
-		}else{
-
-			x.push(item.x+_this.childNodeWidth);
-			y.push(item.y+_this.childNodeHeight);
-		}
-	})
-
-	var maxX = Math.max.apply(null,x);
-	var maxY = Math.max.apply(null,y); 
-
- 	this.options.width = maxX>=this.options.width?maxX:this.options.width;
- 	this.options.height = maxY>=this.options.height?maxY:this.options.height; 
-
-};
 Qflow.prototype.initCanvas = function() {
-
-	//根据this.options.initData.node计算设置的canvas宽高是否可以放得下
-	//如果放不入 需要重置画布宽高
-	this.resizeCanvasByJsonData();
  
 	this.qcanvas = new Qcanvas({
 		id:this.options.id,

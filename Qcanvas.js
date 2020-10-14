@@ -2761,6 +2761,7 @@ Qevent.prototype.rayCasting = function(p, poly) {
 
 //元素容器类
 function Qlayer(p){
+	var _this = this;
 	this.qlayerVersion = '1.0';
 	this.pcanvas = p;   //主canvas 
 	this.dpr = window.devicePixelRatio; // 假设dpr为2
@@ -2768,14 +2769,14 @@ function Qlayer(p){
 	
 
 	//实例属性覆盖原型Qcanvas继承过来的属性
-	var t = document.createElement('canvas');
+	// this.canvasEle = document.createElement('canvas');
 	// var t = document.getElementById('qcanvas1');  
 
-	t.width = this.pcanvas.stage.width*this.dpr;
-	t.height = this.pcanvas.stage.height*this.dpr;
+	// this.canvasEle.width = this.pcanvas.stage.width*this.dpr;
+	// this.canvasEle.height = this.pcanvas.stage.height*this.dpr;
 	// t.style.width = this.pcanvas.stage.width;
 	// t.style.height = this.pcanvas.stage.height;
-	t.id = parseInt(Math.random()*10000);
+	// this.canvasEle.id = parseInt(Math.random()*10000);
 
 
 	//重写生成一个qcanvas属性
@@ -2789,18 +2790,30 @@ function Qlayer(p){
 	// this.qcanvas = this.extend({},p);
 
 	//重置context和elements属性
-	this.qcanvas.context = t.getContext('2d');
-	this.qcanvas.context.scale(this.dpr,this.dpr);
+	// this.qcanvas.context = this.canvasEle.getContext('2d');
+	// this.qcanvas.context.scale(this.dpr,this.dpr);
 	this.qcanvas.elements = [];
-	// this.qcanvas.stage.canvas = t;
-	// this.qcanvas.stage.id = t.id;
- 
 
 	this.layer = function(){ 
+
+		//每个layer都创建新的临时canvas
+		//实例属性覆盖原型Qcanvas继承过来的属性
+		_this.canvasEle = document.createElement('canvas');
+
+		_this.canvasEle.width = _this.pcanvas.stage.width*_this.dpr;
+		_this.canvasEle.height = _this.pcanvas.stage.height*_this.dpr;
+		// t.style.width = this.pcanvas.stage.width;
+		// t.style.height = this.pcanvas.stage.height;
+		_this.canvasEle.id = parseInt(Math.random()*10000);
+		_this.qcanvas.context = _this.canvasEle.getContext('2d');
+		_this.qcanvas.context.scale(_this.dpr,_this.dpr);
+
+
 
 		
 		var o = { 
 			TYPE:"layer",
+			canvasEle:this.canvasEle,
 			pcanvas:this.pcanvas,
 			// elements:this.qcanvas.elements,
 			elements:[],
@@ -2893,7 +2906,7 @@ function Qlayer(p){
 	this.paintLayer = function(o){
 		this.start(o);
 		// o.display == 'block' &&  this.pcanvas.context.drawImage(t,0,0,this.pcanvas.stage.width*this.dpr,this.pcanvas.stage.height*this.dpr,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
-		o.display == 'block' &&  this.pcanvas.context.drawImage(t,0,0,t.width,t.height,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
+		o.display == 'block' &&  this.pcanvas.context.drawImage(this.canvasEle,0,0,this.canvasEle.width,this.canvasEle.height,0,0,this.pcanvas.stage.width,this.pcanvas.stage.height);
 		
 	}
 
@@ -2917,7 +2930,7 @@ function Qlayer(p){
 
 	}
 	this.clear = function(){
-		this.qcanvas.context.clearRect(0,0,t.width,t.height);
+		this.qcanvas.context.clearRect(0,0,this.canvasEle.width,this.canvasEle.height);
 	}
 
 	this.start = function(o){
