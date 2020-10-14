@@ -2415,7 +2415,8 @@ Qflow.prototype.resizeCanvas = function(width,height) {
     	}
     })
 
-
+    this.options.width = width;
+    this.options.height = height;
 
 	this.qcanvas.stage.width = width;
 	this.qcanvas.stage.height = height;
