@@ -2773,9 +2773,7 @@ function Qlayer(p){
 	// var t = document.getElementById('qcanvas1');  
 
 	// this.canvasEle.width = this.pcanvas.stage.width*this.dpr;
-	// this.canvasEle.height = this.pcanvas.stage.height*this.dpr;
-	// t.style.width = this.pcanvas.stage.width;
-	// t.style.height = this.pcanvas.stage.height;
+	// this.canvasEle.height = this.pcanvas.stage.height*this.dpr; 
 	// this.canvasEle.id = parseInt(Math.random()*10000);
 
 
@@ -2801,9 +2799,7 @@ function Qlayer(p){
 		_this.canvasEle = document.createElement('canvas');
 
 		_this.canvasEle.width = _this.pcanvas.stage.width*_this.dpr;
-		_this.canvasEle.height = _this.pcanvas.stage.height*_this.dpr;
-		// t.style.width = this.pcanvas.stage.width;
-		// t.style.height = this.pcanvas.stage.height;
+		_this.canvasEle.height = _this.pcanvas.stage.height*_this.dpr; 
 		_this.canvasEle.id = parseInt(Math.random()*10000);
 		_this.qcanvas.context = _this.canvasEle.getContext('2d');
 		_this.qcanvas.context.scale(_this.dpr,_this.dpr);
