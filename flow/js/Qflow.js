@@ -2175,8 +2175,15 @@ Qflow.prototype.drawNode = function(parentNode,nodes) {
  
 		}else{
 
-			//创建容器或节点（顶级的平行数据）
-			_this.createContainerOrNode(nodes[i]); 
+			if(nodes[i].nodeType =='tip'){
+				_this.createTipNode(nodes[i]);
+
+			}else{
+
+				//创建容器或节点（顶级的平行数据）
+				_this.createContainerOrNode(nodes[i]); 
+
+			}
 
 		}
 	}
@@ -2485,6 +2492,10 @@ Qflow.prototype.createRangePoints = function(polyPoints) {
 	}
 
 	return tmp;
+};
+Qflow.prototype.createTipNode = function(jsonObj) {
+	var _this = this;
+	console.log('fdsd');
 };
 Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var _this = this;
