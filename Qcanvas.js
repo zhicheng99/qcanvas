@@ -2801,7 +2801,7 @@ function Qlayer(p){
 
 		_this.canvasEle.width = _this.pcanvas.stage.width*_this.dpr;
 		_this.canvasEle.height = _this.pcanvas.stage.height*_this.dpr; 
-		_this.canvasEle.id = parseInt(Math.random()*10000);
+		_this.canvasEle.id = parseInt(Math.random()*100000000);
 		_this.qcanvas.context = _this.canvasEle.getContext('2d');
 		_this.qcanvas.context.scale(_this.dpr,_this.dpr);
 
@@ -2814,7 +2814,7 @@ function Qlayer(p){
 			pcanvas:this.pcanvas,
 			// elements:this.qcanvas.elements,
 			elements:[],
-			id: parseInt(Math.random()*10000),
+			id: parseInt(Math.random()*100000000),
 			display:'block', 
 			// qline:this.pcanvas.qline,
 			// TypeGroup: {
@@ -3477,7 +3477,7 @@ function Qcanvas(options){
 	
 	this.qcanvasVersion = '1.0';
 	this.type = 'canvas';
-	this.id = parseInt(Math.random()*10000);
+	this.id = parseInt(Math.random()*100000000);
 	this.context = c_obj.getContext('2d');
 	// 需要将绘制比例放大
     this.context.scale(dpr,dpr);
@@ -3900,7 +3900,7 @@ Qcanvas.prototype.pushElements = function(element){
 	
 	if(typeof element.id == 'undefined'){
 		//自动生成一个唯一id
-		element.id = parseInt(Math.random()*10000);
+		element.id = parseInt(Math.random()*100000000);
 		this.elements.push(element);
 	}
 	

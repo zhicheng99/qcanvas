@@ -17,6 +17,10 @@ function Qflow(options){
 	this.childNodeHeight = 30;
 
 
+	this.tipNodeWidth = 150;
+	this.tipContext = null;
+
+
 	//初始容器大小
 	this.containerNodeWidth = 120;
 	this.containerNodeHeight = 70;
@@ -800,6 +804,13 @@ Qflow.prototype.cloneNode = function() {
 			// inSertToContainer = function(obj,aim,text)
 		})
 	}
+
+
+	if(nodeJsonObj.nodeType == 'tip'){
+		console.log('clone tip');
+		this.cloneTipNode();
+	}
+
 
 
 
@@ -2224,6 +2235,8 @@ Qflow.prototype.createChildsOfContainer = function(parentNode,jsonObj,index) {
 				 		_this.delTmpLine();
 				 		_this.createNewLine(this,jsonObj);
 
+				 		_this.tipTextHide();
+				 		
 				 		_this.menuLayerHide();
 					 	_this.draging = true;
 				 },
@@ -2493,9 +2506,222 @@ Qflow.prototype.createRangePoints = function(polyPoints) {
 
 	return tmp;
 };
+
+Qflow.prototype.tipTextHide = function() {
+	if(this.tipContext !== null){
+      this.tipContext.setColor('#B58105'); 
+      var jsonObj = this.getJsonObj(this.tipContext.ownerId);
+ 
+
+      // if(this.tipContext.text.indexOf('\n') > -1){
+      // 	var tmp = this.tipContext.text.split('\n');
+      // 	jsonObj.text = tmp.join('\n');
+
+      // }else{
+
+	      jsonObj.text = this.tipContext.text;
+      // }
+
+
+
+      jsonObj.width  = this.tipNodeWidth;
+      jsonObj.height = this.tipContext.range.height;
+
+
+      this.tipContext =null;
+	}
+	document.getElementById('tip').style.display = 'none';
+	
+};
+Qflow.prototype.updateTipText = function(v,h) {
+
+	if(this.tipContext !== null){
+
+		v = this.formatTipText(v);
+		this.tipContext.setText(v); 
+
+
+
+		var tipRect = this.getNodeObj(this.tipContext.ownerId);
+		tipRect.setHeight(h);
+
+	}
+};
+Qflow.prototype.measureTextWidth = function(v) {
+	return this.qcanvas.context.measureText(v).width;
+
+};
+Qflow.prototype.formatTipText = function(str) {
+	var lineWidth = 0;
+    var lastSubStrIndex = 0; //每次开始截取的字符串的索引
+    var c = [];
+    for (let i = 0; i < str.length; i++) {
+      lineWidth += this.measureTextWidth(str[i]); 
+      
+      //有换行 重新计算
+      if(str[i] == '\n'){
+          lineWidth = 0;
+      }
+
+      if (lineWidth > this.tipNodeWidth) {
+        c.push(str.substring(lastSubStrIndex, i));//绘制截取部分
+        // initHeight += 70;//60为字体的高度
+        lineWidth = this.measureTextWidth(str[i]);
+        lastSubStrIndex = i;
+      }
+      if (i == str.length - 1) {//绘制剩余部分
+        c.push(str.substring(lastSubStrIndex, i + 1))
+       }
+    }
+
+    return c.join('\n');
+
+    // text1.setText(c.join('\n')); 
+};
+Qflow.prototype.cloneTipNode = function() {
+	console.log(this.contextMenuNode);
+	var jsonObj = this.getJsonObj(this.contextMenuNode.id);
+	var json = {
+			nodeType:'tip', //备注文本节点
+			x:this.contextMenuNode.start[0]+20,
+			y:this.contextMenuNode.start[1]+20,
+			width:this.tipNodeWidth,
+			height:this.contextMenuNode.height,
+			text:jsonObj.text,
+			attr:{
+				 borderColor:'#7EC8CE', 
+				 color:'#fff', 
+				 fillColor:'#585DCB',
+				 dashed:false, 
+			}
+	}
+
+
+	this.createTipNode(json);
+
+
+	this.options.initData.node.push(json);
+
+};
+Qflow.prototype.addTipNode = function(obj) {
+
+	var json = {
+			nodeType:'tip', //备注文本节点
+			x:obj.x,
+			y:obj.y,
+			width:this.tipNodeWidth, 
+			text:'备注',
+			attr:{
+				 borderColor:'#7EC8CE', 
+				 color:'#fff', 
+				 fillColor:'#585DCB',
+				 dashed:false, 
+			}
+	}
+
+
+	this.createTipNode(json);
+
+
+	this.options.initData.node.push(json);
+	
+};
 Qflow.prototype.createTipNode = function(jsonObj) {
 	var _this = this;
-	console.log('fdsd');
+	var tmp = this.qcanvas.qrect.rect({
+		 start:[jsonObj.x,jsonObj.y], 
+		 nodeType:jsonObj.nodeType,
+		 width:jsonObj.width?jsonObj.width:this.tipNodeWidth,
+		 height:jsonObj.height?jsonObj.height:this.childNodeHeight,
+		 borderColor:'orange',
+		 fillColor:'#FEF8DE', 
+		 dashed:jsonObj.attr.dashed,
+		  getRangePoints:function(){ //返回rect边上的8个点的坐标 
+		 	return _this.createRangePoints(this.polyPoints());
+		 },
+		 dblclick:function(e,pos){ 
+		 	var x = this.start[0],y = this.start[1];
+	        var doc = document.getElementById('tip');
+	        doc.style.top = y+'px';
+	        doc.style.left = x+'px';
+	        doc.style.width = this.width +'px';
+	        doc.style.height = this.height+'px';
+	        doc.style.fontSize="12px";
+	        doc.style.lineHeight="14px";
+	        doc.style.display = 'block';
+
+	        _this.tipContext =  _this.getNodeObj(jsonObj.attr.titleId);
+            _this.tipContext.setColor('#FEF8DE');
+
+	        doc.value = _this.tipContext.text;
+
+	        doc.focus();
+		 },
+		 mousedown:function(){ 
+
+		 	_this.delTmpLine();
+	 		_this.createNewLine(this,jsonObj); 
+
+	 		_this.menuLayerHide();
+		 	_this.containerMouseDown.call(_this,this,jsonObj); 
+		 },
+		 mouseup:function(e,pos){
+		 	_this.settingIcoHide(); 
+		 	_this.menuLayerHide();
+		 	
+		 	_this.containerMouseUp.call(_this,this,e,pos,jsonObj); 
+
+		 },
+		  mousemove:function(e,pos){
+		 	_this.updateTmpLineEndPos(pos); 
+
+		 	_this.containerMouseMove.call(_this,this,jsonObj); 
+
+
+		        if(_this.qcanvas.dragAim === null){
+		            return false;
+		        }
+	            var title =  _this.getNodeObj(jsonObj.attr.titleId); 
+
+		        title.setStart([this.start[0],this.start[1]+3]); 
+
+		        // title.setColor('#eee');
+
+		    }
+		})
+	//qcanvas和数据作关联
+	if(typeof jsonObj.id == 'undefined'){
+		jsonObj.id = tmp.id;
+	}  
+	jsonObj.nodeId = tmp.id;
+
+	this.qnodes.push(tmp);
+
+	this.initTipText(jsonObj,tmp);
+};
+Qflow.prototype.initTipText = function(obj,qobj) {
+
+		var _this = this;
+		var t = this.qcanvas.qtext.text({
+				// start:function(){
+				// 	return [qobj.start[0],qobj.start[1]+3];
+				// },
+				start:[qobj.start[0],qobj.start[1]+3],
+				text:obj.text,
+				fontSize:'12px', 
+			    lineHeight:'14px',
+			    color:'#B58105',
+			    textAlign:'left',
+			    textBaseline:'top',
+			    pointerEvent:'none',
+				ownerId:obj.nodeId
+			})
+
+		this.qnodes.push(t);
+
+		//标题节点的id记到container节点json数据上
+		obj.attr.titleId = t.id;
+ 
 };
 Qflow.prototype.createContainerOrNode = function(jsonObj) {
 	var _this = this;
@@ -2518,7 +2744,7 @@ Qflow.prototype.createContainerOrNode = function(jsonObj) {
 		 	_this.delTmpLine();
 	 		_this.createNewLine(this,jsonObj);
 
-
+	 		_this.tipTextHide();
 		 	_this.menuLayerHide();
 		 	_this.containerMouseDown.call(_this,this,jsonObj); 
 		 },
@@ -2938,6 +3164,9 @@ Qflow.prototype.addEle = function(obj) {
 				this.addNode(obj);
 			} 
 		break;
+		case '2': //多行文体节点
+			this.addTipNode(obj);
+		break;
 
 	}
 	
@@ -2961,6 +3190,8 @@ Qflow.prototype.canvasDownFun = function() {
 	this.lineMenuLayerHide();
 
 	this.contextSettingHide();
+
+	this.tipTextHide();
 };
 
 Qflow.prototype.rectDown = function(pos) {

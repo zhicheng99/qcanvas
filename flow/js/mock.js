@@ -88,6 +88,21 @@ var jsonData = [
 							 dashed:false, 
 						}
 					},
+					// {
+					// 	height: 98,
+					// 	id: 8,
+					// 	nodeType: "tip",
+					// 	text: "备注fsfsfs↵ef↵ef↵ef↵e↵fe↵fe",
+					// 	width: 150,
+					// 	x: 484,
+					// 	y: 220,
+					// 	attr:{
+					// 		 borderColor:'#7EC8CE', 
+					// 		 color:'#fff', 
+					// 		 fillColor:'#585DCB',
+					// 		 dashed:false, 
+					// 	}
+					// }
 
 				],
 				link:[	 //连线关系  
