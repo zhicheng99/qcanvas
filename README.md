@@ -1,7 +1,8 @@
 # Qcanvas
 
 文档同步更新
-https://zhicheng99.gitbooks.io/qcanvas-api-v1-0/content/
+http://lizhicheng99.gitee.io/qcanvas-api-1.0 
+https://zhicheng99.github.io/Qcanvas-API/ 
 
 框架引入方法
 > ##### 方法一
