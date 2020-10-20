@@ -3454,6 +3454,8 @@ function Qcanvas(options){
 		this.mouseup = options.mouseup || function(){};
 		this.mouseout = options.mouseout || function(){};
 		this.mouseenter = options.mouseenter || function(){};
+		this.dblclick = options.dblclick || function(){};
+
 
 		this.delayRender = typeof options.delayRender !='undefined'?options.delayRender :false;
 	}
