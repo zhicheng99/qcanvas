@@ -2432,7 +2432,7 @@ function Qevent(qcanvas){
 			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position);
 
-			aim!==null && aim.drag && 
+			(aim!==null && aim.drag && 
 			(aim.TYPE == 'rect' || 
 				aim.TYPE == 'text' || 
 				aim.TYPE == 'arc' ||
@@ -2446,7 +2446,11 @@ function Qevent(qcanvas){
 				aim.downFun(e,position);
 				_this.qcanvas.dragAim = aim;
 
-			})();
+			})()) || 
+			(aim!==null && aim.TYPE == 'canvas' && (function(){
+				_this.qcanvas.dragAim = aim;
+				
+			})())
   
 			if(aim !== null){
 				aim.TYPE == 'rect' && aim.resize && initResizeLayer(aim.id);
@@ -3478,7 +3482,7 @@ function Qcanvas(options){
 	// };
 	
 	this.qcanvasVersion = '1.0';
-	this.type = 'canvas';
+	this.TYPE = 'canvas';
 	this.id = parseInt(Math.random()*100000000);
 	this.context = c_obj.getContext('2d');
 	// 需要将绘制比例放大
