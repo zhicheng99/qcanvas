@@ -171,6 +171,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 };
 
 QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
+	this.qcanvas.qanimation.createAnimation(obj);
  
 	var start = this.qcanvas.isFun(obj.start)?obj.start():obj.start;
 	var handler = this.qcanvas.isFun(obj.handler)?obj.handler():obj.handler;
