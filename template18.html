@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<script src="js/jquery.js"></script>
+	<link href="style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="style/style.css">
+	<script src="js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+		<script src="js/initTemp.js"></script> 
+		<style>
+			#contextMenu{
+				position: absolute;
+				left:0;
+				top:0;
+				display: none;
+				background: #fff; 
+			}
+			#contextMenu ul li{
+				padding: 5px; 
+				color: #333;
+				cursor: pointer;
+			}
+			#contextMenu ul li:hover{
+				background: #ddd;
+			}
+
+		</style>
+</head>
+<body>
+	<div class="qcanvas_lay" id="qcanvas_lay">
+		<canvas id="qcanvas"></canvas> 
+		<canvas id="qcanvas1"></canvas> 
+
+		
+	</div>
+	<div class="code_lay">
+		<pre><code class="js">
+		</code>
+	</pre>
+</div>
+
+
+</body>
+<script src='Qcanvas.js'></script>
+<script>
+	var qcanvas = new Qcanvas(
+		{
+			id:'qcanvas',
+			width:500,
+			height:500,  
+			// mousedown:function(){
+			// 	document.getElementById('contextMenu').style.display = 'none';
+			// }
+		}) 
+ 		
+    qcanvas.qquadraticCurve.quadraticCurve({
+		start:[20,20],
+		handler:[100,200],
+		end:[100,20],
+		width:1,
+		like:'<-->',
+		color:'red',
+		drag:true,
+		withText:'我是个二次曲线'
+	}) 
+
+
+     qcanvas.qquadraticCurve.quadraticCurve({
+		start:[200,100],
+		handler:[230,150],
+		end:[230,80],
+		width:1,
+		like:'->',
+		color:'blue',
+		drag:true,
+		withText:'我也是个二次曲线'
+	}) 
+
+
+ 
+ 	
+
+
+
+</script>
+
+</html>
