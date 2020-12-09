@@ -18,6 +18,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 		end:[100,100],
 		drag:true,
 		pointerEvent:'auto',
+		handlerShow:false,
 		//withText:'text', //带着的文本
 		//withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
 		centerPoints:function(){ //元素中心点相对于整个画布的坐标
@@ -98,7 +99,9 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
 					this.start = [x0,y0];
 					this.handler = [x1,y1];
-					this.end = [x2,y2] 
+					this.end = [x2,y2]
+
+					this.handlerShow && (this.handlerObj !== null) && this.handlerObj.setStart([x1,y1]);
 
 			},
 			drawArrow: function(fromX, fromY, toX, toY,theta,headlen,width,color) {
@@ -167,9 +170,35 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 			
 	}
 
+
+	//显示控制点
+	OPTIONS.handlerShow && this.drawHandler(OPTIONS);
+
+
+
+
 	return OPTIONS;
 };
+QquadraticCurve.prototype.drawHandler = function(obj){
+	var _this = this;
+	var handler = _this.qcanvas.isFun(obj.handler)?obj.handler():obj.handler;
 
+	obj.handlerObj = this.qcanvas.qarc.arc({
+		start:handler, 
+		sAngle:0,
+		eAngle:360,
+		fillColor:'blue',
+		opacity:0.2,
+		r:8, 
+		borderColor:'#ccc',
+		mousemove:function(){
+			if(_this.qcanvas.dragAim !== null){
+				obj.handler = this.start;
+			}
+		}
+	});	 
+
+}
 QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 	this.qcanvas.qanimation.createAnimation(obj);
  
@@ -282,6 +311,8 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 		this.qcanvas.shadowContext.stroke();
 	}
 
+
+
 }
 //分离携带的文字	
 QquadraticCurve.prototype.splitText = function(obj){
@@ -324,6 +355,7 @@ QbezierCurve.prototype.bezierCurve = function(options) {
 		end:[200,50],
 		drag:true,
 		pointerEvent:'auto',
+		handlerShow:false,
 		//withText:'text', //带着的文本
 		//withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
 		centerPoints:function(){ //元素中心点相对于整个画布的坐标
@@ -428,6 +460,11 @@ QbezierCurve.prototype.bezierCurve = function(options) {
 					this.end = [x3,y3] 
 
 
+					this.handlerShow && (this.handlerObj1 !== null) && this.handlerObj1.setStart([x1,y1]);
+					this.handlerShow && (this.handlerObj2 !== null) && this.handlerObj2.setStart([x2,y2]);
+
+
+
 			},
 			drawArrow: function(fromX, fromY, toX, toY,theta,headlen,width,color) {
 				 
@@ -495,9 +532,55 @@ QbezierCurve.prototype.bezierCurve = function(options) {
 		this.splitText(OPTIONS);
 			
 	}
+	//显示控制点
+	OPTIONS.handlerShow && this.drawHandler(OPTIONS);
+	
 
 	return OPTIONS;
 };
+
+QbezierCurve.prototype.drawHandler = function(obj){
+	var _this = this;
+	var handler1 = _this.qcanvas.isFun(obj.handler1)?obj.handler1():obj.handler1;
+	var handler2 = _this.qcanvas.isFun(obj.handler2)?obj.handler2():obj.handler2;
+	
+
+
+	obj.handlerObj1 = this.qcanvas.qarc.arc({
+		start:handler1, 
+		sAngle:0,
+		eAngle:360,
+		fillColor:'blue',
+		opacity:0.2,
+		r:8, 
+		borderColor:'#ccc',
+		mousemove:function(){
+			if(_this.qcanvas.dragAim !== null){
+				obj.handler1 = this.start;
+			}
+		}
+	});	 
+
+	obj.handlerObj2 = this.qcanvas.qarc.arc({
+		start:handler2, 
+		sAngle:0,
+		eAngle:360,
+		fillColor:'blue',
+		opacity:0.2,
+		r:8, 
+		borderColor:'#ccc',
+		mousemove:function(){
+			if(_this.qcanvas.dragAim !== null){
+				obj.handler2 = this.start;
+			}
+		}
+	});	 
+
+
+
+
+
+}
 QbezierCurve.prototype.paintBezierCurve = function(obj) {
 	this.qcanvas.qanimation.createAnimation(obj);
  
