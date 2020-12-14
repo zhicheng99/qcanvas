@@ -1426,23 +1426,24 @@ Qtext.prototype.text = function(options){
 
 				var x = 0;
 				var y = 0;
+				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 
 
 				if(this.textAlign == 'left'){
-					x = this.range.width*0.5+this.start[0];
+					x = this.range.width*0.5+start[0];
 
 				}else if(this.textAlign == 'center'){
-					x = this.start[0];
+					x = start[0];
 				}else if(this.textAlign == 'right'){
-					x = this.start[0] - this.range.width*0.5;
+					x = start[0] - this.range.width*0.5;
 				}
 
 				if(this.textBaseline == 'top'){
-					y = this.range.height *0.5+this.start[1];
+					y = this.range.height *0.5+start[1];
 				}else if(this.textBaseline == 'middle'){
-					y = this.start[1];
+					y = start[1];
 				}else if(this.textBaseline == 'bottom'){
-					y = this.start[1] - this.range.height*0.5;
+					y = start[1] - this.range.height*0.5;
 				}
 
 				return {
