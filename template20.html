@@ -74,7 +74,7 @@ window.onload = function(){
                 //h1 \ h2
                 //   ↓
                 //   B
-                if(start[0]<end[0] && start[1]<end[1]){
+                if(start[0]<end[0] && start[1]<=end[1]){
                     //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
                     //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
 
@@ -85,7 +85,7 @@ window.onload = function(){
                 //h2/h1
                 // ↓
                 // B
-                if(start[0]>=end[0] && start[1]<end[1]){
+                if(start[0]>=end[0] && start[1]<=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
                     //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
                     return [Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
@@ -151,7 +151,7 @@ window.onload = function(){
                 //h1 \ h2
                 //   ↓
                 //   B
-                if(start[0]<end[0] && start[1]<end[1]){
+                if(start[0]<end[0] && start[1]<=end[1]){
                     //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
                     //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
 
@@ -162,7 +162,7 @@ window.onload = function(){
                 //h2/h1
                 // ↓
                 // B
-                if(start[0]>=end[0] && start[1]<end[1]){
+                if(start[0]>=end[0] && start[1]<=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
                     //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
                     return [Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
@@ -281,7 +281,7 @@ window.onload = function(){
                 //h1 \ h2
                 //   ↓
                 //   B
-                if(start[0]<end[0] && start[1]<end[1]){
+                if(start[0]<end[0] && start[1]<=end[1]){
                     //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
                     //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
 
@@ -292,7 +292,7 @@ window.onload = function(){
                 //h2/h1
                 // ↓
                 // B
-                if(start[0]>=end[0] && start[1]<end[1]){
+                if(start[0]>=end[0] && start[1]<=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
                     //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
                     return [Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
@@ -358,7 +358,7 @@ window.onload = function(){
                 //h1 \ h2
                 //   ↓
                 //   B
-                if(start[0]<end[0] && start[1]<end[1]){
+                if(start[0]<end[0] && start[1]<=end[1]){
                     //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
                     //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
 
@@ -369,7 +369,7 @@ window.onload = function(){
                 //h2/h1
                 // ↓
                 // B
-                if(start[0]>=end[0] && start[1]<end[1]){
+                if(start[0]>=end[0] && start[1]<=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
                     //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
                     return [Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
@@ -380,7 +380,7 @@ window.onload = function(){
                 //h1\h2
                 //  |
                 //  A
-                if(start[0]>end[0] && start[1]>end[1]){
+                if(start[0]>end[0] && start[1]>=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.75+end[1]];
                     //h2:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.25+end[1]];
                     return [Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.25+end[1]];
@@ -391,7 +391,7 @@ window.onload = function(){
                 // h2/h1
                 //  |
                 //  A
-                if(start[0]<=end[0] && start[1]>end[1]){
+                if(start[0]<=end[0] && start[1]>=end[1]){
                     //h1:[Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.75+end[1]];
                     //h2:[Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.25+end[1]];
                     return [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.25+end[1]];
