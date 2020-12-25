@@ -1528,10 +1528,10 @@ Qtext.prototype.text = function(options){
 						var E_y = center.y-Math.sin(temp*Math.PI/180)*half_x;
 						 
 						return [
-							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
 							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
 							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
-							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y}
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
 						];
 
 
@@ -1548,10 +1548,10 @@ Qtext.prototype.text = function(options){
  
 
 						return [
-							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
 							{x:E_x+Math.sin(temp*Math.PI/180)*half_y,y:E_y+Math.cos(temp*Math.PI/180)*half_y},
 							{x:center.x-(E_x-Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y-Math.cos(temp*Math.PI/180)*half_y)+center.y},
-							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y}
+							{x:center.x-(E_x+Math.sin(temp*Math.PI/180)*half_y)+center.x,y:center.y-(E_y+Math.cos(temp*Math.PI/180)*half_y)+center.y},
+							{x:E_x-Math.sin(temp*Math.PI/180)*half_y,y:E_y-Math.cos(temp*Math.PI/180)*half_y},
 						]
 
 
