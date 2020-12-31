@@ -3511,7 +3511,7 @@ function Qlayer(p){
 						this.elements.push(arguments[i]);
 						// this.qcanvas.elements.push(arguments[i]);
 						
-						if(arguments[i].TYPE =='line' && typeof arguments[i].withTextId !='undefined'){  
+						if((arguments[i].TYPE =='line' || arguments[i].TYPE=='bezierCurve' || arguments[i].TYPE=='quadraticCurve') && typeof arguments[i].withTextId !='undefined'){  
 							//如果线段上带有文本 也需要把文本加入到该layer里 
 							var withTextObj = this.pcanvas.getEleById.call(this.pcanvas,arguments[i].withTextId);
 							this.pcanvas.removeEle.call(this.pcanvas,withTextObj);
@@ -4640,13 +4640,13 @@ Qcanvas.prototype.getEleById = function(id){
 //从elements数组中删除 
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
 Qcanvas.prototype.removeEle = function(obj){
-	 
-	for(var i=0;i<this.elements.length;i++){
-		if(this.elements[i].id == obj.id){ 
-				this.elements.splice(i,1);
-				break;
-		}	
-	}
+		 
+		for(var i=0;i<this.elements.length;i++){
+			if(this.elements[i].id == obj.id){ 
+					this.elements.splice(i,1);
+					break;
+			}	
+		}
  
 	
 }
@@ -5011,9 +5011,3 @@ typeof window.requestNextAnimationFrame =='undefined'
 
 
 })()
-
-
-
-
-				
-
