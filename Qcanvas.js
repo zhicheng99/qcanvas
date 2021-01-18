@@ -4150,7 +4150,7 @@ function Qcanvas(options){
 	
 	this.qcanvasVersion = '1.0';
 	this.TYPE = 'canvas';
-	this.id = parseInt(Math.random()*100000000);
+	this.id = (new Date()).getTime()+''+parseInt(Math.random()*100000000);
 	this.context = c_obj.getContext('2d');
 	// 需要将绘制比例放大
     this.context.scale(this.dpr,this.dpr);
@@ -4247,7 +4247,7 @@ window.requestNextAnimationFrame(this.start.bind(this))
 
 Qcanvas.prototype.createShadowCanvas = function() {
 	this.shadowCanvas = document.createElement('canvas');
-	this.shadowCanvas.id = parseInt(Math.random()*100000000);
+	this.shadowCanvas.id =(new Date()).getTime()+''+parseInt(Math.random()*100000000);
 	// this.shadowCanvas = document.getElementById('qcanvas1');
 
 
