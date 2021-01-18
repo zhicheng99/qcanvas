@@ -210,7 +210,7 @@ blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】
 		start:[0,0],
 		width:200,
 		height:200,
-		// drag:false,
+		drag:false,
 		borderColor:'green',
 		fillColor:'green', 
 		mousemove:function(){
@@ -220,9 +220,6 @@ blueRect、redRect元素、spirit元素及【我是来自layer容器里spirit】
 			// 	console.log()
 			// }
 		},
-		drag:function(){
-			console.log('drag');
-		}
 	})
 
 	var redRect = qcanvas.qrect.rect({
