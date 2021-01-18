@@ -3594,12 +3594,14 @@ function Qlayer(p){
 		// this.pcanvas.context.drawImage(t,0,0);
 
 	}
-	this.clear = function(){
+	this.clear = function(layer){
+		if(layer.display == 'none'){return;};
+		
 		this.qcanvas.context.clearRect(0,0,this.canvasEle.width,this.canvasEle.height);
 	}
 
 	this.start = function(o){
-		this.clear();
+		this.clear(o);
 		this.paint(o);			
 		
 		var currentLoop = (new Date()).getMilliseconds();
