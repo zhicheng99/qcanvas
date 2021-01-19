@@ -66,7 +66,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
  					
  					var x0,y0,x1,y1,x2,y2;
 						 
-						if(dragIsBool){
+						if(dragIsBool && this.drag){
 							 x0 = position.x-dis[0];
 							 y0 = position.y-dis[1];
 
@@ -76,7 +76,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 							 x2 = position.x-dis[4];
 							 y2 = position.y-dis[5];
 
-						}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+						}else if(this.drag == 'vertical'){
 							 x0 = start[0];
 							 y0 = position.y-dis[1];
 							 x1 = handler[0];
@@ -85,7 +85,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
 							 y2 = position.y-dis[5];
 
 
-						}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+						}else if(this.drag == 'horizontal'){
 							 x0 = position.x-dis[0];
 							 y0 = start[1];
 							 x1 = position.x-dis[2];
@@ -417,7 +417,7 @@ QbezierCurve.prototype.bezierCurve = function(options) {
  					
  					var x0,y0,x1,y1,x2,y2,x3,y3;
 						 
-						if(dragIsBool){
+						if(dragIsBool && this.drag){
 							 x0 = position.x-dis[0];
 							 y0 = position.y-dis[1];
 
@@ -430,7 +430,7 @@ QbezierCurve.prototype.bezierCurve = function(options) {
 							 x3 = position.x-dis[6];
 							 y3 = position.y-dis[7];
 
-						}else if(_this.qcanvas.dragAim.drag == 'vertical'){
+						}else if(this.drag == 'vertical'){
 							 x0 = start[0];
 							 y0 = position.y-dis[1];
 							 x1 = handler1[0];
@@ -440,7 +440,7 @@ QbezierCurve.prototype.bezierCurve = function(options) {
 							 x3 = end[0];
 							 y3 = position.y-dis[7];
 
-						}else if(_this.qcanvas.dragAim.drag == 'horizontal'){
+						}else if(this.drag == 'horizontal'){
 							 x0 = position.x-dis[0];
 							 y0 = start[1];
 							 x1 = position.x-dis[2];
@@ -858,7 +858,7 @@ Qline.prototype.line = function(options){
  					
  					var x1,y1,x2,y2;
 						 
-						if(dragIsBool){
+						if(dragIsBool && this.drag){
 							 x1 = position.x-dis[0];
 							 y1 = position.y-dis[1];
 
@@ -1579,9 +1579,8 @@ Qtext.prototype.text = function(options){
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
 				// var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
 
-
 				var x,y;
-				if(dragIsBool){
+				if(dragIsBool && this.drag){
 					 x = position.x-dis[0];
 					 y = position.y-dis[1];
 
@@ -1814,7 +1813,7 @@ Qrect.prototype.rect = function(options){
 
 
 				var x,y;
-				if(dragIsBool){
+				if(dragIsBool && this.drag){
 					 x = position.x-dis[0];
 					 y = position.y-dis[1];
 
@@ -2001,7 +2000,7 @@ Qshape.prototype.shape = function(options){
 					
 				})
 				
-				if(dragIsBool){
+				if(dragIsBool && this.drag){
 					points.forEach(function(v,index){
 							points[index][0] = position.x- dis[index][0];
 							points[index][1] = position.y- dis[index][1];
@@ -2122,7 +2121,7 @@ Qarc.prototype.arc = function(options){
 
 
 				var x,y;
-				if(dragIsBool){
+				if(dragIsBool && this.drag){
 					 x = position.x-dis[0];
 					 y = position.y-dis[1];
 
@@ -2227,7 +2226,7 @@ Qpolygon.prototype.polygon = function(options){
 
 
 				var x,y;
-				if(dragIsBool){
+				if(dragIsBool && this.drag){
 					 x = position.x-dis[0];
 					 y = position.y-dis[1];
 
@@ -2644,7 +2643,7 @@ Qimg.prototype.img = function(options){
 					var dragIsBool = _this.qcanvas.isBool(this.drag);
 					var dis  = this.dis; 
 
-					if(dragIsBool){
+					if(dragIsBool && this.drag){
 						this.tStart[0] = position.x-dis[0];
 						this.tStart[1] = position.y-dis[1];
 					}else if(this.drag == 'vertical'){
@@ -2880,7 +2879,7 @@ Qspirit.prototype.spirit = function(options){
 					var dragIsBool = _this.qcanvas.isBool(this.drag);
 					var dis  = this.dis; 
 
-					if(dragIsBool){
+					if(dragIsBool && this.drag){
 						this.tStart[0] = position.x-dis[0];
 						this.tStart[1] = position.y-dis[1];
 					}else if(this.drag == 'vertical'){
