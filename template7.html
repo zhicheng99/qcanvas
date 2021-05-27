@@ -43,6 +43,25 @@ qcanvas.load({
 	});
 });	
 或
+qcanvas.loadImgSource("img/img.png").then(function(img){
+	var b = img[0];
+	qcanvas.qimg.img({
+		img:b,
+		sStart:[0,0],
+		sWidth:b.width,
+		sHeight:b.height,
+		size:"cover",
+		tStart:[150,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
+})
+或
 qcanvas.qimg.img({
 		img:'img/img.png',
 		sStart:[0,0],
@@ -89,6 +108,27 @@ qcanvas.load({
 	
 	
 });	
+
+qcanvas.loadImgSource("img/img.png").then(function(img){
+	var b = img[0];
+	qcanvas.qimg.img({
+		img:b,
+		sStart:[0,0],
+		sWidth:b.width,
+		sHeight:b.height,
+		size:"cover",
+		tStart:[150,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
+})
+
+
 
 qcanvas.qimg.img({
 		img:'img/img.png',
