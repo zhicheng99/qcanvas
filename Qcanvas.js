@@ -2671,18 +2671,7 @@ Qimg.prototype.img = function(options){
 	if(tmp !=''){
 		OPTIONS.sWidth = 1;
 		OPTIONS.sHeight = 1;
-
-		// new this.qcanvas.loadPromise(function(resolve,reject){
-		// 	var img = new Image();
-		// 	img.onload = function(){
-		// 		resolve(this)
-		// 	}
-		// 	img.onerror = function(){
-		// 		reject();
-		// 	}
-		// 	img.src = tmp;
-
-		// })
+ 
 		this.qcanvas.loadImgSource(tmp).then(function(img){
 			var img = img[0];
 			OPTIONS.sWidth = img.width;
@@ -4831,8 +4820,9 @@ Qcanvas.prototype.loadImgSource = function(sourceObj,callback){
 			}; 
 			img.onerror = function(){
 				num++;
-				console.log('第'+i+'个资源加载失败！')
+				console.log('第'+this.sort+'个资源加载失败！')
 			}
+			img.sort = i;
 			img.src=urlArr[i];
 		}
 
