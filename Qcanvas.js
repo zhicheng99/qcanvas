@@ -4802,31 +4802,45 @@ Qcanvas.prototype.loadPromise = function(fn) {
 
     fn(resolve, reject);
 }
-Qcanvas.prototype.loadImgSource = function(sourceObj,callback){
-	var urlArr = this.isStr(sourceObj)?[sourceObj]:sourceObj;
-	var _this = this;
+Qcanvas.prototype.loadImgSource = function(sourceObj){
+	if(this.isArr(sourceObj)){
+		var urlArr = sourceObj;
+	}else{
+		if(arguments.length>0){
+			var urlArr  = [].slice.call(arguments)
+		}
+	}
+	
+	var _this = this; 
 	return new this.loadPromise(function(resolve,reject){
 		//先实现加载图片资源
 		var imgArr = [];
 		var num = 0;
-		for (var i = 0; i < urlArr.length; i++) { 
-			img = new Image();
-			imgArr.push(img);
-			img.onload = function(){
-				num++;
-				if(num==imgArr.length){
-					resolve(imgArr);
-				}
-			}; 
-			img.onerror = function(){
-				num++;
-				console.log('第'+this.sort+'个资源加载失败！')
-			}
-			img.sort = i;
-			img.src=urlArr[i];
-		}
 
-	})
+			for (var i = 0; i < urlArr.length; i++) { 
+				img = new Image();
+				imgArr.push(img);
+				img.onload = function(){
+					num++;
+					if(num==imgArr.length){
+						resolve(imgArr);
+					}
+				}; 
+				img.onerror = function(){
+					// console.log('err');
+					num++;
+					if(num==imgArr.length){
+						resolve(imgArr);
+					}
+					console.log('索引为'+this.sort+'的资源加载失败');
+				}
+				img.sort = i;
+				img.src = urlArr[i];
+			}
+		
+		
+
+	}) 
 
 
 }
