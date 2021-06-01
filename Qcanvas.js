@@ -3386,28 +3386,43 @@ Qevent.prototype.findElmByEventPosition = function(position){
 						}
 					}
  
-				}
+				}else{
 
-				if((aim === null) && (elements[i].TYPE !== 'layer') && (elements[i].TYPE !== 'group')){
-					if(this.rayCasting(position,elements[i].polyPoints())=='in'){
-						aim = elements[i];
-						break;
-					}
+					 if(elements[i].TYPE=='quadraticCurve' || elements[i].TYPE=='bezierCurve'){
+							//曲线的拾取 需要用到影子画布实现
+							// console.log(position);
+							var color = this.qcanvas.getShadowPixelColor.call(this.qcanvas,position);
+							
+							if(color.rgba === elements[i].shadowFillColor){
+								aim = elements[i];
+								break;
+							}
+					 }else{
+
+					 	if(this.rayCasting(position,elements[i].polyPoints())=='in'){
+							aim = elements[i];
+							break;
+						}
+
+					 }
+
+					
 				} 
 
 				
 					
-			}else if(elements[i].TYPE=='quadraticCurve' || elements[i].TYPE=='bezierCurve'){ 
-				//曲线的拾取 需要用到影子画布实现
-				// console.log(position);
-				var color = this.qcanvas.getShadowPixelColor.call(this.qcanvas,position);
-				
-				if(color.rgba === elements[i].shadowFillColor){
-					aim = elements[i];
-					break;
-				}
-
 			}
+			// else if(elements[i].TYPE=='quadraticCurve' || elements[i].TYPE=='bezierCurve'){ 
+			// 	//曲线的拾取 需要用到影子画布实现
+			// 	// console.log(position);
+			// 	var color = this.qcanvas.getShadowPixelColor.call(this.qcanvas,position);
+				
+			// 	if(color.rgba === elements[i].shadowFillColor){
+			// 		aim = elements[i];
+			// 		break;
+			// 	}
+
+			// }
 		}
 
 		//如果aim == null那么点中的目标就是主canvas
