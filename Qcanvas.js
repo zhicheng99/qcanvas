@@ -4657,6 +4657,7 @@ Qcanvas.prototype.appendSetFun = function(o){
 					var p = index;
 					return function(t){
 						obj[p] = t;
+						return obj;
 					}
 			})(i,o));
 
