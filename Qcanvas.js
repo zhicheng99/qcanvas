@@ -3359,7 +3359,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 					var childLen = elements[i].elements.length;
 					if(childLen == 0){
 						continue;
-					}
+					} 
 
 					for (var j = childLen-1; j >= 0; j--) {
 
@@ -3367,8 +3367,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 						//跳过不显示的元素和不响应事件的元素
 						if(elements[i].elements[j].display=='none' || (elements[i].elements[j].pointerEvent == 'none')){
 							continue;
-						};
-
+						}; 
 
 						if(elements[i].elements[j].TYPE=='quadraticCurve' || elements[i].elements[j].TYPE=='bezierCurve'){ 
 							//曲线的拾取 需要用到影子画布实现
@@ -3381,9 +3380,13 @@ Qevent.prototype.findElmByEventPosition = function(position){
 							}
 
 						}else if(this.rayCasting(position,elements[i].elements[j].polyPoints())=='in'){
-							aim = elements[i].elements[j]; 
+							aim = elements[i].elements[j];  
 							break;
 						}
+					}
+
+					if(aim !== null){
+						break;
 					}
  
 				}else{
@@ -3424,6 +3427,8 @@ Qevent.prototype.findElmByEventPosition = function(position){
 
 			// }
 		}
+
+		console.log(aim);
 
 		//如果aim == null那么点中的目标就是主canvas
 		aim === null && (aim = this.qcanvas);
