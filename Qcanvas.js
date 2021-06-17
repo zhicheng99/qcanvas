@@ -3675,8 +3675,10 @@ function Qlayer(p){
 	}
 	this.clear = function(layer){
 		if(layer.display == 'none'){return;};
+		this.canvasEle.width = this.canvasEle.width;
+		this.qcanvas.context.scale(this.dpr,this.dpr);
 
-		this.qcanvas.context.clearRect(0,0,this.canvasEle.width,this.canvasEle.height);
+		// this.qcanvas.context.clearRect(0,0,this.canvasEle.width,this.canvasEle.height);
 	}
 
 	this.start = function(o){
@@ -4642,8 +4644,12 @@ Qcanvas.prototype.paint = function(	){
 
 	
 Qcanvas.prototype.clear = function(){
-		this.context.clearRect(0,0,this.stage.width,this.stage.height);
-		this.shadowContext.clearRect(0,0,this.stage.width,this.stage.height);
+		this.canvas.width = this.canvas.width;
+		this.context.scale(this.dpr,this.dpr);
+		this.shadowCanvas.width = this.shadowCanvas.width;
+
+		// this.context.clearRect(0,0,this.stage.width,this.stage.height);
+		// this.shadowContext.clearRect(0,0,this.stage.width,this.stage.height);
 }	
 
 		
