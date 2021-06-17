@@ -3119,18 +3119,7 @@ function Qevent(qcanvas){
 			// var position = _this.getEventPosition(e);
 			var aim  = _this.findElmByEventPosition(position); 
 
-			(aim!==null && aim.drag && _this.triggerEleType[aim.TYPE]
-			// (aim.TYPE == 'rect' || 
-			// 	aim.TYPE == 'text' || 
-			// 	aim.TYPE == 'arc' ||
-			// 	aim.TYPE == 'polygon' ||
-			// 	aim.TYPE == 'line' || 
-			// 	aim.TYPE == 'img' || 
-			// 	aim.TYPE == 'spirit' || 
-			// 	aim.TYPE == 'shape' ||
-			// 	aim.TYPE == 'quadraticCurve' ||  //二次曲线
-			// 	aim.TYPE == 'bezierCurve' //三次曲线
-			// 	)  
+			(aim!==null && aim.drag && _this.triggerEleType[aim.TYPE] 
 			&& 
 			(function(){
 				aim.downFun(e,position);
@@ -3194,17 +3183,7 @@ function Qevent(qcanvas){
 
 
 				if(_this.qcanvas.dragAim !== null){
-					_this.triggerEleType[_this.qcanvas.dragAim.TYPE]
-					// (_this.qcanvas.dragAim.TYPE=='arc' || 
-					// _this.qcanvas.dragAim.TYPE=='rect' ||
-					// _this.qcanvas.dragAim.TYPE=='text' ||
-					// _this.qcanvas.dragAim.TYPE=='polygon' ||
-					// _this.qcanvas.dragAim.TYPE=='line' ||
-					// _this.qcanvas.dragAim.TYPE=='img' ||
-					// _this.qcanvas.dragAim.TYPE=='spirit' ||
-					// _this.qcanvas.dragAim.TYPE=='shape' ||
-					// _this.qcanvas.dragAim.TYPE=='quadraticCurve'  ||
-					// _this.qcanvas.dragAim.TYPE=='bezierCurve') 
+					_this.triggerEleType[_this.qcanvas.dragAim.TYPE] 
 					&&
 					_this.qcanvas.dragAim.moveFun(e,position);
 
@@ -3339,19 +3318,7 @@ Qevent.prototype.findElmByEventPosition = function(position){
 				continue;
 			};
 			
-			if(
-				// elements[i].TYPE=='rect' 
-				//  || elements[i].TYPE=='spirit' 
-				//  || elements[i].TYPE=='img'
-				//  || elements[i].TYPE=='text'
-				//  || elements[i].TYPE=='shape'
-				//  || elements[i].TYPE=='arc'
-				//  || elements[i].TYPE=='polygon'
-				//  || elements[i].TYPE=='layer'
-				//  || elements[i].TYPE=='group'
-				//  || elements[i].TYPE=='line'
-					this.triggerEleType[elements[i].TYPE]
-				){
+			if(this.triggerEleType[elements[i].TYPE]){
 
 
 				//如果是容器对象 要判断属于该容器里的元素
@@ -3414,21 +3381,9 @@ Qevent.prototype.findElmByEventPosition = function(position){
 
 				
 					
-			}
-			// else if(elements[i].TYPE=='quadraticCurve' || elements[i].TYPE=='bezierCurve'){ 
-			// 	//曲线的拾取 需要用到影子画布实现
-			// 	// console.log(position);
-			// 	var color = this.qcanvas.getShadowPixelColor.call(this.qcanvas,position);
-				
-			// 	if(color.rgba === elements[i].shadowFillColor){
-			// 		aim = elements[i];
-			// 		break;
-			// 	}
-
-			// }
+			} 
 		}
-
-		console.log(aim);
+ 
 
 		//如果aim == null那么点中的目标就是主canvas
 		aim === null && (aim = this.qcanvas);
@@ -3514,32 +3469,9 @@ function Qlayer(p){
 	this.dpr = window.devicePixelRatio; // 假设dpr为2
 
 	
-
-	//实例属性覆盖原型Qcanvas继承过来的属性
-	// this.canvasEle = document.createElement('canvas');
-	// var t = document.getElementById('qcanvas1');  
-
-	// this.canvasEle.width = this.pcanvas.stage.width*this.dpr;
-	// this.canvasEle.height = this.pcanvas.stage.height*this.dpr; 
-	// this.canvasEle.id = parseInt(Math.random()*10000);
-
-
-	//重写生成一个qcanvas属性
-	this.qcanvas = {}; 
 	
-	//把Qcanvas的属性都复制过来  通过原型继承的
-	for(var i in p){
-		this.qcanvas[i] = p[i];
-	}
 
-	// this.qcanvas = this.extend({},p);
-
-	//重置context和elements属性
-	// this.qcanvas.context = this.canvasEle.getContext('2d');
-	// this.qcanvas.context.scale(this.dpr,this.dpr);
-	this.qcanvas.elements = [];
-
-	this.layer = function(){ 
+	this.layer = function(){   //作为一个构造函数
 
 		//每个layer都创建新的临时canvas
 		//实例属性覆盖原型Qcanvas继承过来的属性
@@ -3548,6 +3480,20 @@ function Qlayer(p){
 		_this.canvasEle.width = _this.pcanvas.stage.width*_this.dpr;
 		_this.canvasEle.height = _this.pcanvas.stage.height*_this.dpr; 
 		_this.canvasEle.id = (new Date()).getTime()+''+parseInt(Math.random()*100000000);
+
+
+		//重写生成一个qcanvas属性
+		_this.qcanvas = {}; 
+		
+		//把Qcanvas的属性都复制过来  通过原型继承的
+		for(var i in p){
+			_this.qcanvas[i] = p[i];
+		}
+
+		_this.qcanvas.elements = [];
+ 
+		//layer所有继承过来的元素对象相应的paint方法 都是使用 this.qcanvas.context 画到画布上的
+		//所以重写qcanvas.context 使它指向layer临时的canvas 那么就会画到layer对应的画布上
 		_this.qcanvas.context = _this.canvasEle.getContext('2d');
 		_this.qcanvas.context.scale(_this.dpr,_this.dpr);
 
@@ -3556,25 +3502,12 @@ function Qlayer(p){
 		
 		var o = { 
 			TYPE:"layer",
-			canvasEle:this.canvasEle,
+			canvasEle:_this.canvasEle,
 			pcanvas:this.pcanvas,
 			// elements:this.qcanvas.elements,
 			elements:[],
 			id: (new Date()).getTime()+''+parseInt(Math.random()*100000000),
 			display:'block', 
-			// qline:this.pcanvas.qline,
-			// TypeGroup: {
-		 //  		'line':this.pcanvas.qline.paintLine,
-		 //  		'text':this.qcanvas.qtext.paintText,
-		 //  		'rect':this.qcanvas.qrect.paintRect,
-		 //  		'arc':this.qcanvas.qarc.paintArc,
-		 //  		'polygon':this.qcanvas.qpolygon.paintPolygon,
-		 //  		'img':this.qcanvas.qimg.paintImg,
-		 //  		'spirit':this.qcanvas.qspirit.paintSpirit,
-		 //  		'shape':this.qcanvas.qshape.paintShape,
-		 //  		// 'layer':this.qcanvas.qlayer.paintLayer, 
-		 //  		// 'group':this.qcanvas.qgroup.paintGroup
-		 //  	},
 			push:function(ele){
 				var t = Array.prototype.slice.apply(arguments);
 				var l = t.length;
@@ -3611,15 +3544,6 @@ function Qlayer(p){
 
 				return tmp.length>0;
 			},
-			//以下Qcanvas方法得重置this 赋到Qlayer实例上
-			// getEleById: this.pcanvas.getEleById.bind(this.qcanvas),
-			// removeEle: this.pcanvas.removeEle.bind(this.qcanvas),
-
-			// getIndexById: this.pcanvas.getIndexById.bind(this.qcanvas),
-			// lower: this.pcanvas.lower.bind(this.qcanvas),
-			// lowerToBottom: this.pcanvas.lowerToBottom.bind(this.qcanvas),
-			// raise: this.pcanvas.raise.bind(this.qcanvas),
-			// raiseToTop: this.pcanvas.raiseToTop.bind(this.qcanvas),
 
 			getEleById: this.pcanvas.getEleById,
 			removeEle: this.pcanvas.removeEle,
