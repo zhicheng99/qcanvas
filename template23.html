@@ -68,10 +68,10 @@ window.onload = function(){
    //生成三条直线的坐标
     var caleHandler1 = function(a,b){ 
  
+
             var start = a.start;
             var end = b.start;  
 
-            return (function(){
                 //A
                 // |
                 //h1 \ h2
@@ -129,20 +129,23 @@ window.onload = function(){
                     }
 
                 }
-            })()  
+ 
+ 
+ 
+            
     } 
 
     
-
+    var tmp = null;
     var line1 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l1']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l1']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l1']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l1']();
             return t[1];
         },
         pointerEvent:'none',
@@ -151,14 +154,13 @@ window.onload = function(){
 
     var line2 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l2']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l2']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l2']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l2']();
             return t[1];
         },
         pointerEvent:'none',
@@ -168,15 +170,13 @@ window.onload = function(){
 
     var line3 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l3']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l3']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l3']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l3']();
             return t[1];
         },
         like:'->',
@@ -194,7 +194,7 @@ window.onload = function(){
 </body>
 <script src='Qcanvas.js'></script>
 <script>
-    // 两个元素之间折线 可以拆解为三段直线连接起来了
+  // 两个元素之间折线 可以拆解为三段直线连接起来了
 /*
 A---|
     |
@@ -231,10 +231,10 @@ window.onload = function(){
    //生成三条直线的坐标
     var caleHandler1 = function(a,b){ 
  
+
             var start = a.start;
             var end = b.start;  
 
-            return (function(){
                 //A
                 // |
                 //h1 \ h2
@@ -292,20 +292,23 @@ window.onload = function(){
                     }
 
                 }
-            })()  
+ 
+ 
+ 
+            
     } 
 
     
-
+    var tmp = null;
     var line1 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l1']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l1']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l1']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l1']();
             return t[1];
         },
         pointerEvent:'none',
@@ -314,14 +317,13 @@ window.onload = function(){
 
     var line2 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l2']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l2']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-            var t = tmp['l2']();
+            var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l2']();
             return t[1];
         },
         pointerEvent:'none',
@@ -331,15 +333,13 @@ window.onload = function(){
 
     var line3 = qcanvas.qline.line({
         start:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l3']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l3']();
             return t[0];
         },
         end:function(){
-            var tmp = caleHandler1(a,b);
-
-            var t = tmp['l3']();
+             var points = tmp === null?caleHandler1(a,b):tmp;
+            var t = points['l3']();
             return t[1];
         },
         like:'->',
