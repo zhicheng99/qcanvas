@@ -1419,6 +1419,8 @@ Qtext.prototype.text = function(options){
 			fontFamily:'Microsoft YaHei',
 			start:[0,0],
 			drag:true,
+			  dragRange:[],  //限制拖动的区域 必须为两个坐标点[[左上角x,左上角y]，[右下角x,右下角y]]
+
 			pointerEvent:'auto',
 			range:{width:0,height:0},
 			degree:0,
@@ -1577,31 +1579,31 @@ Qtext.prototype.text = function(options){
 				var dragIsBool = _this.qcanvas.isBool(this.drag);
 				var dis  = this.dis;
 				var start = _this.qcanvas.isFun(this.start)?this.start():this.start;
-				// var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
+				var range = _this.qcanvas.isFun(this.dragRange)?this.dragRange():this.dragRange;
 
 				var x,y;
 				if(dragIsBool && this.drag){
 					 x = position.x-dis[0];
 					 y = position.y-dis[1];
 
-					//  if(range.length == 2){  
-					// 	x = x>=range[1][0]?range[1][0]:x;
-					// 	x = x<=range[0][0]?range[0][0]:x;
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x;
 
-					// 	y = y>=range[1][1]?range[1][1]:y;
-					// 	y = y<=range[0][1]?range[0][1]:y;
-					// }
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
 
 				}else if(this.drag == 'vertical'){
 					 x = this.start[0];
 					 y = position.y-dis[1];
 
 
-					//  if(range.length == 2){   
+					 if(range.length == 2){   
 
-					// 	y = y>=range[1][1]?range[1][1]:y;
-					// 	y = y<=range[0][1]?range[0][1]:y;
-					// }
+						y = y>=range[1][1]?range[1][1]:y;
+						y = y<=range[0][1]?range[0][1]:y;
+					}
 
 
 				}else if(this.drag == 'horizontal'){
@@ -1609,19 +1611,18 @@ Qtext.prototype.text = function(options){
 					 y = this.start[1]; 
 
 
-					//  if(range.length == 2){  
-					// 	x = x>=range[1][0]?range[1][0]:x;
-					// 	x = x<=range[0][0]?range[0][0]:x; 
-					// }
+					 if(range.length == 2){  
+						x = x>=range[1][0]?range[1][0]:x;
+						x = x<=range[0][0]?range[0][0]:x; 
+					}
 				} 
 			 	//如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
 				this.start = [x,y];
 			},
 			formatText:function(obj) {  //处理多行文本
 				var text = _this.qcanvas.isFun(obj.text)?obj.text():obj.text;
-
 				var t;
-				if(text.indexOf('\n') > -1){
+				if((text+'').indexOf('\n') > -1){
 					t =  text.split('\n');
 				}else{
 

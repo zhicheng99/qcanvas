@@ -20,6 +20,8 @@
 	</div>
 	<div class="code_lay">
 		<pre><code class="js">//支持\n换行	
+var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
 var text = qcanvas.qtext.text({
 	start:[100,100],
 	color:'blue',
@@ -27,7 +29,6 @@ var text = qcanvas.qtext.text({
 	text:'Qcanvas\nText',
 	lineHeight:'20px',
 	drag:'vertical',
-	// drag:false,
 	degree:290,
 	// textAlign:'left',
 	textBaseline:'top',
@@ -39,7 +40,17 @@ var text = qcanvas.qtext.text({
 	mousedown:function(e,position){
 		console.log(e);
 		console.log(position)
-	}
+	},
+
+})		
+
+var textfps = qcanvas.qtext.text({
+	start:[20,20],
+	text:function(){ return qcanvas.currFps},
+	color:'blue',
+	fontSize:'20px',
+	dragRange:[[50,0],[100,100]]
+	
 })		
 		</code>
 	</pre>
@@ -69,15 +80,18 @@ var text = qcanvas.qtext.text({
 	mousedown:function(e,position){
 		console.log(e);
 		console.log(position)
-	}
+	},
+
 })		
 
-// var textfps = qcanvas.qtext.text({
-// 	start:[20,20],
-// 		text:function(){ return qcanvas.currFps},
-// 	color:'blue',
-// 	fontSize:'20px'
-// })	
+var textfps = qcanvas.qtext.text({
+	start:[20,20],
+	text:function(){ return qcanvas.currFps},
+	color:'blue',
+	fontSize:'20px',
+	dragRange:[[50,0],[100,100]]
+	
+})	
 
 
 
