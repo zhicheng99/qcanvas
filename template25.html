@@ -31,7 +31,7 @@ canvas{
 	</div>
 	<div class="code_lay">
 		<pre><code class="js">
- // 两个元素之间折线 可以拆解为三段直线连接起来了
+// 两个元素之间折线 可以拆解为三段直线连接起来了
 /*
 A---|
     |
@@ -45,6 +45,16 @@ window.onload = function(){
         id:'qcanvas',
         width:500,
         height:500,
+         mouseup:function(){ 
+            create_range();
+        },
+        mousemove:function(){
+            if(qcanvas.dragAim !== null && qcanvas.dragAim.id ==h_handler.id){
+                //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+                percent = Math.abs((h_handler.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            }
+            
+        }
     });
 
     a = qcanvas.qarc.arc({
@@ -53,7 +63,15 @@ window.onload = function(){
         sAngle:0,
         eAngle:360,
         fillColor:'#ffff00',
-        borderColor:'#000'
+        borderColor:'#000',
+        mousedown:function(){
+
+            h_handler.setDisplay('none')
+        },
+        mouseup:function(){
+            h_handler.setStart(line2.end()).setDisplay('block');
+            create_range();
+        }
     })
 
     b = qcanvas.qarc.arc({
@@ -62,10 +80,68 @@ window.onload = function(){
         sAngle:0,
         eAngle:360,
         fillColor:'#c3c3c3',
-        borderColor:'#000'
+        borderColor:'#000',
+        mousedown:function(){
+
+            h_handler.setDisplay('none')
+        },
+        mouseup:function(){
+            h_handler.setStart(line2.end()).setDisplay('block');
+            create_range();
+        }
     })
 
-    var percent = 0.2;
+    var percent = 0.8;
+    var range = [];
+    var h_handler = {};
+
+    //句柄划动限制区域 
+    var create_range = function(){
+         
+         var f = function(){
+
+            //A在左  B在右
+            if(a.start[0] <= b.start[0]){
+                if(a.start[1] <= b.start[1]){
+                //A
+                // |
+                //h1 \ h2
+                //   ↓
+                //   B
+                    return [[a.start[0]+5,a.start[1]],[b.start[0]-5,b.start[1]]];
+                }else{
+                    //    B
+                    //    ↑
+                    //h1 / h2
+                    // |
+                    //A
+                    return [[a.start[0]+5,b.start[1]],[b.start[0]-5,a.start[1]]]
+                }
+            }else{
+            //B在左 A在右
+                if(b.start[1] <= a.start[1]){
+                    // B
+                    // ↑
+                    //h1 \ h2
+                    //   |
+                    //   A
+                    return [[b.start[0]+5,b.start[1]],[a.start[0]-5,a.start[1]]]
+                }else{
+                    //    A
+                    //    |
+                    //h1 / h2
+                    // ↓
+                    //B
+                    return [[b.start[0]+5,a.start[1]],[a.start[0]-5,b.start[1]]];
+                }
+            }
+
+         }
+
+         range = f();
+         
+    }
+    create_range();
    
    //生成三条直线的坐标
     var caleHandler1 = function(a,b){ 
@@ -73,11 +149,11 @@ window.onload = function(){
 
             var start = a.start;
             var end = b.start;  
-            //模向模式
+        // 竖向模式
                     return {
-                        'l1':function(){return [start,[start[0],(end[1]-start[1])*percent+start[1]]]},
-                        'l2':function(){return [[start[0],(end[1]-start[1])*percent+start[1]],[end[0],(end[1]-start[1])*percent+start[1]]]},
-                        'l3':function(){return [[end[0],(end[1]-start[1])*percent+start[1]],end]}
+                        'l1':function(){return [start,[(end[0]-start[0])*percent+start[0],start[1]]]},
+                        'l2':function(){return [[(end[0]-start[0])*percent+start[0],start[1]],[(end[0]-start[0])*percent+start[0],end[1]]]},
+                        'l3':function(){return [[(end[0]-start[0])*percent+start[0],end[1]],end]}
                     }
                 // //A
                 // // |
@@ -196,9 +272,33 @@ window.onload = function(){
         pointerEvent:'none',
         width:1,
     }) 
+    var getStart = (function(){
+        var end = line2.end();
+        return end;
+    })()
+    h_handler = qcanvas.qtext.text({
+        text:'||',
+        color:'blue',
+        textAlign:'center',
+        textBaseline:'middle',
+        fontSize:'14px',
+        start:getStart,
+        drag:'horizontal', 
+        dragRange:function(){return range},
+        // mouseout:function(){
+        //     qcanvas.dragAim =null;
+        // },
+        mousemove:function(){
+            //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+            percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+        }
+    })
+
+    qcanvas.raiseToTop(h_handler);
 
   
 }
+    
 		</code>
 	</pre>
 </div>
@@ -207,7 +307,7 @@ window.onload = function(){
 </body>
 <script src='Qcanvas.js'></script>
 <script>
- // 两个元素之间折线 可以拆解为三段直线连接起来了
+  // 两个元素之间折线 可以拆解为三段直线连接起来了
 /*
 A---|
     |
@@ -221,6 +321,16 @@ window.onload = function(){
         id:'qcanvas',
         width:500,
         height:500,
+         mouseup:function(){ 
+            create_range();
+        },
+        mousemove:function(){
+            if(qcanvas.dragAim !== null && qcanvas.dragAim.id ==h_handler.id){
+                //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+                percent = Math.abs((h_handler.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            }
+            
+        }
     });
 
     a = qcanvas.qarc.arc({
@@ -229,7 +339,15 @@ window.onload = function(){
         sAngle:0,
         eAngle:360,
         fillColor:'#ffff00',
-        borderColor:'#000'
+        borderColor:'#000',
+        mousedown:function(){
+
+            h_handler.setDisplay('none')
+        },
+        mouseup:function(){
+            h_handler.setStart(line2.end()).setDisplay('block');
+            create_range();
+        }
     })
 
     b = qcanvas.qarc.arc({
@@ -238,10 +356,68 @@ window.onload = function(){
         sAngle:0,
         eAngle:360,
         fillColor:'#c3c3c3',
-        borderColor:'#000'
+        borderColor:'#000',
+        mousedown:function(){
+
+            h_handler.setDisplay('none')
+        },
+        mouseup:function(){
+            h_handler.setStart(line2.end()).setDisplay('block');
+            create_range();
+        }
     })
 
-    var percent = 0.2;
+    var percent = 0.8;
+    var range = [];
+    var h_handler = {};
+
+    //句柄划动限制区域 
+    var create_range = function(){
+         
+         var f = function(){
+
+            //A在左  B在右
+            if(a.start[0] <= b.start[0]){
+                if(a.start[1] <= b.start[1]){
+                //A
+                // |
+                //h1 \ h2
+                //   ↓
+                //   B
+                    return [[a.start[0]+5,a.start[1]],[b.start[0]-5,b.start[1]]];
+                }else{
+                    //    B
+                    //    ↑
+                    //h1 / h2
+                    // |
+                    //A
+                    return [[a.start[0]+5,b.start[1]],[b.start[0]-5,a.start[1]]]
+                }
+            }else{
+            //B在左 A在右
+                if(b.start[1] <= a.start[1]){
+                    // B
+                    // ↑
+                    //h1 \ h2
+                    //   |
+                    //   A
+                    return [[b.start[0]+5,b.start[1]],[a.start[0]-5,a.start[1]]]
+                }else{
+                    //    A
+                    //    |
+                    //h1 / h2
+                    // ↓
+                    //B
+                    return [[b.start[0]+5,a.start[1]],[a.start[0]-5,b.start[1]]];
+                }
+            }
+
+         }
+
+         range = f();
+         
+    }
+    create_range();
    
    //生成三条直线的坐标
     var caleHandler1 = function(a,b){ 
@@ -249,11 +425,11 @@ window.onload = function(){
 
             var start = a.start;
             var end = b.start;  
-            //模向模式
+        // 竖向模式
                     return {
-                        'l1':function(){return [start,[start[0],(end[1]-start[1])*percent+start[1]]]},
-                        'l2':function(){return [[start[0],(end[1]-start[1])*percent+start[1]],[end[0],(end[1]-start[1])*percent+start[1]]]},
-                        'l3':function(){return [[end[0],(end[1]-start[1])*percent+start[1]],end]}
+                        'l1':function(){return [start,[(end[0]-start[0])*percent+start[0],start[1]]]},
+                        'l2':function(){return [[(end[0]-start[0])*percent+start[0],start[1]],[(end[0]-start[0])*percent+start[0],end[1]]]},
+                        'l3':function(){return [[(end[0]-start[0])*percent+start[0],end[1]],end]}
                     }
                 // //A
                 // // |
@@ -372,11 +548,32 @@ window.onload = function(){
         pointerEvent:'none',
         width:1,
     }) 
+    var getStart = (function(){
+        var end = line2.end();
+        return end;
+    })()
+    h_handler = qcanvas.qtext.text({
+        text:'||',
+        color:'blue',
+        textAlign:'center',
+        textBaseline:'middle',
+        fontSize:'14px',
+        start:getStart,
+        drag:'horizontal', 
+        dragRange:function(){return range},
+        // mouseout:function(){
+        //     qcanvas.dragAim =null;
+        // },
+        mousemove:function(){
+            //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+            percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+        }
+    })
+
+    qcanvas.raiseToTop(h_handler);
 
   
 }
-
- 
  	
 
 
