@@ -247,6 +247,18 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 			obj.drawArrow(handler[0], handler[1], end[0], end[1],30,10,1,obj.color)
 			
 			break;
+		case '<-': 
+			
+			this.qcanvas.context.moveTo(start[0],start[1]); 
+			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
+			this.qcanvas.context.stroke();
+			 
+			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+
+			obj.drawArrow(handler[0], handler[1], start[0], start[1],30,10,1,obj.color)
+			
+			break;	
 		case '<->': 
 			
 			this.qcanvas.context.moveTo(start[0],start[1]); 
@@ -274,6 +286,20 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 			this.qcanvas.context.setLineDash([]);
 			
 			obj.drawArrow(handler[0], handler[1], end[0], end[1],30,10,1,obj.color);
+
+			break;
+		case '<--': 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]); 
+			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+
+			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+			
+			obj.drawArrow(handler[0], handler[1], start[0], start[1],30,10,1,obj.color);
 
 			break;
 		case '<-->': 
@@ -627,6 +653,18 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color)
 			
 			break;
+		case '<-': 
+			
+			this.qcanvas.context.moveTo(start[0],start[1]); 
+			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
+			this.qcanvas.context.stroke();
+			 
+			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+
+			obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color)
+			
+			break;
 		case '<->': 
 			
 			this.qcanvas.context.moveTo(start[0],start[1]); 
@@ -654,6 +692,20 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 			this.qcanvas.context.setLineDash([]);
 			
 			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
+
+			break;
+		case '<--': 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]); 
+			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
+			this.qcanvas.context.stroke();
+
+
+			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+			
+			obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color);
 
 			break;
 		case '<-->': 
@@ -1109,6 +1161,18 @@ Qline.prototype.paintLine  = function(obj){
 			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color)
 			
 			break;
+		case '<-': 
+			
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+			 
+			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+
+			obj.drawArrow(end[0], end[1],start[0], start[1],30,10,1,obj.color)
+			
+			break;
 		case '<->': 
 			
 			this.qcanvas.context.moveTo(start[0],start[1]);
@@ -1135,6 +1199,18 @@ Qline.prototype.paintLine  = function(obj){
 
 			obj.drawArrow(start[0], start[1], end[0], end[1],30,10,1,obj.color);
 			break;
+		case '<--': 
+
+			this.qcanvas.context.setLineDash([3]);
+			this.qcanvas.context.moveTo(start[0],start[1]);
+			this.qcanvas.context.lineTo(end[0],end[1]);
+			this.qcanvas.context.stroke();
+ 			
+ 			//可能路径是虚线形式的 设置成实线
+			this.qcanvas.context.setLineDash([]);
+
+			obj.drawArrow( end[0], end[1],start[0], start[1],30,10,1,obj.color);
+			break;	
 		case '<-->': 
 
 			this.qcanvas.context.setLineDash([3]);
