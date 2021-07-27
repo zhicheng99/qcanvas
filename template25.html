@@ -41,11 +41,24 @@ A---|
 
 var a,b,line;
 window.onload = function(){
+
+    var resetHandlerPosition = function(){
+        var start = line2.start();
+        var end = line2.end();
+        var sign = start[1]-end[1];
+        var dis = Math.abs(end[1]-start[1]);
+
+        var y = sign<=0?start[1]+dis*0.8:end[1]+dis*0.2
+        // console.log(start[0]-end[0]);
+        // return [x,end[0]];
+        h_handler.setStart([end[0]-1,y]).setDisplay('block');
+    }
     var qcanvas = new Qcanvas({
         id:'qcanvas',
         width:500,
         height:500,
          mouseup:function(){ 
+            resetHandlerPosition();
             create_range();
         },
         mousemove:function(){
@@ -69,7 +82,7 @@ window.onload = function(){
             h_handler.setDisplay('none')
         },
         mouseup:function(){
-            h_handler.setStart(line2.end()).setDisplay('block');
+            resetHandlerPosition();
             create_range();
         }
     })
@@ -86,7 +99,7 @@ window.onload = function(){
             h_handler.setDisplay('none')
         },
         mouseup:function(){
-            h_handler.setStart(line2.end()).setDisplay('block');
+            resetHandlerPosition();
             create_range();
         }
     })
@@ -273,24 +286,39 @@ window.onload = function(){
         width:1,
     }) 
     var getStart = (function(){
+
+        var start = line2.start();
         var end = line2.end();
-        return end;
+        var sign = start[1]-end[1];
+        var dis = Math.abs(end[1]-start[1]);
+
+        var y = sign<=0?start[1]+dis*0.8:end[1]+dis*0.2
+        // console.log(start[0]-end[0]);
+        return [end[0]-1,y];
+
+
     })()
     h_handler = qcanvas.qtext.text({
-        text:'||',
-        color:'blue',
+        text:'=',
+        color:'red',
         textAlign:'center',
         textBaseline:'middle',
-        fontSize:'14px',
+        fontSize:'26px',
         start:getStart,
+        degree:90,
         drag:'horizontal', 
         dragRange:function(){return range},
         // mouseout:function(){
         //     qcanvas.dragAim =null;
         // },
         mousemove:function(){
-            //重新计算line2的x坐标到起点的的距离点整个宽度的比例
-            percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            if(qcanvas.dragAim !== null && qcanvas.dragAim.id ==this.id){
+                    //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+                    percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            }
+        },
+        mouseup:function(){
+            resetHandlerPosition();
         }
     })
 
@@ -307,7 +335,7 @@ window.onload = function(){
 </body>
 <script src='Qcanvas.js'></script>
 <script>
-  // 两个元素之间折线 可以拆解为三段直线连接起来了
+ // 两个元素之间折线 可以拆解为三段直线连接起来了
 /*
 A---|
     |
@@ -317,11 +345,24 @@ A---|
 
 var a,b,line;
 window.onload = function(){
+
+    var resetHandlerPosition = function(){
+        var start = line2.start();
+        var end = line2.end();
+        var sign = start[1]-end[1];
+        var dis = Math.abs(end[1]-start[1]);
+
+        var y = sign<=0?start[1]+dis*0.8:end[1]+dis*0.2
+        // console.log(start[0]-end[0]);
+        // return [x,end[0]];
+        h_handler.setStart([end[0]-1,y]).setDisplay('block');
+    }
     var qcanvas = new Qcanvas({
         id:'qcanvas',
         width:500,
         height:500,
          mouseup:function(){ 
+            resetHandlerPosition();
             create_range();
         },
         mousemove:function(){
@@ -345,7 +386,7 @@ window.onload = function(){
             h_handler.setDisplay('none')
         },
         mouseup:function(){
-            h_handler.setStart(line2.end()).setDisplay('block');
+            resetHandlerPosition();
             create_range();
         }
     })
@@ -362,7 +403,7 @@ window.onload = function(){
             h_handler.setDisplay('none')
         },
         mouseup:function(){
-            h_handler.setStart(line2.end()).setDisplay('block');
+            resetHandlerPosition();
             create_range();
         }
     })
@@ -549,24 +590,39 @@ window.onload = function(){
         width:1,
     }) 
     var getStart = (function(){
+
+        var start = line2.start();
         var end = line2.end();
-        return end;
+        var sign = start[1]-end[1];
+        var dis = Math.abs(end[1]-start[1]);
+
+        var y = sign<=0?start[1]+dis*0.8:end[1]+dis*0.2
+        // console.log(start[0]-end[0]);
+        return [end[0]-1,y];
+
+
     })()
     h_handler = qcanvas.qtext.text({
-        text:'||',
-        color:'blue',
+        text:'=',
+        color:'red',
         textAlign:'center',
         textBaseline:'middle',
-        fontSize:'14px',
+        fontSize:'26px',
         start:getStart,
+        degree:90,
         drag:'horizontal', 
         dragRange:function(){return range},
         // mouseout:function(){
         //     qcanvas.dragAim =null;
         // },
         mousemove:function(){
-            //重新计算line2的x坐标到起点的的距离点整个宽度的比例
-            percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            if(qcanvas.dragAim !== null && qcanvas.dragAim.id ==this.id){
+                    //重新计算line2的x坐标到起点的的距离点整个宽度的比例
+                    percent = Math.abs((this.start[0]-a.start[0])/(a.start[0] - b.start[0]))
+            }
+        },
+        mouseup:function(){
+            resetHandlerPosition();
         }
     })
 
@@ -574,8 +630,6 @@ window.onload = function(){
 
   
 }
- 	
-
 
 
 </script>
