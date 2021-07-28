@@ -3624,6 +3624,8 @@ function Qlayer(p){
 
 			getEleById: this.pcanvas.getEleById,
 			removeEle: this.pcanvas.removeEle,
+			removeEleById: this.pcanvas.removeEleById,
+
 
 			getIndexById: this.pcanvas.getIndexById,
 			lower: this.pcanvas.lower,
@@ -3725,6 +3727,8 @@ Qgroup.prototype.group = function(options){
 			qcanvas:this.qcanvas,
 			getEleById:this.qcanvas.getEleById,
 			removeEle:this.qcanvas.removeEle,
+			removeEleById:this.qcanvas.removeEleById,
+
 			getIndexById:this.qcanvas.getIndexById,
 			lower:this.qcanvas.lower,
 			lowerToBottom:this.qcanvas.lowerToBottom,
@@ -4741,7 +4745,19 @@ Qcanvas.prototype.removeEle = function(obj){
  
 	
 }
-
+//从elements数组中删除 
+//该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
+Qcanvas.prototype.removeEleById = function(id){
+	var l = this.elements.length;
+		for(var i=0;i<l;i++){
+			if(this.elements[i].id == id){ 
+					this.elements.splice(i,1);
+					break;
+			}	
+		}
+ 
+	
+}
 
 
 
