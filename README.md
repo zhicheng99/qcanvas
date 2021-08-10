@@ -8,7 +8,7 @@ https://zhicheng99.github.io/Qcanvas-API/
 > ##### 方法一
 > npm安装
 >> 执行：npm install qcanvas
->> 页面里： import {Qcanvas} from 'qcanvas';
+>> 页面引用： import {Qcanvas} from 'qcanvas';
 
 
 
