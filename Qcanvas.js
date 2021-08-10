@@ -210,25 +210,21 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 	this.qcanvas.context.beginPath();
 	this.qcanvas.context.lineWidth = obj.width;
 
+	var drawLine = function(){
+		this.qcanvas.context.moveTo(start[0],start[1]); 
+		this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
+		this.qcanvas.context.stroke();
+	}
 
 	switch(obj.like)
 	{
 		case '-': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
-			
-			
-			
+			drawLine.call(this)
 			break;
 		case '--': 
 
 			this.qcanvas.context.setLineDash([3]);
-
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -236,10 +232,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
  
 			break;
 		case '->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -248,10 +241,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 			
 			break;
 		case '<-': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -260,11 +250,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 			
 			break;	
 		case '<->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
-			
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -277,9 +263,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 		case '-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 
 			//可能路径是虚线形式的 设置成实线
@@ -291,9 +275,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 		case '<--': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 
 			//可能路径是虚线形式的 设置成实线
@@ -305,9 +287,7 @@ QquadraticCurve.prototype.paintQuadraticCurve  = function(obj){
 		case '<-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.quadraticCurveTo(handler[0],handler[1] , end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -618,23 +598,22 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 	this.qcanvas.context.strokeStyle = obj.color;
 	this.qcanvas.context.beginPath();
 	this.qcanvas.context.lineWidth = obj.width;
+	var drawLine = function(){
+		this.qcanvas.context.moveTo(start[0],start[1]); 
+		this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
+		this.qcanvas.context.stroke();
+	}
 
 	switch(obj.like)
 	{
 		case '-': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
-			
+			drawLine.call(this)
 			break;
 		case '--': 
 
 			this.qcanvas.context.setLineDash([3]);
+			drawLine.call(this)
 
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -642,10 +621,8 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
  
 			break;	
 		case '->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
+
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -654,10 +631,7 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 			
 			break;
 		case '<-': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -666,10 +640,7 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 			
 			break;
 		case '<->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			
 
 			//可能路径是虚线形式的 设置成实线
@@ -683,9 +654,7 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 		case '-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 
 			//可能路径是虚线形式的 设置成实线
@@ -697,9 +666,7 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 		case '<--': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 
 			//可能路径是虚线形式的 设置成实线
@@ -711,9 +678,7 @@ QbezierCurve.prototype.paintBezierCurve = function(obj) {
 		case '<-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]); 
-			this.qcanvas.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1123,37 +1088,28 @@ Qline.prototype.paintLine  = function(obj){
 	this.qcanvas.context.strokeStyle = obj.color;
 	this.qcanvas.context.beginPath();
 	this.qcanvas.context.lineWidth=obj.width;
+	var drawLine = function(){
+		this.qcanvas.context.moveTo(start[0],start[1]);
+		this.qcanvas.context.lineTo(end[0],end[1]);
+		this.qcanvas.context.stroke();
+	}
 
 	switch(obj.like)
 	{
 		case '-':
-			//if(obj.like == '--'){
-			//	this.qcanvas.context.setLineDash([2, 4]);
-			//}
-			
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
-			
-			
-			
+			drawLine.call(this)
 			break;
 		case '--': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
  
 			break;
 		case '->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1162,10 +1118,7 @@ Qline.prototype.paintLine  = function(obj){
 			
 			break;
 		case '<-': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1174,10 +1127,7 @@ Qline.prototype.paintLine  = function(obj){
 			
 			break;
 		case '<->': 
-			
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 			 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1190,9 +1140,7 @@ Qline.prototype.paintLine  = function(obj){
 		case '-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
  			
  			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1202,9 +1150,7 @@ Qline.prototype.paintLine  = function(obj){
 		case '<--': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
  			
  			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
@@ -1214,9 +1160,7 @@ Qline.prototype.paintLine  = function(obj){
 		case '<-->': 
 
 			this.qcanvas.context.setLineDash([3]);
-			this.qcanvas.context.moveTo(start[0],start[1]);
-			this.qcanvas.context.lineTo(end[0],end[1]);
-			this.qcanvas.context.stroke();
+			drawLine.call(this)
 
 			//可能路径是虚线形式的 设置成实线
 			this.qcanvas.context.setLineDash([]);
