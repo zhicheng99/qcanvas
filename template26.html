@@ -30,37 +30,45 @@ canvas{
 		
 	</div>
 	<div class="code_lay">
-		<pre><code class="js"> 
-window.onload = function(){ 
-  
+		<pre><code class="js">window.onload = function(){
+
 var h1,h2,h3,h4
 var qcanvas = new Qcanvas({
         id:'qcanvas',
         width:500,
         height:500, 
-        mousemove:function(){
-            if(this.dragAim !== null){
-                h1Move.call(h1); 
-                h2Move.call(h2); 
-                h3Move.call(h3); 
-                h4Move.call(h4); 
+        mousemove:function(){ 
+            if(this.dragAim !== null && (this.dragAim.TYPE !='canvas' )){
+               this.dragAim == h1 && h1Move.call(h1); 
+               this.dragAim == h2 && h2Move.call(h2); 
+               this.dragAim == h3 && h3Move.call(h3); 
+               this.dragAim == h4 && h4Move.call(h4); 
 
-                rect.mousemove.call(rect);
+                // rect.mousemove.call(rect);
 
             }
-        }
-    });
+        },
+        mouseup:handleMouseup
 
+    });
+var handleMouseup = function(){ 
+    var point = rect.polyPoints();
+    h1.setStart([point[0].x-5,point[0].y-5]).setDisplay('block');
+    h2.setStart([point[1].x-5,point[1].y-5]).setDisplay('block')
+    h3.setStart([point[2].x-5,point[2].y-5]).setDisplay('block')
+    h4.setStart([point[3].x-5,point[3].y-5]).setDisplay('block')
+}
 var rect = qcanvas.qrect.rect({
     start:[50,50],
-    degree:0,
-    mousemove:function(){
-        var point = this.polyPoints();
-        h1.setStart([point[0].x-5,point[0].y-5]);
-        h2.setStart([point[1].x-5,point[1].y-5])
-        h3.setStart([point[2].x-5,point[2].y-5])
-        h4.setStart([point[3].x-5,point[3].y-5])
-    }
+    degree:0, 
+    mousedown:function(){
+            h1.setDisplay('none');
+            h2.setDisplay('none')
+            h3.setDisplay('none')
+            h4.setDisplay('none')
+    },
+    mouseup:handleMouseup
+
 
 })
 var h1Move = function(){
@@ -71,9 +79,10 @@ var h1Move = function(){
     var width = point[2].x - center.x;
     var height = point[2].y - center.y;
     rect.setStart(pos).setWidth(width).setHeight(height)
-
+  
     h2.setStart([point[1].x-5,point[1].y-5])
-    h4.setStart([point[3].x-5,point[3].y-5])
+    h4.setStart([point[3].x-5,point[3].y-5]) 
+   
 
 }
 
@@ -86,9 +95,11 @@ var h2Move = function(){
     var height = point[2].y - pos[1]; 
 
     rect.setStart([rect.start[0],pos[1]]).setWidth(width).setHeight(height)
-
+ 
     h1.setStart([point[0].x-5,point[0].y-5]);
     h3.setStart([point[2].x-5,point[2].y-5])
+     
+    
 
 }
 var h3Move = function(){
@@ -102,11 +113,12 @@ var h3Move = function(){
     var height = pos[1] - rect.start[1]; 
 
     rect.setWidth(width).setHeight(height)
- 
+    
+    // setTimeout(function(){
     h2.setStart([point[1].x-5,point[1].y-5])
     h4.setStart([point[3].x-5,point[3].y-5])
-
- 
+    // },200)
+    
 }
 var h4Move = function(){
 
@@ -120,12 +132,16 @@ var h4Move = function(){
 
     rect.setStart([pos[0],rect.start[1]]).setWidth(width).setHeight(height)
 
-   h1.setStart([point[0].x-5,point[0].y-5]);
+    // setTimeout(function(){
+    h1.setStart([point[0].x-5,point[0].y-5]);
     h3.setStart([point[2].x-5,point[2].y-5])
-
-
-     
+    // },200)
 }
+
+
+
+
+
 var createHandler = function(){
     var point = rect.polyPoints();
 
@@ -158,7 +174,8 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h1Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
     })
     h2= qcanvas.qrect.rect({
         start:(function(){
@@ -186,7 +203,9 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h2Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
     h3= qcanvas.qrect.rect({
         start:(function(){
@@ -215,7 +234,9 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h3Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
     h4= qcanvas.qrect.rect({
         start:(function(){
@@ -243,10 +264,16 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h4Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
 }
 createHandler();
+
+
+
+
 
 }
     
@@ -259,35 +286,44 @@ createHandler();
 <script src='Qcanvas.js'></script>
 <script> 
 window.onload = function(){
- 
+
 var h1,h2,h3,h4
 var qcanvas = new Qcanvas({
         id:'qcanvas',
         width:500,
         height:500, 
-        mousemove:function(){
-            if(this.dragAim !== null){
-                h1Move.call(h1); 
-                h2Move.call(h2); 
-                h3Move.call(h3); 
-                h4Move.call(h4); 
+        mousemove:function(){ 
+            if(this.dragAim !== null && (this.dragAim.TYPE !='canvas' )){
+               this.dragAim == h1 && h1Move.call(h1); 
+               this.dragAim == h2 && h2Move.call(h2); 
+               this.dragAim == h3 && h3Move.call(h3); 
+               this.dragAim == h4 && h4Move.call(h4); 
 
-                rect.mousemove.call(rect);
+                // rect.mousemove.call(rect);
 
             }
-        }
-    });
+        },
+        mouseup:handleMouseup
 
+    });
+var handleMouseup = function(){ 
+    var point = rect.polyPoints();
+    h1.setStart([point[0].x-5,point[0].y-5]).setDisplay('block');
+    h2.setStart([point[1].x-5,point[1].y-5]).setDisplay('block')
+    h3.setStart([point[2].x-5,point[2].y-5]).setDisplay('block')
+    h4.setStart([point[3].x-5,point[3].y-5]).setDisplay('block')
+}
 var rect = qcanvas.qrect.rect({
     start:[50,50],
-    degree:0,
-    mousemove:function(){
-        var point = this.polyPoints();
-        h1.setStart([point[0].x-5,point[0].y-5]);
-        h2.setStart([point[1].x-5,point[1].y-5])
-        h3.setStart([point[2].x-5,point[2].y-5])
-        h4.setStart([point[3].x-5,point[3].y-5])
-    }
+    degree:0, 
+    mousedown:function(){
+            h1.setDisplay('none');
+            h2.setDisplay('none')
+            h3.setDisplay('none')
+            h4.setDisplay('none')
+    },
+    mouseup:handleMouseup
+
 
 })
 var h1Move = function(){
@@ -298,9 +334,10 @@ var h1Move = function(){
     var width = point[2].x - center.x;
     var height = point[2].y - center.y;
     rect.setStart(pos).setWidth(width).setHeight(height)
-
+  
     h2.setStart([point[1].x-5,point[1].y-5])
-    h4.setStart([point[3].x-5,point[3].y-5])
+    h4.setStart([point[3].x-5,point[3].y-5]) 
+   
 
 }
 
@@ -313,9 +350,11 @@ var h2Move = function(){
     var height = point[2].y - pos[1]; 
 
     rect.setStart([rect.start[0],pos[1]]).setWidth(width).setHeight(height)
-
+ 
     h1.setStart([point[0].x-5,point[0].y-5]);
     h3.setStart([point[2].x-5,point[2].y-5])
+     
+    
 
 }
 var h3Move = function(){
@@ -329,11 +368,12 @@ var h3Move = function(){
     var height = pos[1] - rect.start[1]; 
 
     rect.setWidth(width).setHeight(height)
- 
+    
+    // setTimeout(function(){
     h2.setStart([point[1].x-5,point[1].y-5])
     h4.setStart([point[3].x-5,point[3].y-5])
-
- 
+    // },200)
+    
 }
 var h4Move = function(){
 
@@ -347,12 +387,16 @@ var h4Move = function(){
 
     rect.setStart([pos[0],rect.start[1]]).setWidth(width).setHeight(height)
 
-   h1.setStart([point[0].x-5,point[0].y-5]);
+    // setTimeout(function(){
+    h1.setStart([point[0].x-5,point[0].y-5]);
     h3.setStart([point[2].x-5,point[2].y-5])
-
-
-     
+    // },200)
 }
+
+
+
+
+
 var createHandler = function(){
     var point = rect.polyPoints();
 
@@ -385,7 +429,8 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h1Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
     })
     h2= qcanvas.qrect.rect({
         start:(function(){
@@ -413,7 +458,9 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h2Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
     h3= qcanvas.qrect.rect({
         start:(function(){
@@ -442,7 +489,9 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h3Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
     h4= qcanvas.qrect.rect({
         start:(function(){
@@ -470,12 +519,17 @@ var createHandler = function(){
             if(qcanvas.dragAim !== null){ 
                 h4Move.call(this); 
             }
-        }
+        },
+        mouseup:handleMouseup
+
     })
 }
 createHandler();
 
-  
+
+
+
+
 }
 
 

@@ -3207,7 +3207,6 @@ function Qevent(qcanvas){
 					_this.triggerEleType[_this.qcanvas.dragAim.TYPE] 
 					&&
 					_this.qcanvas.dragAim.moveFun(e,position);
-
 				}
 
 		},
