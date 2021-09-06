@@ -2651,17 +2651,17 @@ Qanimation.prototype.animate = function(aim, startStyle, endStyle, during, isLoo
     //要求 startStyle对象和endStyle对象属性必须是一样的
     //序列帧对象(属性=>值)  
     var frames = {};
-    var framesCount = this.qcanvas.fps * during;
+    var framesCount = this.fps * during;
     var tweenType = typeof tweenType != 'undefined' ? (tweenType == '' ? 'Linear' : tweenType) : 'Linear';
     // console.log(tweenType);
 
-    var tween = eval('this.qcanvas.Tween["' + tweenType.split('.').join('"]["') + '"]');
+    var tween = eval('this.Tween["' + tweenType.split('.').join('"]["') + '"]');
     // console.log(tween);
 
     for (var i in startStyle) {
 
         //如果是属性的值是数组的 生成成对的数组序列 用于渲染动画
-        if (this.qcanvas.isArr(startStyle[i])) {
+        if (this.isArr(startStyle[i])) {
             frames[i] = [];
 
             var perArr = [];
@@ -2684,7 +2684,7 @@ Qanimation.prototype.animate = function(aim, startStyle, endStyle, during, isLoo
         }
 
         //属性的值是数字的
-        if (this.qcanvas.isNum(startStyle[i])) {
+        if (this.isNum(startStyle[i])) {
             frames[i] = [];
             var per = (endStyle[i] - startStyle[i]) / framesCount;
 
@@ -3616,6 +3616,7 @@ function Qcanvas(options) {
 
     //动画类
     this.qanimation = new Qanimation(this);
+    this.animate = this.qanimation.animate.bind(this);
 
 
     //事件类
