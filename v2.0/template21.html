@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    canvas {
+        background: #eee;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay" id="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <!-- <canvas id="qcanvas1"></canvas>  -->
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">var a, b, line;
+window.onload = function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+    });
+
+    a = qcanvas.arc({
+        start: [50, 50],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#ffff00',
+        borderColor: '#000'
+    })
+
+    b = qcanvas.arc({
+        start: [200, 200],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#c3c3c3',
+        borderColor: '#000'
+    })
+
+
+
+
+    var caleHandler1 = function() {
+        if (typeof this.caleTime1 == 'undefined' ||
+            (typeof this.caleTime1 !== 'undefined') &&
+            ((new Date()).getTime() - this.caleTime1 > 1000)
+        ) {
+
+
+            var start = this.start();
+            var end = this.end();
+            var returnHandler1 = (function() {
+                //A
+                // |
+                //h1 \ h2
+                //   ↓
+                //   B
+                if (start[0] < end[0] && start[1] <= end[1]) {
+                    //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
+                    //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
+
+                    return [Math.abs(start[0] - end[0]) * 0.25 + start[0], Math.abs(start[1] - end[1]) * 0.75 + start[1]];
+                }
+                //  A
+                //  |
+                //h2/h1
+                // ↓
+                // B
+                if (start[0] >= end[0] && start[1] <= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
+                    //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
+                    return [Math.abs(start[0] - end[0]) * 0.75 + end[0], Math.abs(start[1] - end[1]) * 0.75 + start[1]]
+                }
+
+                // B
+                // ↑
+                //h1\h2
+                //  |
+                //  A
+                if (start[0] > end[0] && start[1] >= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.75+end[1]];
+                    //h2:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.25+end[1]];
+                    return [Math.abs(start[0] - end[0]) * 0.75 + end[0], Math.abs(start[1] - end[1]) * 0.25 + end[1]];
+                }
+
+                //   B
+                //   ↑
+                // h2/h1
+                //  |
+                //  A
+                if (start[0] <= end[0] && start[1] >= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.75+end[1]];
+                    //h2:[Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.25+end[1]];
+                    return [Math.abs(start[0] - end[0]) * 0.25 + start[0], Math.abs(start[1] - end[1]) * 0.25 + end[1]];
+                }
+
+
+            })()
+
+
+            // var x = Math.abs(start[0] - end[0])*(start[0] > end[0]?0.75:0.25)+Math.min.call(null,start[0],end[0]);
+            // var y = Math.abs(start[1] - end[1])*0.75+Math.min.call(null,start[1],end[1]);
+            // console.log(x,y);
+            this.oldHandler1 = returnHandler1;
+
+            this.caleTime1 = (new Date()).getTime();
+
+            console.log('1隔段时间再执行 降低执行频率')
+
+            return this.oldHandler1;
+
+        } else {
+
+            return this.oldHandler1;
+        }
+
+
+        // return [50,80];
+    }
+
+    var line = qcanvas.quadraticCurve({
+        start: function() { return a.start },
+        handler: caleHandler1,
+        end: function() { return b.start },
+        width: 1,
+        like: '->',
+        color: 'red',
+        drag: true,
+        withText: '我是个二次曲线',
+        pointerEvent: 'none',
+        // handlerShow:true
+    })
+
+
+}
+        </code>
+    </pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+var a, b, line;
+window.onload = function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+    });
+
+    a = qcanvas.arc({
+        start: [50, 50],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#ffff00',
+        borderColor: '#000'
+    })
+
+    b = qcanvas.arc({
+        start: [200, 200],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#c3c3c3',
+        borderColor: '#000'
+    })
+
+
+
+
+    var caleHandler1 = function() {
+        if (typeof this.caleTime1 == 'undefined' ||
+            (typeof this.caleTime1 !== 'undefined') &&
+            ((new Date()).getTime() - this.caleTime1 > 1000)
+        ) {
+
+
+            var start = this.start();
+            var end = this.end();
+            var returnHandler1 = (function() {
+                //A
+                // |
+                //h1 \ h2
+                //   ↓
+                //   B
+                if (start[0] < end[0] && start[1] <= end[1]) {
+                    //h1: [Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.75+start[1]];
+                    //h2: [Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.25+start[1]];
+
+                    return [Math.abs(start[0] - end[0]) * 0.25 + start[0], Math.abs(start[1] - end[1]) * 0.75 + start[1]];
+                }
+                //  A
+                //  |
+                //h2/h1
+                // ↓
+                // B
+                if (start[0] >= end[0] && start[1] <= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.75+start[1]]
+                    //h2:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.25+start[1]]
+                    return [Math.abs(start[0] - end[0]) * 0.75 + end[0], Math.abs(start[1] - end[1]) * 0.75 + start[1]]
+                }
+
+                // B
+                // ↑
+                //h1\h2
+                //  |
+                //  A
+                if (start[0] > end[0] && start[1] >= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.25+end[0],Math.abs(start[1] - end[1])*0.75+end[1]];
+                    //h2:[Math.abs(start[0] - end[0])*0.75+end[0],Math.abs(start[1] - end[1])*0.25+end[1]];
+                    return [Math.abs(start[0] - end[0]) * 0.75 + end[0], Math.abs(start[1] - end[1]) * 0.25 + end[1]];
+                }
+
+                //   B
+                //   ↑
+                // h2/h1
+                //  |
+                //  A
+                if (start[0] <= end[0] && start[1] >= end[1]) {
+                    //h1:[Math.abs(start[0] - end[0])*0.75+start[0],Math.abs(start[1] - end[1])*0.75+end[1]];
+                    //h2:[Math.abs(start[0] - end[0])*0.25+start[0],Math.abs(start[1] - end[1])*0.25+end[1]];
+                    return [Math.abs(start[0] - end[0]) * 0.25 + start[0], Math.abs(start[1] - end[1]) * 0.25 + end[1]];
+                }
+
+
+            })()
+
+
+            // var x = Math.abs(start[0] - end[0])*(start[0] > end[0]?0.75:0.25)+Math.min.call(null,start[0],end[0]);
+            // var y = Math.abs(start[1] - end[1])*0.75+Math.min.call(null,start[1],end[1]);
+            // console.log(x,y);
+            this.oldHandler1 = returnHandler1;
+
+            this.caleTime1 = (new Date()).getTime();
+
+            console.log('1隔段时间再执行 降低执行频率')
+
+            return this.oldHandler1;
+
+        } else {
+
+            return this.oldHandler1;
+        }
+
+
+        // return [50,80];
+    }
+
+    var line = qcanvas.quadraticCurve({
+        start: function() { return a.start },
+        handler: caleHandler1,
+        end: function() { return b.start },
+        width: 1,
+        like: '->',
+        color: 'red',
+        drag: true,
+        withText: '我是个二次曲线',
+        pointerEvent: 'none',
+        // handlerShow:true
+    })
+
+
+}
+</script>
+
+</html>

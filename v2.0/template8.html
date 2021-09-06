@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+</head>
+
+<body>
+    <div class="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <canvas id="qcanvas1"></canvas>
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">(function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 300,
+        height: 200
+    });
+    qcanvas.load({
+        "person": "../img/spirit1.png",
+    }, function() {
+
+        var spiritSource = qcanvas.getSourceByName("person");
+
+        qcanvas.spirit({
+            img: spiritSource,
+            row: 1,
+            column: 8,
+            framesIndex: [0, 0],
+            tStart: [0, 120],
+            tWidth: 40,
+            tHeight: 64,
+            isLoop: true,
+            during: 1,
+            degree: 30,
+            mouseup: function() {
+                console.log(this);
+                console.log('触发mouseup事件');
+            }
+        })
+    })
+
+
+})();
+
+(function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas1',
+        width: 300,
+        height: 200
+    });
+
+    qcanvas.spirit({
+        // img:spiritSource,
+        img: '../img/spirit1.png',
+        row: 1,
+        column: 8,
+        framesIndex: [0, 0],
+        tStart: [0, 120],
+        tWidth: 40,
+        tHeight: 64,
+        isLoop: true,
+        during: 1,
+        mouseup: function() {
+            console.log(this);
+            console.log('触发mouseup事件');
+        }
+    })
+
+})()
+		</code>
+	</pre>
+    </div>
+</body>
+<script src="Qcanvas-v2.0.js"></script>
+<script>
+(function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 300,
+        height: 200
+    });
+    qcanvas.load({
+        "person": "../img/spirit1.png",
+    }, function() {
+
+        var spiritSource = qcanvas.getSourceByName("person");
+
+        qcanvas.spirit({
+            img: spiritSource,
+            row: 1,
+            column: 8,
+            framesIndex: [0, 0],
+            tStart: [0, 120],
+            tWidth: 40,
+            tHeight: 64,
+            isLoop: true,
+            during: 1,
+            degree: 30,
+            mouseup: function() {
+                console.log(this);
+                console.log('触发mouseup事件');
+            }
+        })
+    })
+
+
+})();
+
+(function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas1',
+        width: 300,
+        height: 200
+    });
+
+    qcanvas.spirit({
+        // img:spiritSource,
+        img: '../img/spirit1.png',
+        row: 1,
+        column: 8,
+        framesIndex: [0, 0],
+        tStart: [0, 120],
+        tWidth: 40,
+        tHeight: 64,
+        isLoop: true,
+        during: 1,
+        mouseup: function() {
+            console.log(this);
+            console.log('触发mouseup事件');
+        }
+    })
+
+})()
+</script>
+
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta 	charset="utf-8">
+	<title>Qcanvas</title>
+	<script src="../js/jquery.js"></script>
+	<link href="../style/default.min.css" rel="stylesheet">
+	<script src="../js/highlight.min.js"></script>
+		<script>hljs.initHighlightingOnLoad();</script>
+	<style>
+		
+		html,body{
+			font-size: 14px;
+			width: 100%;
+			height: 100%;
+			padding: 0;
+			margin: 0;
+		}
+
+
+
+		pre {
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid #C3CCD0;
+    background: #FFF;
+    overflow: hidden;
+}
+
+code {
+  display: block;
+  padding: 12px 24px;
+  overflow-y: auto;
+  font-weight: 300;
+  font-family: Menlo, monospace;
+  font-size: 0.8em;
+}
+
+code.has-numbering {
+    margin-left: 21px;
+}
+
+.pre-numbering {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    padding: 12px 2px 12px 0;
+    border-right: 1px solid #C3CCD0;
+    border-radius: 3px 0 0 3px;
+    background-color: #EEE;
+    text-align: right;
+    font-family: Menlo, monospace;
+    font-size: 0.8em;
+    color: #AAA;
+}
+	.frm,.frm iframe{
+		overflow: hidden;
+	}
+
+	.frm{
+		/*display: none;*/
+	}
+
+	a{
+		background: #fff
+	}
+	ul{
+		margin:0;
+		padding: 0;
+	}
+	li{
+		list-style-type: none
+	}
+	.main{
+		height: 100%;
+		font-size: 12px;
+	}
+
+	.main_left{
+		float: left;
+		width: 200px;
+	}
+	.main_left ul li a:hover{
+		background: #ddd;
+	}
+
+	.main_left a{
+		display: block;
+		width: 100%;
+		font-size: 14px;
+		text-decoration: none;
+		color: #333;
+	}
+
+	.main_right{
+		padding-left: 220px;
+		height: 100%;
+	}
+
+	</style>
+</head>
+<body> 
+
+	<div class="main">
+		<div class="main_left">
+			<ul>
+				<li>
+					<a href="template1.html" target="frm">1、初始化</a>
+				</li> 
+				<li>
+					<a href="template2.html" target="frm">2、绘直线</a>
+				</li> 
+				<li>
+					<a href="template3.html" target="frm">3、绘文字</a>
+				</li> 
+				<li>
+					<a href="template4.html" target="frm">4、绘矩形</a>
+				</li> 
+				<li>
+					<a href="template5.html" target="frm">5、绘圆</a>
+				</li> 
+				<li>
+					<a href="template6.html" target="frm">6、多边形</a>
+				</li> 
+				<li>
+					<a href="template7.html" target="frm">7、绘图片</a>
+				</li> 
+				<li>
+					<a href="template8.html" target="frm">8、绘精灵图</a>
+				</li> 
+				<li>
+					<a href="template9.html" target="frm">9、动画</a>
+				</li> 
+				<li>
+					<a href="template10.html" target="frm">10、事件</a>
+				</li> 
+				<li>
+					<a href="template11.html" target="frm">11、显示元素、隐藏元素、删除元素</a>
+				</li> <li>
+					<a href="template12.html" target="frm">12、元素层级调整 （lower，lowerToBottom，raise，raiseToTop）</a>
+				</li> 
+				<li>
+					<a href="template13.html" target="frm">13、Qlayer元素容器类的使用及容器内元素层级调整</a>
+				</li> 
+				<li>
+					<a href="template14.html" target="frm">14、Ggroup使用</a>
+				</li> 
+
+				<li>
+					<a href="template15.html" target="frm">15、缩放控件和角度控件 (现只支持rect元素)</a>
+				</li> 
+				<li>
+					<a href="template16.html" target="frm">16、拖动限制范围</a>
+				</li>  
+				<li>
+					<a href="template17.html" target="frm">17、元素右键菜单</a>
+				</li>  
+				<li>
+					<a href="template18.html" target="frm">18、绘二次贝塞尔曲线</a>
+				</li> 
+				<li>
+					<a href="template19.html" target="frm">19、绘三次贝塞尔曲线</a>
+				</li> 
+				<li>
+					<a href="template20.html" target="frm">20、三次贝塞尔曲线控制点的计算</a>
+				</li> 
+				<li>
+					<a href="template21.html" target="frm">21、二次贝塞尔曲线控制点的计算</a>
+				</li> 
+				<li>
+					<a href="template22.html" target="frm">22、折线连接元素(横向)</a>
+				</li> 
+				<li>
+					<a href="template23.html" target="frm">23、折线连接元素(竖向)</a>
+				</li> 
+				<li>
+					<a href="template24.html" target="frm">24、折线连接元素(横向-拖动线)</a>
+				</li> 
+				<li>
+					<a href="template25.html" target="frm">25、折线连接元素(竖向-拖动线)</a>
+				</li> 
+				<li>
+					<a href="template26.html" target="frm">26、rect缩放</a>
+				</li> 
+				<li>
+					<a href="https://zhicheng99.github.io/qrelation/" target="_blank"><b>思维导图(基于Qcanvas)<b></a>
+				</li>  
+
+			</ul>
+<script type="text/javascript">document.write(unescape("%3Cspan id='cnzz_stat_icon_1280092646'%3E%3C/span%3E%3Cscript src='https://v1.cnzz.com/z_stat.php%3Fid%3D1280092646%26online%3D1%26show%3Dline' type='text/javascript'%3E%3C/script%3E"));</script>
+		</div>
+		<div class="main_right">
+
+			<iframe name="frm" src="template1.html" width=100% height=100% frameborder=0></iframe>
+		</div>
+
+	</div> 
+
+</body>
+</html>

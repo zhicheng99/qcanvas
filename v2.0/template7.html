@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+</head>
+
+<body>
+    <div class="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+
+qcanvas.load({
+	"b":"img/img.png"
+},function(){ 
+	var b = qcanvas.getSourceByName("b");
+	
+	
+	qcanvas.qimg.img({
+		img:b,
+		sStart:[0,0],
+		sWidth:b.width,
+		sHeight:b.height,
+		size:"cover",
+		tStart:[100,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+		
+	});
+});	
+或
+qcanvas.loadImgSource("img/img.png").then(function(img){
+	var b = img[0];
+	qcanvas.qimg.img({
+		img:b,
+		sStart:[0,0],
+		sWidth:b.width,
+		sHeight:b.height,
+		size:"cover",
+		tStart:[150,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
+})
+或
+qcanvas.qimg.img({
+		img:'img/img.png',
+		sStart:[0,0],
+		tStart:[200,0],
+		tWidth:50,
+		tHeight:120,
+		degree:30,
+		mousemove:function(position){
+			console.log(position);
+		}
+		
+	});
+			
+		</code>
+	</pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+var qcanvas = new Qcanvas({
+	id: 'qcanvas',
+    width: 300,
+    height: 200
+});
+
+qcanvas.load({
+    "b": "../img/img.png"
+}, function() {
+    var b = qcanvas.getSourceByName("b");
+
+    qcanvas.img({
+        img: b,
+        sStart: [0, 0],
+        sWidth: b.width,
+        sHeight: b.height,
+        size: "cover",
+        tStart: [100, 0],
+        tWidth: 50,
+        tHeight: 120,
+        degree: 30,
+        mousemove: function(position) {
+            console.log(position);
+        }
+    });
+
+});
+
+qcanvas.loadImgSource("../img/img.png").then(function(img) {
+    var b = img[0];
+    qcanvas.img({
+        img: b,
+        sStart: [0, 0],
+        sWidth: b.width,
+        sHeight: b.height,
+        size: "cover",
+        tStart: [150, 0],
+        tWidth: 50,
+        tHeight: 120,
+        degree: 30,
+        mousemove: function(position) {
+            console.log(position);
+        }
+
+    });
+})
+
+
+
+qcanvas.img({
+    img: '../img/img.png',
+    sStart: [0, 0],
+    tStart: [200, 0],
+    tWidth: 50,
+    tHeight: 120,
+    degree: 30,
+    mousemove: function(position) {
+        console.log(position);
+    }
+
+});
+</script>
+
+</html>

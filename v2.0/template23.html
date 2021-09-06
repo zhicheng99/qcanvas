@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    canvas {
+        background: #eee;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay" id="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <!-- <canvas id="qcanvas1"></canvas>  -->
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">// 两个元素之间折线 可以拆解为三段直线连接起来了
+/*
+A---|
+    |
+    |---B
+*/
+
+
+var a, b, line;
+window.onload = function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+    });
+
+    a = qcanvas.arc({
+        start: [50, 50],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#ffff00',
+        borderColor: '#000'
+    })
+
+    b = qcanvas.arc({
+        start: [200, 200],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#c3c3c3',
+        borderColor: '#000'
+    })
+
+    var percent = 0.2;
+
+    //生成三条直线的坐标
+    var caleHandler1 = function(a, b) {
+
+
+        var start = a.start;
+        var end = b.start;
+        // 竖向模式
+        return {
+            'l1': function() { return [start, [(end[0] - start[0]) * percent + start[0], start[1]]] },
+            'l2': function() { return [
+                    [(end[0] - start[0]) * percent + start[0], start[1]],
+                    [(end[0] - start[0]) * percent + start[0], end[1]]
+                ] },
+            'l3': function() { return [
+                    [(end[0] - start[0]) * percent + start[0], end[1]], end
+                ] }
+        }
+        // //A
+        // // |
+        // //h1 \ h2
+        // //   ↓
+        // //   B
+        // // 或
+        // //  A
+        // //  |
+        // //h2/h1
+        // // ↓
+        // // B
+        // if(start[1]<=end[1]){ 
+
+        //     //模向模式
+        //     // return {
+        //     //     'l1':function(){return [start,[start[0],(end[1]-start[1])*0.5+start[1]]]},
+        //     //     'l2':function(){return [[start[0],(end[1]-start[1])*0.5+start[1]],[end[0],(end[1]-start[1])*0.5+start[1]]]},
+        //     //     'l3':function(){return [[end[0],(end[1]-start[1])*0.5+start[1]],end]}
+        //     // }
+
+        //     // 竖向模式
+        //     return {
+        //         'l1':function(){return [start,[(end[0]-start[0])*percent+start[0],start[1]]]},
+        //         'l2':function(){return [[(end[0]-start[0])*percent+start[0],start[1]],[(end[0]-start[0])*percent+start[0],end[1]]]},
+        //         'l3':function(){return [[(end[0]-start[0])*percent+start[0],end[1]],end]}
+        //     }
+
+        // } 
+
+        // // B
+        // // ↑
+        // //h1\h2
+        // //  |
+        // //  A
+        // //或
+        // //   B
+        // //   ↑
+        // // h2/h1
+        // //  |
+        // //  A
+        // if(start[1]>=end[1]){
+
+        //     //模向模式
+        //     // return {
+        //     //     'l1':function(){return [start,[start[0],(start[1]-end[1])*percent+end[1]]]},
+        //     //     'l2':function(){return [[start[0],(start[1]-end[1])*percent+end[1]],[end[0],(start[1]-end[1])*percent+end[1]]]},
+        //     //     'l3':function(){return [[end[0],(start[1]-end[1])*percent+end[1]],end]}
+        //     // }
+
+        //     //竖向模式
+        //     return {
+        //         'l1':function(){return [start,[(start[0]-end[0])*percent+end[0],start[1]]]},
+        //         'l2':function(){return [[(start[0]-end[0])*percent+end[0],start[1]],[(start[0]-end[0])*percent+end[0],end[1]]]},
+        //         'l3':function(){return [[(start[0]-end[0])*percent+end[0],end[1]],end]}
+        //     }
+
+        // }
+
+
+
+
+    }
+
+
+    var tmp = null;
+    var line1 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l1']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l1']();
+            return t[1];
+        },
+        pointerEvent: 'none',
+        width: 1,
+    })
+
+
+
+    var line2 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l2']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l2']();
+            return t[1];
+        },
+        pointerEvent: 'none',
+        width: 1,
+        withText: 'ddd',
+    })
+
+
+
+
+
+    var line3 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l3']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l3']();
+            return t[1];
+        },
+        like: '->',
+        pointerEvent: 'none',
+        width: 1,
+    })
+
+
+}
+        </code>
+    </pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+// 两个元素之间折线 可以拆解为三段直线连接起来了
+/*
+A---|
+    |
+    |---B
+*/
+
+
+var a, b, line;
+window.onload = function() {
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+    });
+
+    a = qcanvas.arc({
+        start: [50, 50],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#ffff00',
+        borderColor: '#000'
+    })
+
+    b = qcanvas.arc({
+        start: [200, 200],
+        r: 10,
+        sAngle: 0,
+        eAngle: 360,
+        fillColor: '#c3c3c3',
+        borderColor: '#000'
+    })
+
+    var percent = 0.2;
+
+    //生成三条直线的坐标
+    var caleHandler1 = function(a, b) {
+
+
+        var start = a.start;
+        var end = b.start;
+        // 竖向模式
+        return {
+            'l1': function() { return [start, [(end[0] - start[0]) * percent + start[0], start[1]]] },
+            'l2': function() { return [
+                    [(end[0] - start[0]) * percent + start[0], start[1]],
+                    [(end[0] - start[0]) * percent + start[0], end[1]]
+                ] },
+            'l3': function() { return [
+                    [(end[0] - start[0]) * percent + start[0], end[1]], end
+                ] }
+        }
+        // //A
+        // // |
+        // //h1 \ h2
+        // //   ↓
+        // //   B
+        // // 或
+        // //  A
+        // //  |
+        // //h2/h1
+        // // ↓
+        // // B
+        // if(start[1]<=end[1]){ 
+
+        //     //模向模式
+        //     // return {
+        //     //     'l1':function(){return [start,[start[0],(end[1]-start[1])*0.5+start[1]]]},
+        //     //     'l2':function(){return [[start[0],(end[1]-start[1])*0.5+start[1]],[end[0],(end[1]-start[1])*0.5+start[1]]]},
+        //     //     'l3':function(){return [[end[0],(end[1]-start[1])*0.5+start[1]],end]}
+        //     // }
+
+        //     // 竖向模式
+        //     return {
+        //         'l1':function(){return [start,[(end[0]-start[0])*percent+start[0],start[1]]]},
+        //         'l2':function(){return [[(end[0]-start[0])*percent+start[0],start[1]],[(end[0]-start[0])*percent+start[0],end[1]]]},
+        //         'l3':function(){return [[(end[0]-start[0])*percent+start[0],end[1]],end]}
+        //     }
+
+        // } 
+
+        // // B
+        // // ↑
+        // //h1\h2
+        // //  |
+        // //  A
+        // //或
+        // //   B
+        // //   ↑
+        // // h2/h1
+        // //  |
+        // //  A
+        // if(start[1]>=end[1]){
+
+        //     //模向模式
+        //     // return {
+        //     //     'l1':function(){return [start,[start[0],(start[1]-end[1])*percent+end[1]]]},
+        //     //     'l2':function(){return [[start[0],(start[1]-end[1])*percent+end[1]],[end[0],(start[1]-end[1])*percent+end[1]]]},
+        //     //     'l3':function(){return [[end[0],(start[1]-end[1])*percent+end[1]],end]}
+        //     // }
+
+        //     //竖向模式
+        //     return {
+        //         'l1':function(){return [start,[(start[0]-end[0])*percent+end[0],start[1]]]},
+        //         'l2':function(){return [[(start[0]-end[0])*percent+end[0],start[1]],[(start[0]-end[0])*percent+end[0],end[1]]]},
+        //         'l3':function(){return [[(start[0]-end[0])*percent+end[0],end[1]],end]}
+        //     }
+
+        // }
+
+
+
+
+    }
+
+
+    var tmp = null;
+    var line1 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l1']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l1']();
+            return t[1];
+        },
+        pointerEvent: 'none',
+        width: 1,
+    })
+
+
+
+    var line2 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l2']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l2']();
+            return t[1];
+        },
+        pointerEvent: 'none',
+        width: 1,
+        withText: 'ddd',
+    })
+
+
+
+
+
+    var line3 = qcanvas.line({
+        start: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l3']();
+            return t[0];
+        },
+        end: function() {
+            var points = tmp === null ? caleHandler1(a, b) : tmp;
+            var t = points['l3']();
+            return t[1];
+        },
+        like: '->',
+        pointerEvent: 'none',
+        width: 1,
+    })
+
+
+}
+</script>
+
+</html>

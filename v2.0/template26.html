@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    canvas {
+        background: #eee;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay" id="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <!-- <canvas id="qcanvas1"></canvas>  -->
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">window.onload = function() {
+
+    var h1, h2, h3, h4
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+        mouseup: handleMouseup
+
+    });
+    var handleMouseup = function() {
+        var point = rect.polyPoints();
+        h1.setStart([point[0].x - 5, point[0].y - 5]).setDisplay('block');
+        h2.setStart([point[1].x - 5, point[1].y - 5]).setDisplay('block')
+        h3.setStart([point[2].x - 5, point[2].y - 5]).setDisplay('block')
+        h4.setStart([point[3].x - 5, point[3].y - 5]).setDisplay('block')
+    }
+    var rect = qcanvas.rect({
+        start: [50, 50],
+        degree: 0,
+        mousedown: function() {
+            h1.setDisplay('none');
+            h2.setDisplay('none')
+            h3.setDisplay('none')
+            h4.setDisplay('none')
+        },
+        mouseup: handleMouseup
+
+
+    })
+    var h1Move = function() {
+        //影响宽 高 位置
+        var point = rect.polyPoints();
+        var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        var width = point[2].x - center.x;
+        var height = point[2].y - center.y;
+        rect.setStart(pos).setWidth(width).setHeight(height)
+
+        h2.setStart([point[1].x - 5, point[1].y - 5])
+        h4.setStart([point[3].x - 5, point[3].y - 5])
+
+
+    }
+
+    var h2Move = function() {
+
+        //影响宽 高 位置y
+        var point = rect.polyPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        var width = pos[0] - rect.start[0];
+        var height = point[2].y - pos[1];
+
+        rect.setStart([rect.start[0], pos[1]]).setWidth(width).setHeight(height)
+
+        h1.setStart([point[0].x - 5, point[0].y - 5]);
+        h3.setStart([point[2].x - 5, point[2].y - 5])
+
+
+
+    }
+    var h3Move = function() {
+
+        //影响宽 高
+        var point = rect.polyPoints();
+        // var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        // console.log(start);
+        var width = pos[0] - rect.start[0];
+        var height = pos[1] - rect.start[1];
+
+        rect.setWidth(width).setHeight(height)
+
+        // setTimeout(function(){
+        h2.setStart([point[1].x - 5, point[1].y - 5])
+        h4.setStart([point[3].x - 5, point[3].y - 5])
+        // },200)
+
+    }
+    var h4Move = function() {
+
+        //影响宽 高 位置x
+        var point = rect.polyPoints();
+        // var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        // console.log(start);
+        var width = point[1].x - pos[0];
+        var height = pos[1] - rect.start[1];
+
+        rect.setStart([pos[0], rect.start[1]]).setWidth(width).setHeight(height)
+
+        // setTimeout(function(){
+        h1.setStart([point[0].x - 5, point[0].y - 5]);
+        h3.setStart([point[2].x - 5, point[2].y - 5])
+        // },200)
+    }
+
+
+
+
+
+    var createHandler = function() {
+        var point = rect.polyPoints();
+
+        h1 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[0].x - 5, point[0].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                point = rect.polyPoints();
+
+                //对拖动区域做限制
+                this.dragRange = [
+                    [0, 0],
+                    [
+                        rect.start[0] + rect.width - 20,
+                        rect.start[1] + rect.height - 20
+                    ]
+                ]
+
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h1Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+        })
+        h2 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[1].x - 5, point[1].y - 5]
+                // return [rect.start[0]+rect.width-5,rect.start[1]-5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [rect.start[0] + 10, 0],
+                    [
+                        qcanvas.stage.width - 50,
+                        rect.start[1] + rect.height - 20
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h2Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+        h3 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[2].x - 5, point[2].y - 5]
+                // return [rect.start[0]+rect.width-5,rect.start[1]+rect.height-5]
+            })(),
+            degree: rect.degree,
+
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [rect.start[0] + 10, rect.start[1] + 10],
+                    [
+                        qcanvas.stage.width - 50,
+                        qcanvas.stage.height - 50,
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h3Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+        h4 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[3].x - 5, point[3].y - 5]
+                // return [rect.start[0]-5,rect.start[1]+rect.height-5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [0, rect.start[1] + 10],
+                    [
+                        rect.start[0] + rect.width - 20,
+                        qcanvas.stage.height - 50,
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h4Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+    }
+    createHandler();
+}
+    
+        </code>
+    </pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+window.onload = function() {
+
+    var h1, h2, h3, h4
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+        mouseup: handleMouseup
+
+    });
+    var handleMouseup = function() {
+        var point = rect.polyPoints();
+        h1.setStart([point[0].x - 5, point[0].y - 5]).setDisplay('block');
+        h2.setStart([point[1].x - 5, point[1].y - 5]).setDisplay('block')
+        h3.setStart([point[2].x - 5, point[2].y - 5]).setDisplay('block')
+        h4.setStart([point[3].x - 5, point[3].y - 5]).setDisplay('block')
+    }
+    var rect = qcanvas.rect({
+        start: [50, 50],
+        degree: 0,
+        mousedown: function() {
+            h1.setDisplay('none');
+            h2.setDisplay('none')
+            h3.setDisplay('none')
+            h4.setDisplay('none')
+        },
+        mouseup: handleMouseup
+
+
+    })
+    var h1Move = function() {
+        //影响宽 高 位置
+        var point = rect.polyPoints();
+        var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        var width = point[2].x - center.x;
+        var height = point[2].y - center.y;
+        rect.setStart(pos).setWidth(width).setHeight(height)
+
+        h2.setStart([point[1].x - 5, point[1].y - 5])
+        h4.setStart([point[3].x - 5, point[3].y - 5])
+
+
+    }
+
+    var h2Move = function() {
+
+        //影响宽 高 位置y
+        var point = rect.polyPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        var width = pos[0] - rect.start[0];
+        var height = point[2].y - pos[1];
+
+        rect.setStart([rect.start[0], pos[1]]).setWidth(width).setHeight(height)
+
+        h1.setStart([point[0].x - 5, point[0].y - 5]);
+        h3.setStart([point[2].x - 5, point[2].y - 5])
+
+
+
+    }
+    var h3Move = function() {
+
+        //影响宽 高
+        var point = rect.polyPoints();
+        // var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        // console.log(start);
+        var width = pos[0] - rect.start[0];
+        var height = pos[1] - rect.start[1];
+
+        rect.setWidth(width).setHeight(height)
+
+        // setTimeout(function(){
+        h2.setStart([point[1].x - 5, point[1].y - 5])
+        h4.setStart([point[3].x - 5, point[3].y - 5])
+        // },200)
+
+    }
+    var h4Move = function() {
+
+        //影响宽 高 位置x
+        var point = rect.polyPoints();
+        // var center = this.centerPoints();
+        var pos = [this.start[0] + 5, this.start[1] + 5];
+        // console.log(start);
+        var width = point[1].x - pos[0];
+        var height = pos[1] - rect.start[1];
+
+        rect.setStart([pos[0], rect.start[1]]).setWidth(width).setHeight(height)
+
+        // setTimeout(function(){
+        h1.setStart([point[0].x - 5, point[0].y - 5]);
+        h3.setStart([point[2].x - 5, point[2].y - 5])
+        // },200)
+    }
+
+
+
+
+
+    var createHandler = function() {
+        var point = rect.polyPoints();
+
+        h1 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[0].x - 5, point[0].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                point = rect.polyPoints();
+
+                //对拖动区域做限制
+                this.dragRange = [
+                    [0, 0],
+                    [
+                        rect.start[0] + rect.width - 20,
+                        rect.start[1] + rect.height - 20
+                    ]
+                ]
+
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h1Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+        })
+        h2 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[1].x - 5, point[1].y - 5]
+                // return [rect.start[0]+rect.width-5,rect.start[1]-5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [rect.start[0] + 10, 0],
+                    [
+                        qcanvas.stage.width - 50,
+                        rect.start[1] + rect.height - 20
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h2Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+        h3 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[2].x - 5, point[2].y - 5]
+                // return [rect.start[0]+rect.width-5,rect.start[1]+rect.height-5]
+            })(),
+            degree: rect.degree,
+
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [rect.start[0] + 10, rect.start[1] + 10],
+                    [
+                        qcanvas.stage.width - 50,
+                        qcanvas.stage.height - 50,
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h3Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+        h4 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[3].x - 5, point[3].y - 5]
+                // return [rect.start[0]-5,rect.start[1]+rect.height-5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            mousedown: function() {
+                point = rect.polyPoints();
+                //对拖动区域做限制
+                this.dragRange = [
+                    [0, rect.start[1] + 10],
+                    [
+                        rect.start[0] + rect.width - 20,
+                        qcanvas.stage.height - 50,
+                    ]
+                ]
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+                    h4Move.call(this);
+                }
+            },
+            mouseup: handleMouseup
+
+        })
+    }
+    createHandler();
+}
+</script>
+
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    #contextMenu {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: none;
+        background: #fff;
+    }
+
+    #contextMenu ul li {
+        padding: 5px;
+        color: #333;
+        cursor: pointer;
+    }
+
+    #contextMenu ul li:hover {
+        background: #ddd;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay" id="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">var qcanvas = new Qcanvas({
+    id: 'qcanvas',
+    width: 500,
+    height: 500,
+})
+
+qcanvas.bezierCurve({
+    start: [20, 20],
+    handler1: [50, 80],
+    handler2: [100, 20],
+    end: [200, 20],
+    width: 1,
+    like: '<-->',
+    color: 'red',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+})
+
+
+qcanvas.bezierCurve({
+    start: [200, 20],
+    handler1: [230, 80],
+    handler2: [300, 20],
+    end: [400, 20],
+    width: 1,
+    like: '<->',
+    color: 'blue',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+
+})
+
+var layer = qcanvas.layer();
+
+layer.push(
+	qcanvas.bezierCurve({
+    start: [200, 20],
+    handler1: [230, 80],
+    handler2: [300, 20],
+    end: [400, 20],
+    width: 1,
+    like: '<--',
+    color: 'blue',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+
+})
+	)
+		</code>
+	</pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+var qcanvas = new Qcanvas({
+    id: 'qcanvas',
+    width: 500,
+    height: 500,
+})
+
+qcanvas.bezierCurve({
+    start: [20, 20],
+    handler1: [50, 80],
+    handler2: [100, 20],
+    end: [200, 20],
+    width: 1,
+    like: '<-->',
+    color: 'red',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+})
+
+
+qcanvas.bezierCurve({
+    start: [200, 20],
+    handler1: [230, 80],
+    handler2: [300, 20],
+    end: [400, 20],
+    width: 1,
+    like: '<->',
+    color: 'blue',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+
+})
+
+var layer = qcanvas.layer();
+
+layer.push(
+	qcanvas.bezierCurve({
+    start: [200, 20],
+    handler1: [230, 80],
+    handler2: [300, 20],
+    end: [400, 20],
+    width: 1,
+    like: '<--',
+    color: 'blue',
+    drag: true,
+    withText: '我是个三次曲线',
+    handlerShow: true
+
+})
+	)
+
+
+
+
+
+</script>
+
+</html>

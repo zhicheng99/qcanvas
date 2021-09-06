@@ -3,12 +3,12 @@
 <head>
 	<meta charset="utf-8">
 	<title></title>
-	<script src="js/jquery.js"></script>
-	<link href="style/default.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="style/style.css">
-	<script src="js/highlight.min.js"></script>
+	<script src="../js/jquery.js"></script>
+	<link href="../style/default.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="../style/style.css">
+	<script src="../js/highlight.min.js"></script>
 		<script>hljs.initHighlightingOnLoad();</script>
-		<script src="js/initTemp.js"></script>
+		<script src="../js/initTemp.js"></script>
 	 
 </head>
 <body>
@@ -17,9 +17,13 @@
 		<canvas id="qcanvas"></canvas>
 	</div>
 	<div class="code_lay">
-		<pre><code class="js">var qcanvas = new Qcanvas(["qcanvas",300,200]);
+		<pre><code class="js">var qcanvas = new Qcanvas({
+		id:'qcanvas',
+		width:300,
+		height:200
+	});
 
-var rect = qcanvas.qrect.rect({
+var rect = qcanvas.rect({
 	start:[160,100],
 	borderColor:'red',
 	fillColor:'',
@@ -31,7 +35,7 @@ var rect = qcanvas.qrect.rect({
 	}
 })		
 
-var rect1 = qcanvas.qrect.rect({
+var rect1 = qcanvas.rect({
 	start:[180,80],
 	width:200,
 	borderColor:'green',
@@ -40,18 +44,22 @@ var rect1 = qcanvas.qrect.rect({
 	mouseup:function(){
 		console.log('rect1->mouseup')
 	}
-})	
+})		
 			
 		</code>
 	</pre>
 </div>
 
 </body>
-<script src='Qcanvas.js'></script>
+<script src='Qcanvas-v2.0.js'></script>
 <script>
-	var qcanvas = new Qcanvas(["qcanvas",300,200]);
+	var qcanvas = new Qcanvas({
+		id:'qcanvas',
+		width:300,
+		height:200
+	});
 
-var rect = qcanvas.qrect.rect({
+var rect = qcanvas.rect({
 	start:[160,100],
 	borderColor:'red',
 	fillColor:'',
@@ -63,7 +71,7 @@ var rect = qcanvas.qrect.rect({
 	}
 })		
 
-var rect1 = qcanvas.qrect.rect({
+var rect1 = qcanvas.rect({
 	start:[180,80],
 	width:200,
 	borderColor:'green',

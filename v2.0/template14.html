@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+</head>
+
+<body>
+    <div class="qcanvas_lay">
+        blueRect、redRect元素、spirit元素及【我是来自group容器里spirit】是分组容器group里的元素<br>
+        分组group实例是抽象出来的元素 只在逻辑上把一些元素集合到一块，元素还是一直重绘在主canvas上<br>
+        <canvas id="qcanvas"></canvas>
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">var qcanvas = new Qcanvas({
+		id: 'qcanvas',
+	    width: 300,
+	    height: 200,
+    });
+
+    var greenRect = qcanvas.rect({
+        start: [0, 0],
+        width: 200,
+        height: 200,
+        // drag:false,
+        borderColor: 'green',
+        fillColor: 'green',
+    })
+
+    var redRect = qcanvas.rect({
+        start: [100, 100],
+        width: 50,
+        height: 50,
+        borderColor: 'red',
+        fillColor: 'red',
+        // degree:30
+        // drag:false
+    })
+
+    var blueRect = qcanvas.rect({
+        start: [120, 140],
+        width: 50,
+        height: 50,
+        borderColor: 'blue',
+        fillColor: 'blue',
+        // drag:false
+    })
+
+
+
+
+
+
+
+
+
+    //group元素
+    var group = qcanvas.group();
+    console.log(group);
+
+    group.push(redRect);
+
+    group.push(blueRect);
+
+
+
+
+    qcanvas.load({
+        "person": "../img/spirit1.png",
+    }, function() {
+
+        var spiritSource = qcanvas.getSourceByName("person");
+
+        var s = qcanvas.spirit({
+            img: spiritSource,
+            row: 1,
+            column: 8,
+            framesIndex: [0, 0],
+            tStart: [0, 120],
+            tWidth: 40,
+            tHeight: 64,
+            isLoop: true,
+            during: 1,
+            mouseup: function() {
+                console.log(this);
+                console.log('触发mouseup事件');
+            }
+        })
+
+        var t = qcanvas.text({
+            start: s.tStart,
+            text: '我是来自group容器里spirit',
+            color: '#000',
+            pointerEvent: 'none'
+        })
+
+
+
+        group.push(t);
+        group.push(s);
+
+    })
+
+
+    qcanvas.text({
+        start: [200, 20],
+        text: 'greenRect上移一层',
+        color: "yellow",
+        drag: false,
+        mouseup: function() {
+            qcanvas.raise(greenRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 40],
+        text: 'greenRect下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.lower(greenRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 60],
+        text: 'redRect上移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            group.raise(redRect);
+        }
+    })
+    qcanvas.text({
+        start: [200, 80],
+        text: 'redRect下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            group.lower(redRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 100],
+        text: 'group下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.lower(group);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 120],
+        text: 'group上移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.raise(group);
+        }
+    })
+		</code>
+	</pre>
+    </div>
+    <script src='Qcanvas-v2.0.js'></script>
+    <script>
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 300,
+        height: 200,
+    });
+
+    var greenRect = qcanvas.rect({
+        start: [0, 0],
+        width: 200,
+        height: 200,
+        // drag:false,
+        borderColor: 'green',
+        fillColor: 'green',
+    })
+
+    var redRect = qcanvas.rect({
+        start: [100, 100],
+        width: 50,
+        height: 50,
+        borderColor: 'red',
+        fillColor: 'red',
+        // degree:30
+        // drag:false
+    })
+
+    var blueRect = qcanvas.rect({
+        start: [120, 140],
+        width: 50,
+        height: 50,
+        borderColor: 'blue',
+        fillColor: 'blue',
+        // drag:false
+    })
+
+
+
+
+
+
+
+
+
+    //group元素
+    var group = qcanvas.group();
+    console.log(group);
+
+    group.push(redRect);
+
+    group.push(blueRect);
+
+
+
+
+    qcanvas.load({
+        "person": "../img/spirit1.png",
+    }, function() {
+
+        var spiritSource = qcanvas.getSourceByName("person");
+
+        var s = qcanvas.spirit({
+            img: spiritSource,
+            row: 1,
+            column: 8,
+            framesIndex: [0, 0],
+            tStart: [0, 120],
+            tWidth: 40,
+            tHeight: 64,
+            isLoop: true,
+            during: 1,
+            mouseup: function() {
+                console.log(this);
+                console.log('触发mouseup事件');
+            }
+        })
+
+        var t = qcanvas.text({
+            start: s.tStart,
+            text: '我是来自group容器里spirit',
+            color: '#000',
+            pointerEvent: 'none'
+        })
+
+
+
+        group.push(t);
+        group.push(s);
+
+    })
+
+
+    qcanvas.text({
+        start: [200, 20],
+        text: 'greenRect上移一层',
+        color: "yellow",
+        drag: false,
+        mouseup: function() {
+            qcanvas.raise(greenRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 40],
+        text: 'greenRect下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.lower(greenRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 60],
+        text: 'redRect上移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            group.raise(redRect);
+        }
+    })
+    qcanvas.text({
+        start: [200, 80],
+        text: 'redRect下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            group.lower(redRect);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 100],
+        text: 'group下移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.lower(group);
+        }
+    })
+
+    qcanvas.text({
+        start: [200, 120],
+        text: 'group上移一层',
+        color: "yellow",
+
+        drag: false,
+        mouseup: function() {
+            qcanvas.raise(group);
+        }
+    })
+    </script>
+</body>
+
+</html>

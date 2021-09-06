@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    #tip {
+        float: right;
+        font-size: 12px;
+        margin-right: 20px;
+        overflow-y: scroll;
+        height: 200px;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <span id="tip">
+        </span>
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">var qcanvas = new Qcanvas({
+	id: 'qcanvas',
+    width: 300,
+    height: 200,
+});
+var tip = document.getElementById('tip');
+
+var rect1 = qcanvas.rect({
+    start: [20, 20],
+    borderColor: 'red',
+    fillColor: 'green',
+    drag: false,
+    mouseout: function() {
+        console.log('绿色块mouseout事件');
+        tip.innerHTML = '<font color="green">绿色块mouseout事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mouseenter: function() {
+        console.log('绿色块mouseenter事件');
+        tip.innerHTML = '<font color="green">绿色块mouseenter事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+
+
+    }
+})
+
+
+var rect = qcanvas.rect({
+    start: [0, 10],
+    borderColor: 'red',
+    fillColor: 'blue',
+    drag: false,
+    mouseup: function() {
+        console.log('蓝色块mouseup事件');
+        tip.innerHTML = '<font color="blue">蓝色块mouseup事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mousedown: function() {
+        console.log('蓝色块mousedown事件');
+        tip.innerHTML = '<font color="blue">蓝色块mousedown事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mousemove: function() {
+        console.log('蓝色块mousemove事件');
+        tip.innerHTML = '<font color="blue">蓝色块mousemove事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mouseout: function() {
+        console.log('蓝色块mouseout事件');
+        tip.innerHTML = '<font color="blue">蓝色块mouseout事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    }
+})
+		</code>
+	</pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+var qcanvas = new Qcanvas({
+    id: 'qcanvas',
+    width: 300,
+    height: 200,
+});
+var tip = document.getElementById('tip');
+
+var rect1 = qcanvas.rect({
+    start: [20, 20],
+    borderColor: 'red',
+    fillColor: 'green',
+    drag: false,
+    mouseout: function() {
+        console.log('绿色块mouseout事件');
+        tip.innerHTML = '<font color="green">绿色块mouseout事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mouseenter: function() {
+        console.log('绿色块mouseenter事件');
+        tip.innerHTML = '<font color="green">绿色块mouseenter事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+
+
+    }
+})
+
+
+var rect = qcanvas.rect({
+    start: [0, 10],
+    borderColor: 'red',
+    fillColor: 'blue',
+    drag: false,
+    mouseup: function() {
+        console.log('蓝色块mouseup事件');
+        tip.innerHTML = '<font color="blue">蓝色块mouseup事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mousedown: function() {
+        console.log('蓝色块mousedown事件');
+        tip.innerHTML = '<font color="blue">蓝色块mousedown事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mousemove: function() {
+        console.log('蓝色块mousemove事件');
+        tip.innerHTML = '<font color="blue">蓝色块mousemove事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    },
+    mouseout: function() {
+        console.log('蓝色块mouseout事件');
+        tip.innerHTML = '<font color="blue">蓝色块mouseout事件</font>' + parseInt(Math.random() * 10) + '<br>' + tip.innerHTML;
+    }
+})
+</script>
+
+</html>
