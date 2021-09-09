@@ -272,14 +272,7 @@
 <script>
 window.onload = function() {
 
-    var h1, h2, h3, h4
-    var qcanvas = new Qcanvas({
-        id: 'qcanvas',
-        width: 500,
-        height: 500,
-        mouseup: handleMouseup
-
-    });
+    var h1, h2, h3, h4;
     var handleMouseup = function() {
         var point = rect.polyPoints();
         h1.setStart([point[0].x - 5, point[0].y - 5]).setDisplay('block');
@@ -287,6 +280,13 @@ window.onload = function() {
         h3.setStart([point[2].x - 5, point[2].y - 5]).setDisplay('block')
         h4.setStart([point[3].x - 5, point[3].y - 5]).setDisplay('block')
     }
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+        mouseup: handleMouseup
+    });
+    
     var rect = qcanvas.rect({
         start: [50, 50],
         degree: 0,

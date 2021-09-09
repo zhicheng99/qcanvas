@@ -3785,9 +3785,6 @@ Qcanvas.prototype.paint = function() {
         var centerPos = this.setDegree(o);
 
         if (o.TYPE == 'layer') {
-            if (o.display == 'none') {
-                continue;
-            }
 
             this.TypeGroup[o.TYPE].call(o, o);
 
