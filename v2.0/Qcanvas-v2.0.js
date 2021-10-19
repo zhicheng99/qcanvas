@@ -2259,40 +2259,74 @@ Qrect.prototype.rect = function(options) {
 
 
             if ((temp > 0 && temp <= 90) || (temp > 180 && temp <= 270)) {
-
-                if (temp > 180) {
-                    temp = temp - 180;
+                var acuteAngle = temp;
+                if (acuteAngle > 180) {
+                    acuteAngle = acuteAngle - 180;
                 }
 
-                var E_x = center.x - Math.cos(temp * Math.PI / 180) * half_x;
-                var E_y = center.y - Math.sin(temp * Math.PI / 180) * half_x;
+                var E_x = center.x - Math.cos(acuteAngle * Math.PI / 180) * half_x;
+                var E_y = center.y - Math.sin(acuteAngle * Math.PI / 180) * half_x;
 
-                return [
-                    { x: E_x + Math.sin(temp * Math.PI / 180) * half_y, y: E_y - Math.cos(temp * Math.PI / 180) * half_y },
-                    { x: center.x - (E_x - Math.sin(temp * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(temp * Math.PI / 180) * half_y) + center.y },
-                    { x: center.x - (E_x + Math.sin(temp * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(temp * Math.PI / 180) * half_y) + center.y },
-                    { x: E_x - Math.sin(temp * Math.PI / 180) * half_y, y: E_y + Math.cos(temp * Math.PI / 180) * half_y },
-                ];
+                //0~360内对应4个点的位置
+                if(temp > 0 && temp <= 90){
+                   return [
+                        { x: E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                        { x: center.x - (E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                        { x: center.x - (E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                        { x: E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                    ]; 
+                }
+
+                if(temp > 180 && temp <= 270){
+                     return [
+                        { x: center.x - (E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                        { x: E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                        { x: E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                        { x: center.x - (E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                    ];
+                }
+
+               
 
 
 
             } else if ((temp > 90 && temp < 180) || (temp > 270 && temp < 360)) {
-
-                if (temp > 270) {
-                    temp = temp - 180;
+                var acuteAngle = temp;
+                if (acuteAngle > 270) {
+                    acuteAngle = acuteAngle - 180;
                 }
 
-                temp = 180 - temp;
-                var E_x = center.x + Math.cos(temp * Math.PI / 180) * half_x;
-                var E_y = center.y - Math.sin(temp * Math.PI / 180) * half_x;
+                acuteAngle = 180 - acuteAngle;
+                var E_x = center.x + Math.cos(acuteAngle * Math.PI / 180) * half_x;
+                var E_y = center.y - Math.sin(acuteAngle * Math.PI / 180) * half_x;
 
 
-                return [
-                    { x: E_x + Math.sin(temp * Math.PI / 180) * half_y, y: E_y + Math.cos(temp * Math.PI / 180) * half_y },
-                    { x: center.x - (E_x - Math.sin(temp * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(temp * Math.PI / 180) * half_y) + center.y },
-                    { x: center.x - (E_x + Math.sin(temp * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(temp * Math.PI / 180) * half_y) + center.y },
-                    { x: E_x - Math.sin(temp * Math.PI / 180) * half_y, y: E_y - Math.cos(temp * Math.PI / 180) * half_y },
-                ]
+                //0~360内对应4个点的位置
+                if(temp > 90 && temp < 180){
+                    return [
+                        { x: E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                        { x: center.x - (E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                        { x: center.x - (E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                        { x: E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                    ]
+                }
+
+                if(temp > 270 && temp < 360){
+                  return [
+                      { x: center.x - (E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                      { x: E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                      { x: E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                      { x: center.x - (E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                  ]  
+                }
+
+
+                // return [
+                //     { x: E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                //     { x: center.x - (E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                //     { x: center.x - (E_x + Math.sin(acuteAngle * Math.PI / 180) * half_y) + center.x, y: center.y - (E_y + Math.cos(acuteAngle * Math.PI / 180) * half_y) + center.y },
+                //     { x: E_x - Math.sin(acuteAngle * Math.PI / 180) * half_y, y: E_y - Math.cos(acuteAngle * Math.PI / 180) * half_y },
+                // ]
 
 
 
@@ -3608,6 +3642,9 @@ function Qcanvas(options) {
     this.qresize = null;
     this.qrotate = null;
 
+
+    this.resizingObj = null;  //正在被缩放的对象（暂只支持rect）
+
     //元素数组 （按z-index由小到大排序）
     this.elements = [];
 
@@ -3701,7 +3738,7 @@ Qcanvas.prototype.colorRgb = function(color) {
         "black": "#000000",
         "blue": "#0000FF",
         "fuchsia": "#FF00FF",
-        "gray": "#808080",
+        "c": "#808080",
         "green": "#008000",
         "lime": "#00FF00",
         "maroon": "#800000",
@@ -3745,7 +3782,16 @@ Qcanvas.prototype.setDegree = function(obj) {
     var centerPos = {};
 
     if (obj.degree != 0 && obj.centerPoints) {
-        centerPos = obj.centerPoints();
+        if(
+            typeof this.resizingObj !='undefined' && 
+            this.resizingObj !== null && 
+            typeof this.resizingObj.id !='undefined' && 
+            this.resizingObj.id == obj.id
+            ){
+            centerPos = obj.oldCenter;
+        }else{
+            centerPos = obj.centerPoints();
+        }
 
         this.context.translate(centerPos.x, centerPos.y);
         this.context.rotate(obj.degree * Math.PI / 180);

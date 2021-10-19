@@ -1,0 +1,2119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="../js/jquery.js"></script>
+    <link href="../style/default.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../style/style.css">
+    <script src="../js/highlight.min.js"></script>
+    <script>
+    hljs.initHighlightingOnLoad();
+    </script>
+    <script src="../js/initTemp.js"></script>
+    <style>
+    html,
+    body {
+        padding: 0;
+        margin: 0;
+    }
+
+    canvas {
+        background: #eee;
+        background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAwIDEwIEwgNDAgMTAgTSAxMCAwIEwgMTAgNDAgTSAwIDIwIEwgNDAgMjAgTSAyMCAwIEwgMjAgNDAgTSAwIDMwIEwgNDAgMzAgTSAzMCAwIEwgMzAgNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2QwZDBkMCIgb3BhY2l0eT0iMC4yIiBzdHJva2Utd2lkdGg9IjEiLz48cGF0aCBkPSJNIDQwIDAgTCAwIDAgMCA0MCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjZDBkMGQwIiBzdHJva2Utd2lkdGg9IjEiLz48L3BhdHRlcm4+PC9kZWZzPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JpZCkiLz48L3N2Zz4=");
+
+    }
+    </style>
+</head>
+
+<body>
+    <div class="qcanvas_lay" id="qcanvas_lay">
+        <canvas id="qcanvas"></canvas>
+        <!-- <canvas id="qcanvas1"></canvas>  -->
+    </div>
+    <div class="code_lay">
+        <pre><code class="js">window.onload = function() {
+
+    var h1, h2, h3, h4,rorate = null,rotateHandle;
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+        mousemove:function(e,pos){
+
+                if(rorate!==null){
+
+                    var c = rect.centerPoints();
+                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                        rect.oldDegree = rect.degree;
+                        rorate = rotateHandle.centerPoints();
+                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                        rotateHandle.setDegree(rect.degree);
+
+                    }else{
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+                        rotateHandle.setDegree(rect.degree);
+
+                    }
+                }
+            },
+        mouseup:function(e,pos){
+            rorate = null;
+
+             //重置缩放句柄位置
+            var point = rect.polyPoints();
+            h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+
+            qcanvas.resizingObj = null;
+
+            resizelayer.setDisplay('block');
+            angleLayer.setDisplay('block');
+
+        }
+
+    }); 
+    var rect = qcanvas.rect({
+        start: [200, 200],
+        width: 120,
+        height: 60,
+        degree: 30,
+        // pointerEvent: 'none',
+        mousedown: function() { 
+
+            resizelayer.setDisplay('none');
+            angleLayer.setDisplay('none');
+
+        },
+        mouseup: function() {
+            qcanvas.resizingObj = null;
+
+            //重置缩放句柄位置
+            var point = rect.polyPoints();
+            h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+            rect1.setStart(rect.start);
+
+            resizelayer.setDisplay('block');
+            angleLayer.setDisplay('block');
+        }
+    })
+
+
+    //参考位置rect
+    var rect1 = qcanvas.rect({
+        start: [200, 200],
+        width: 120,
+        height: 60,
+        borderColor: 'blue',
+        pointerEvent: 'none',
+        dashed: true,
+        display: 'none',
+        description:'矩形旋转计算时的0度参考对象'
+    })
+
+
+
+    var resizelayer = qcanvas.layer();
+    var angleLayer = qcanvas.layer();
+
+    resizelayer.push(rect1);
+
+    /**
+     * 
+     * 根据旋转起点、旋转中心和旋转角度计算旋转终点的坐标
+     * 
+     * @param {Array} startPoint  起点坐标
+     * @param {Array} centerPoint  旋转点坐标
+     * @param {number} angle 旋转角度
+     * 
+     * @return {Array} 旋转终点的坐标
+     */
+
+    function getEndPointByRotate(startPoint, centerPoint, angle) {
+        const [centerX, centerY] = centerPoint;
+        const [x1, y1] = [startPoint[0] - centerX, startPoint[1] - centerY];
+        const x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+        const y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+        return [x2 + centerX, y2 + centerY];
+    }
+
+    /**
+     * 计算旋转角度
+     * 
+     * @param {Array} centerPoint 旋转中心坐标
+     * @param {Array} startPoint 旋转起点
+     * @param {Array} endPoint 旋转终点
+     * 
+     * @return {number} 旋转角度
+     */
+
+    function getRotateAngle(centerPoint, startPoint, endPoint) {
+        const [centerX, centerY] = centerPoint;
+        const [rotateStartX, rotateStartY] = startPoint;
+        const [touchX, touchY] = endPoint;
+        // 两个向量
+        const v1 = [rotateStartX - centerX, rotateStartY - centerY];
+        const v2 = [touchX - centerX, touchY - centerY];
+        // 公式的分子
+        const numerator =  v1[0] * v2[1] - v1[1] * v2[0];
+        // 公式的分母
+        const denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
+            * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2));
+        const sin = numerator / denominator;
+        return Math.asin(sin);
+    }
+
+
+
+
+
+
+    function getMiddleCoordinates(obj) {
+
+        var start = obj.start;
+        var end = obj.end;
+
+        return [
+            (start[0] < end[0] ? start[0] : end[0]) + Math.abs(start[0] - end[0]) * 0.5,
+            (start[1] < end[1] ? start[1] : end[1]) + Math.abs(start[1] - end[1]) * 0.5,
+        ];
+
+    }
+
+
+    var createHandler = function() {
+        var point = rect.polyPoints();
+
+        h1 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[0].x - 5, point[0].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+
+                var points = [
+                    { x: 0, y: 0 },
+                    { x: rect.start[0] + rect.width, y: 0 },
+                    { x: rect.start[0] + rect.width, y: rect.start[1] + rect.height },
+                    { x: 0, y: rect.start[1] + rect.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    console.log(item)
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+
+
+
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect); 
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+
+
+
+                    var h1_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第0点-->第3点)确定中心点位置 
+                    var obj = {
+                        start: [h1_center.x, h1_center.y],
+                        end: [rectPoint[2].x, rectPoint[2].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h1_center.x, h1_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                        // -degree*(Math.PI/180)
+                        // rect.degree
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[1].x);
+                    var height = Math.abs(pos[1] - rect1Point[2].y);
+
+
+                    rect.setStart(pos).setWidth(width).setHeight(height);
+                    rect1.setStart(pos).setWidth(width).setHeight(height);
+
+
+                    //会影响第二 四控制点 所以得更新其位置
+                    //二
+                    var p = getEndPointByRotate(
+                        [pos[0] + width, pos[1]],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h2.setStart([p[0] - 5, p[1] - 5])
+                    //四
+                    var p1 = getEndPointByRotate(
+                        [pos[0], pos[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h4.setStart([p1[0] - 5, p1[1] - 5])
+
+
+
+
+
+                }
+            },
+            mouseup: function(e, pos) {
+
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0],
+                        rect.start[1]
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h1.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第0点-->第3点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[2].x, rectOldPoint[2].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                rect.setStart(pos);
+                rect1.setStart(pos);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[0].x - 5, point[0].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+
+                // delete rect.max_x;
+                // delete rect.max_y;
+
+            }
+        })
+
+        h2 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[1].x - 5, point[1].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'green',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: rect.start[0], y: -1000 },
+                    { x: qcanvas.stage.width + 1000, y: -1000 },
+                    { x: qcanvas.stage.width + 1000, y: rect.start[1] + rect.height },
+                    { x: rect.start[0], y: rect.start[1] + rect.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h2_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第2点-->第4点)确定中心点位置 
+                    var obj = {
+                        start: [h2_center.x, h2_center.y],
+                        end: [rectPoint[3].x, rectPoint[3].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h2_center.x, h2_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[0].x);
+                    var height = Math.abs(pos[1] - rect1Point[2].y);
+                    var start = [pos[0] - width, pos[1]];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第一 三控制点 所以得更新其位置
+                    //一
+                    var p = getEndPointByRotate(
+                        start,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h1.setStart([p[0] - 5, p[1] - 5])
+
+                    //三
+                    var p1 = getEndPointByRotate(
+                        [start[0] + width, start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h3.setStart([p1[0] - 5, p1[1] - 5])
+
+
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0] + rect.width,
+                        rect.start[1]
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h2.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第2点-->第4点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[3].x, rectOldPoint[3].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0] - rect.width, pos[1]];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[1].x - 5, point[1].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+        })
+
+        h3 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[2].x - 5, point[2].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'blue',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: rect.start[0], y: rect.start[1] },
+                    { x: qcanvas.stage.width + 1000, y: rect.start[1] },
+                    { x: qcanvas.stage.width + 1000, y: qcanvas.stage.height + 1000 },
+                    { x: rect.start[0], y: qcanvas.stage.height + 1000 },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h3_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第3点-->第1点)确定中心点位置 
+                    var obj = {
+                        start: [h3_center.x, h3_center.y],
+                        end: [rectPoint[0].x, rectPoint[0].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h3_center.x, h3_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[0].x);
+                    var height = Math.abs(pos[1] - rect1Point[1].y);
+                    var start = [pos[0] - width, pos[1] - height];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第二 四控制点 所以得更新其位置
+                    //二
+                    // var tmp = [start[0],start[1]];
+                    var p = getEndPointByRotate(
+                        [start[0] + width, start[1]],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h2.setStart([p[0] - 5, p[1] - 5])
+                    //四
+                    var p1 = getEndPointByRotate(
+                        [start[0], start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h4.setStart([p1[0] - 5, p1[1] - 5])
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0] + rect.width,
+                        rect.start[1] + rect.height
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h3.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第3点-->第1点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[0].x, rectOldPoint[0].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0] - rect.width, pos[1] - rect.height];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[2].x - 5, point[2].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+
+        })
+
+        h4 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[3].x - 5, point[3].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'gray',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: 0, y: rect.start[1] },
+                    { x: rect.start[0] + rect.width, y: rect.start[1] },
+                    { x: rect.start[0] + rect.width, y: qcanvas.stage.height },
+                    { x: 0, y: qcanvas.stage.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h4_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第4点-->第2点)确定中心点位置 
+                    var obj = {
+                        start: [h4_center.x, h4_center.y],
+                        end: [rectPoint[1].x, rectPoint[1].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h4_center.x, h4_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[1].x);
+                    var height = Math.abs(pos[1] - rect1Point[1].y);
+                    var start = [pos[0], pos[1] - height];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第一 三控制点 所以得更新其位置
+                    //一
+                    // var tmp = [start[0],start[1]];
+                    var p = getEndPointByRotate(
+                        start,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h1.setStart([p[0] - 5, p[1] - 5])
+
+                    var p1 = getEndPointByRotate(
+                        [start[0] + width, start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h3.setStart([p1[0] - 5, p1[1] - 5])
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0],
+                        rect.start[1] + rect.height
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h4.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第4点-->第2点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[1].x, rectOldPoint[1].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0], pos[1] - rect.height];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[3].x - 5, point[3].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+
+        })
+
+        resizelayer.push(h1, h2, h3, h4);
+    }
+    createHandler();
+
+
+    var angleHandler = function(){
+
+        var line  = qcanvas.line({
+            start:function(){
+                var tmp = rect.centerPoints();
+                return [tmp.x,tmp.y];
+            },
+            end:function(){
+
+                //0度时的位置
+                var x = rect.start[0]+rect.width *0.5;
+                var y = rect.start[1] - 50;
+
+                
+                var c = rect.centerPoints();
+
+                //按矩形的角度旋转
+                var pos = getEndPointByRotate(
+                    [x, y],
+                    [c.x,c.y],
+                    rect.degree * (Math.PI / 180)
+                )
+
+                return pos;
+            },
+            width:1,
+            like:'--',
+            pointerEvent: 'none',
+        })
+
+        rotateHandle = qcanvas.rect({
+            start:function(){
+                var tmp = line.end();
+
+                return [tmp[0]-5,tmp[1]-5];
+
+            },
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'gray',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            drag:false,
+            mousedown:function(e,pos){
+                rorate = this.centerPoints();
+                rect.oldDegree = rect.degree;
+                resizelayer.setDisplay('none');
+            },
+            mousemove:function(e,pos){
+
+
+                if(rorate!==null){
+
+                    var c = rect.centerPoints();
+                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                        rect.oldDegree = rect.degree;
+                        rorate = rotateHandle.centerPoints();
+                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                        rotateHandle.setDegree(rect.degree);
+
+                    }else{
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+                        rotateHandle.setDegree(rect.degree);
+
+                    }
+
+                }
+            },
+            mouseup:function(e,pos){
+                rorate = null;
+
+                //重置缩放句柄位置
+                var point = rect.polyPoints();
+                h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+                h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+                h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+                h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+                resizelayer.setDisplay('block');
+
+            }
+
+        })
+
+        angleLayer.push(line,rotateHandle);
+
+    }
+    angleHandler()
+}
+    
+        </code>
+    </pre>
+    </div>
+</body>
+<script src='Qcanvas-v2.0.js'></script>
+<script>
+window.onload = function() {
+
+    var h1, h2, h3, h4,rorate = null,rotateHandle;
+    var qcanvas = new Qcanvas({
+        id: 'qcanvas',
+        width: 500,
+        height: 500,
+        mousemove:function(e,pos){
+
+                if(rorate!==null){
+
+                    var c = rect.centerPoints();
+                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                        rect.oldDegree = rect.degree;
+                        rorate = rotateHandle.centerPoints();
+                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                        rotateHandle.setDegree(rect.degree);
+
+                    }else{
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+                        rotateHandle.setDegree(rect.degree);
+
+                    }
+                }
+            },
+        mouseup:function(e,pos){
+            rorate = null;
+
+             //重置缩放句柄位置
+            var point = rect.polyPoints();
+            h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+
+            qcanvas.resizingObj = null;
+
+            resizelayer.setDisplay('block');
+            angleLayer.setDisplay('block');
+
+        }
+
+    }); 
+    var rect = qcanvas.rect({
+        start: [200, 200],
+        width: 120,
+        height: 60,
+        degree: 30,
+        // pointerEvent: 'none',
+        mousedown: function() { 
+
+            resizelayer.setDisplay('none');
+            angleLayer.setDisplay('none');
+
+        },
+        mouseup: function() {
+            qcanvas.resizingObj = null;
+
+            //重置缩放句柄位置
+            var point = rect.polyPoints();
+            h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+            rect1.setStart(rect.start);
+
+            resizelayer.setDisplay('block');
+            angleLayer.setDisplay('block');
+        }
+    })
+
+
+    //参考位置rect
+    var rect1 = qcanvas.rect({
+        start: [200, 200],
+        width: 120,
+        height: 60,
+        borderColor: 'blue',
+        pointerEvent: 'none',
+        dashed: true,
+        display: 'none',
+        description:'矩形旋转计算时的0度参考对象'
+    })
+
+
+
+    var resizelayer = qcanvas.layer();
+    var angleLayer = qcanvas.layer();
+
+    resizelayer.push(rect1);
+
+    /**
+     * 
+     * 根据旋转起点、旋转中心和旋转角度计算旋转终点的坐标
+     * 
+     * @param {Array} startPoint  起点坐标
+     * @param {Array} centerPoint  旋转点坐标
+     * @param {number} angle 旋转角度
+     * 
+     * @return {Array} 旋转终点的坐标
+     */
+
+    function getEndPointByRotate(startPoint, centerPoint, angle) {
+        const [centerX, centerY] = centerPoint;
+        const [x1, y1] = [startPoint[0] - centerX, startPoint[1] - centerY];
+        const x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+        const y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+        return [x2 + centerX, y2 + centerY];
+    }
+
+    /**
+     * 计算旋转角度
+     * 
+     * @param {Array} centerPoint 旋转中心坐标
+     * @param {Array} startPoint 旋转起点
+     * @param {Array} endPoint 旋转终点
+     * 
+     * @return {number} 旋转角度
+     */
+
+    function getRotateAngle(centerPoint, startPoint, endPoint) {
+        const [centerX, centerY] = centerPoint;
+        const [rotateStartX, rotateStartY] = startPoint;
+        const [touchX, touchY] = endPoint;
+        // 两个向量
+        const v1 = [rotateStartX - centerX, rotateStartY - centerY];
+        const v2 = [touchX - centerX, touchY - centerY];
+        // 公式的分子
+        const numerator =  v1[0] * v2[1] - v1[1] * v2[0];
+        // 公式的分母
+        const denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
+            * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2));
+        const sin = numerator / denominator;
+        return Math.asin(sin);
+    }
+
+
+
+
+
+
+    function getMiddleCoordinates(obj) {
+
+        var start = obj.start;
+        var end = obj.end;
+
+        return [
+            (start[0] < end[0] ? start[0] : end[0]) + Math.abs(start[0] - end[0]) * 0.5,
+            (start[1] < end[1] ? start[1] : end[1]) + Math.abs(start[1] - end[1]) * 0.5,
+        ];
+
+    }
+
+
+    var createHandler = function() {
+        var point = rect.polyPoints();
+
+        h1 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[0].x - 5, point[0].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'red',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+
+                var points = [
+                    { x: 0, y: 0 },
+                    { x: rect.start[0] + rect.width, y: 0 },
+                    { x: rect.start[0] + rect.width, y: rect.start[1] + rect.height },
+                    { x: 0, y: rect.start[1] + rect.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    console.log(item)
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+
+
+
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect); 
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+
+
+
+                    var h1_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第0点-->第3点)确定中心点位置 
+                    var obj = {
+                        start: [h1_center.x, h1_center.y],
+                        end: [rectPoint[2].x, rectPoint[2].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h1_center.x, h1_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                        // -degree*(Math.PI/180)
+                        // rect.degree
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[1].x);
+                    var height = Math.abs(pos[1] - rect1Point[2].y);
+
+
+                    rect.setStart(pos).setWidth(width).setHeight(height);
+                    rect1.setStart(pos).setWidth(width).setHeight(height);
+
+
+                    //会影响第二 四控制点 所以得更新其位置
+                    //二
+                    var p = getEndPointByRotate(
+                        [pos[0] + width, pos[1]],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h2.setStart([p[0] - 5, p[1] - 5])
+                    //四
+                    var p1 = getEndPointByRotate(
+                        [pos[0], pos[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h4.setStart([p1[0] - 5, p1[1] - 5])
+
+
+
+
+
+                }
+            },
+            mouseup: function(e, pos) {
+
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0],
+                        rect.start[1]
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h1.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第0点-->第3点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[2].x, rectOldPoint[2].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                rect.setStart(pos);
+                rect1.setStart(pos);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[0].x - 5, point[0].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+
+                // delete rect.max_x;
+                // delete rect.max_y;
+
+            }
+        })
+
+        h2 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[1].x - 5, point[1].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'green',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: rect.start[0], y: -1000 },
+                    { x: qcanvas.stage.width + 1000, y: -1000 },
+                    { x: qcanvas.stage.width + 1000, y: rect.start[1] + rect.height },
+                    { x: rect.start[0], y: rect.start[1] + rect.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h2_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第2点-->第4点)确定中心点位置 
+                    var obj = {
+                        start: [h2_center.x, h2_center.y],
+                        end: [rectPoint[3].x, rectPoint[3].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h2_center.x, h2_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[0].x);
+                    var height = Math.abs(pos[1] - rect1Point[2].y);
+                    var start = [pos[0] - width, pos[1]];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第一 三控制点 所以得更新其位置
+                    //一
+                    var p = getEndPointByRotate(
+                        start,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h1.setStart([p[0] - 5, p[1] - 5])
+
+                    //三
+                    var p1 = getEndPointByRotate(
+                        [start[0] + width, start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h3.setStart([p1[0] - 5, p1[1] - 5])
+
+
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0] + rect.width,
+                        rect.start[1]
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h2.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第2点-->第4点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[3].x, rectOldPoint[3].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0] - rect.width, pos[1]];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[1].x - 5, point[1].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+        })
+
+        h3 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[2].x - 5, point[2].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'blue',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+
+
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: rect.start[0], y: rect.start[1] },
+                    { x: qcanvas.stage.width + 1000, y: rect.start[1] },
+                    { x: qcanvas.stage.width + 1000, y: qcanvas.stage.height + 1000 },
+                    { x: rect.start[0], y: qcanvas.stage.height + 1000 },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h3_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第3点-->第1点)确定中心点位置 
+                    var obj = {
+                        start: [h3_center.x, h3_center.y],
+                        end: [rectPoint[0].x, rectPoint[0].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h3_center.x, h3_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[0].x);
+                    var height = Math.abs(pos[1] - rect1Point[1].y);
+                    var start = [pos[0] - width, pos[1] - height];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第二 四控制点 所以得更新其位置
+                    //二
+                    // var tmp = [start[0],start[1]];
+                    var p = getEndPointByRotate(
+                        [start[0] + width, start[1]],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h2.setStart([p[0] - 5, p[1] - 5])
+                    //四
+                    var p1 = getEndPointByRotate(
+                        [start[0], start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h4.setStart([p1[0] - 5, p1[1] - 5])
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0] + rect.width,
+                        rect.start[1] + rect.height
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h3.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第3点-->第1点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[0].x, rectOldPoint[0].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0] - rect.width, pos[1] - rect.height];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[2].x - 5, point[2].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+
+        })
+
+        h4 = qcanvas.rect({
+            start: (function() {
+                var point = rect.polyPoints();
+                return [point[3].x - 5, point[3].y - 5]
+            })(),
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'gray',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            mousedown: function() {
+                resizelayer.raiseToTop(this);
+                angleLayer.setDisplay('none');
+
+
+                //把原矩形的四个点 中心点 宽 高都记下来
+                rect.oldPoint = rect.polyPoints();
+                rect.oldCenter = rect.centerPoints();
+
+                rect.rect1Point = rect1.polyPoints();
+
+                //计算出句柄可以拖动的范围 如果句柄超出了范围（通过qcanvas.rayCasting 射线法判断点是否在多边形内部） 那么矩形大小及位置就不用响应了
+                //第一步 以0度角的矩形rect确定四个点的位置 
+                //第二步 计算出旋转角度后的四个点的新坐标 组成一个封闭的坐标序列
+                //+1000扩大范围
+                var points = [
+                    { x: 0, y: rect.start[1] },
+                    { x: rect.start[0] + rect.width, y: rect.start[1] },
+                    { x: rect.start[0] + rect.width, y: qcanvas.stage.height },
+                    { x: 0, y: qcanvas.stage.height },
+                ]
+
+                var tmp = [];
+                points.forEach(function(item) {
+                    //旋转角度后的坐标
+                    var pos = getEndPointByRotate(
+                        [item.x, item.y],
+                        [rect.oldCenter.x, rect.oldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    tmp.push({ x: pos[0], y: pos[1] });
+                })
+
+                console.log(tmp);
+
+                rect.handleRange = tmp;
+
+
+                //记录正在缩放的对象
+                qcanvas.resizingObj = rect;
+                // console.log(rect);  
+            },
+            mousemove: function(e, pos) {
+                if (qcanvas.dragAim !== null) {
+
+                    //判断拖动句柄是否在handleRange内 
+                    if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+                        return false;
+                    }
+
+                    var h4_center = this.centerPoints();
+                    // var rectPoint = rect.polyPoints(); 
+                    var rectPoint = rect.oldPoint;
+                    // var rect1Point = rect1.polyPoints();  //以0度角的矩形做基本计算
+                    var rect1Point = rect.rect1Point;
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    //通过对角线(第4点-->第2点)确定中心点位置 
+                    var obj = {
+                        start: [h4_center.x, h4_center.y],
+                        end: [rectPoint[1].x, rectPoint[1].y]
+                    }
+
+                    // var c = getMiddleCoordinates(obj);
+
+
+                    //基于原中心点旋转
+                    var pos = getEndPointByRotate(
+                        [h4_center.x, h4_center.y],
+                        // c,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        -rect.degree * (Math.PI / 180)
+                    )
+                    // console.log(pos);
+
+                    //计算宽 高（通过rect1的位置）
+                    var width = Math.abs(pos[0] - rect1Point[1].x);
+                    var height = Math.abs(pos[1] - rect1Point[1].y);
+                    var start = [pos[0], pos[1] - height];
+
+
+                    rect.setStart(start).setWidth(width).setHeight(height);
+                    rect1.setStart(start).setWidth(width).setHeight(height);
+
+
+                    //会影响第一 三控制点 所以得更新其位置
+                    //一
+                    // var tmp = [start[0],start[1]];
+                    var p = getEndPointByRotate(
+                        start,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h1.setStart([p[0] - 5, p[1] - 5])
+
+                    var p1 = getEndPointByRotate(
+                        [start[0] + width, start[1] + height],
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+                    h3.setStart([p1[0] - 5, p1[1] - 5])
+
+                }
+            },
+            mouseup: function(e, pos) {
+                angleLayer.setDisplay('block');
+
+
+
+                //判断鼠标弹起时 坐标点是否在handleRange区域内
+                //如果在区域内 那么就用控制点的中心位置作为 对角线起点（为了确定中心点）
+                //如果在区域外 则用rect的点作来对角线起点（为了确定中心点）
+                if (qcanvas.event.rayCasting(pos, rect.handleRange) == 'out') {
+
+                    var rectOldCenter = rect.oldCenter;
+
+                    var tmp = [
+                        rect.start[0],
+                        rect.start[1] + rect.height
+                    ]
+
+                    //基于原中心点旋转
+                    var p = getEndPointByRotate(
+                        tmp,
+                        [rectOldCenter.x, rectOldCenter.y],
+                        rect.degree * (Math.PI / 180)
+                    )
+
+                    var end_center = {
+                        x: p[0],
+                        y: p[1]
+                    }
+
+
+
+                } else {
+                    var end_center = h4.centerPoints();
+                }
+
+                var rectOldPoint = rect.oldPoint;
+
+                //通过对角线(第4点-->第2点)确定中心点位置 
+                var obj = {
+                    start: [end_center.x, end_center.y],
+                    end: [rectOldPoint[1].x, rectOldPoint[1].y]
+                }
+
+
+                //基于当前中心点旋转
+                var c = getMiddleCoordinates(obj);
+
+                var pos = getEndPointByRotate(
+                    [end_center.x, end_center.y],
+                    c,
+                    -rect.degree * (Math.PI / 180)
+                )
+
+                var start = [pos[0], pos[1] - rect.height];
+                rect.setStart(start);
+                rect1.setStart(start);
+
+                //重置当前控制点位置
+                var point = rect.polyPoints();
+                this.setStart([point[3].x - 5, point[3].y - 5]);
+
+                qcanvas.resizingObj = null;
+
+            }
+
+        })
+
+        resizelayer.push(h1, h2, h3, h4);
+    }
+    createHandler();
+
+
+    var angleHandler = function(){
+
+        var line  = qcanvas.line({
+            start:function(){
+                var tmp = rect.centerPoints();
+                return [tmp.x,tmp.y];
+            },
+            end:function(){
+
+                //0度时的位置
+                var x = rect.start[0]+rect.width *0.5;
+                var y = rect.start[1] - 50;
+
+                
+                var c = rect.centerPoints();
+
+                //按矩形的角度旋转
+                var pos = getEndPointByRotate(
+                    [x, y],
+                    [c.x,c.y],
+                    rect.degree * (Math.PI / 180)
+                )
+
+                return pos;
+            },
+            width:1,
+            like:'--',
+            pointerEvent: 'none',
+        })
+
+        rotateHandle = qcanvas.rect({
+            start:function(){
+                var tmp = line.end();
+
+                return [tmp[0]-5,tmp[1]-5];
+
+            },
+            degree: rect.degree,
+            width: 10,
+            height: 10,
+            borderColor: 'gray',
+            fillColor: '',
+            disCenter: 0, //距大矩形中心点距离 
+            dragRange: [],
+            drag:false,
+            mousedown:function(e,pos){
+                rorate = this.centerPoints();
+                rect.oldDegree = rect.degree;
+                resizelayer.setDisplay('none');
+            },
+            mousemove:function(e,pos){
+
+
+                if(rorate!==null){
+
+                    var c = rect.centerPoints();
+                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                        rect.oldDegree = rect.degree;
+                        rorate = rotateHandle.centerPoints();
+                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                        rotateHandle.setDegree(rect.degree);
+
+                    }else{
+
+                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+                        rotateHandle.setDegree(rect.degree);
+
+                    }
+
+                }
+            },
+            mouseup:function(e,pos){
+                rorate = null;
+
+                //重置缩放句柄位置
+                var point = rect.polyPoints();
+                h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+                h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+                h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+                h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+                resizelayer.setDisplay('block');
+
+            }
+
+        })
+
+        angleLayer.push(line,rotateHandle);
+
+    }
+    angleHandler()
+}
+</script>
+
+</html>
