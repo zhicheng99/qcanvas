@@ -4,6 +4,10 @@
 http://lizhicheng99.gitee.io/qcanvas-api-1.0 
 https://zhicheng99.github.io/Qcanvas-API/ 
 
+> 示例展示
+https://zhicheng99.github.io/qcanvas/
+
+
 框架引入方法
 > ##### 方法一
 > npm安装
