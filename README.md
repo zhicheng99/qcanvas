@@ -68,13 +68,13 @@ layer中的元素层级
 三次曲线控制点计算
 ![](img/2.0/bezierCurve——handler.jpg)
 
-折线连接元素（模向）
+折线连接元素（横向）
 ![](img/2.0/broken_horizontal.jpg)
 
 折线连接元素（竖向）
 ![](img/2.0/broken_vertical.jpg)
 
-折线连接元素（模向）拖动
+折线连接元素（横向）拖动
 ![](img/2.0/broken_horizontal——drag.jpg)
 
 折线连接元素（竖向）拖动
