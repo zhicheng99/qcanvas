@@ -99,7 +99,7 @@ var rect = qcanvas.rect({
 })
 
 
-var rect = qcanvas.rect({
+var rect1 = qcanvas.rect({
     start: [60, 60],
     borderColor: 'red',
     // display:'none',
@@ -110,6 +110,26 @@ var rect = qcanvas.rect({
     rotate: true,
     mouseup: function() {
         console.log('mouseup')
+    }
+})
+var layer = qcanvas.layer();
+layer.push(rect);
+
+
+var layer1 = qcanvas.layer();
+layer1.push(rect1);
+
+
+
+console.log(qcanvas.elements)
+qcanvas.text({
+    text:'删除',
+    start:[50,50],
+    mouseup:function(){
+
+        layer.removeEleById(rect.id)
+        console.log(qcanvas.elements)
+        
     }
 })
 </script>

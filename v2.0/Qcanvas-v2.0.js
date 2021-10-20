@@ -3495,6 +3495,7 @@ Qlayer.prototype.layer = function() {
         context: context,
         dpr: dpr,
         display: 'block',
+        qcanvas:_this,  //主类的实例
 
         //影子画布
         shadowCanvas: _this.shadowCanvas,
@@ -3518,8 +3519,23 @@ Qlayer.prototype.layer = function() {
                 }
 
                 if (this.isObj(t[i])) {
+                    //第一步从主elements中把元素对象删除
                     _this.removeEle.call(_this, t[i]);
+                    //第二步把元素加入到layer实例的elements中
                     this.elements.push(t[i]);
+
+                    //这里有一个问题 如果加入layer的元素是带缩放组件或旋转角度组件的rect 
+                    //那么第一步时 会把相应的resizeLayer层和rotateLayer层都给从主elements上删掉了
+                    //所以需要把这两个layer恢复到主elements中
+                    if(t[i].TYPE == 'rect'){
+
+                        t[i].resizeLayer && _this.elements.push(t[i].resizeLayer);
+                        t[i].rotateLayer && _this.elements.push(t[i].rotateLayer);
+
+                    }
+
+
+
 
                     if ((t[i].TYPE == 'line' || t[i].TYPE == 'bezierCurve' || t[i].TYPE == 'quadraticCurve') && typeof t[i].withTextId != 'undefined') {
                         //如果线段上带有文本 也需要把文本加入到该layer里 
@@ -4377,13 +4393,33 @@ Qcanvas.prototype.setDegree = function(obj) {
     var centerPos = {};
 
     if (obj.degree != 0 && obj.centerPoints) {
-        if(
-            typeof this.resizingObj !='undefined' && 
-            this.resizingObj !== null && 
-            typeof this.resizingObj.id !='undefined' && 
-            this.resizingObj.id == obj.id
-            ){
-            centerPos = obj.oldCenter;
+
+        if(obj.TYPE == 'rect'){
+            //为了处理rect的缩放功能
+            if(this.TYPE == 'canvas'){ //如果是主画布调用
+                if(
+                    typeof this.resizingObj !='undefined' && 
+                    this.resizingObj !== null && 
+                    typeof this.resizingObj.id !='undefined' && 
+                    this.resizingObj.id == obj.id
+                    ){
+                    centerPos = obj.oldCenter;
+                }else{
+                    centerPos = obj.centerPoints();
+                }
+            }else if(this.TYPE == 'layer'){ 
+                //如果是某一个layer层在调用 需要用.qcanvas取得主画布实例 进而取得正在缩放的对象resizingObj
+                if(
+                    typeof this.qcanvas.resizingObj !='undefined' && 
+                    this.qcanvas.resizingObj !== null && 
+                    typeof this.qcanvas.resizingObj.id !='undefined' && 
+                    this.qcanvas.resizingObj.id == obj.id
+                    ){
+                    centerPos = obj.oldCenter;
+                }else{
+                    centerPos = obj.centerPoints();
+                }
+            }
         }else{
             centerPos = obj.centerPoints();
         }
@@ -4473,9 +4509,19 @@ Qcanvas.prototype.getEleById = function(id) {
 //从elements数组中删除 
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
 Qcanvas.prototype.removeEle = function(obj) {
+    var context = this.TYPE == 'canvas'?this:(this.TYPE == 'layer'?this.qcanvas:null);
     var l = this.elements.length;
     for (var i = 0; i < l; i++) {
         if (this.elements[i].id == obj.id) {
+
+            //如果是带缩放组件的rect 先删掉rect.resizeLayer
+            obj.TYPE == 'rect' &&  context !== null  && obj.resizeLayer && context.removeEle(obj.resizeLayer);
+            
+            
+            //如果是带旋转组件的rect 先删掉rect.rotateLayer
+            obj.TYPE == 'rect' && context !== null && obj.rotateLayer && context.removeEle(obj.rotateLayer);
+            
+
             this.elements.splice(i, 1);
             break;
         }
@@ -4486,15 +4532,22 @@ Qcanvas.prototype.removeEle = function(obj) {
 //从elements数组中删除 
 //该方法使用时要注意 如果其它元素的某一属性与该元素有关联 为了不让它出现在画布中最好用setDisplay()方法
 Qcanvas.prototype.removeEleById = function(id) {
+    var context = this.TYPE == 'canvas'?this:(this.TYPE == 'layer'?this.qcanvas:null);
     var l = this.elements.length;
     for (var i = 0; i < l; i++) {
         if (this.elements[i].id == id) {
+
+            //如果是带缩放组件的rect 先删掉rect.resizeLayer
+            this.elements[i].TYPE == 'rect' && context !== null && this.elements[i].resizeLayer && context.removeEle(this.elements[i].resizeLayer);
+            
+            
+            //如果是带旋转组件的rect 先删掉rect.rotateLayer
+            this.elements[i].TYPE == 'rect' && context !== null && this.elements[i].rotateLayer && context.removeEle(this.elements[i].rotateLayer);
+
             this.elements.splice(i, 1);
             break;
         }
     }
-
-
 }
 
 
