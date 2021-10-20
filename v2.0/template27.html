@@ -29,6 +29,7 @@
 
 <body>
     <div class="qcanvas_lay" id="qcanvas_lay">
+        rect缩放、旋转算法 注：该功能主框架已集成 rect配置resize:true, rotate:true即可<br>
         <canvas id="qcanvas"></canvas>
         <!-- <canvas id="qcanvas1"></canvas>  -->
     </div>
@@ -42,28 +43,28 @@
         height: 500,
         mousemove:function(e,pos){
 
-                if(rorate!==null){
+                // if(rorate!==null){
 
-                    var c = rect.centerPoints();
-                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                //     var c = rect.centerPoints();
+                //     var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
-                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
-                        rect.oldDegree = rect.degree;
-                        rorate = rotateHandle.centerPoints();
-                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                //     if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                //         rect.oldDegree = rect.degree;
+                //         rorate = rotateHandle.centerPoints();
+                //         var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-                        rotateHandle.setDegree(rect.degree);
+                //         rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                //         rotateHandle.setDegree(rect.degree);
 
-                    }else{
+                //     }else{
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                //         rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
 
-                        rotateHandle.setDegree(rect.degree);
+                //         rotateHandle.setDegree(rect.degree);
 
-                    }
-                }
+                //     }
+                // }
             },
         mouseup:function(e,pos){
             rorate = null;
@@ -145,10 +146,15 @@
      */
 
     function getEndPointByRotate(startPoint, centerPoint, angle) {
-        const [centerX, centerY] = centerPoint;
-        const [x1, y1] = [startPoint[0] - centerX, startPoint[1] - centerY];
-        const x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
-        const y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+        var centerX = centerPoint[0];
+        var centerY = centerPoint[1];
+
+        var x1 = startPoint[0] - centerX;
+        var y1 = startPoint[1] - centerY;
+
+
+        var x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+        var y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
         return [x2 + centerX, y2 + centerY];
     }
 
@@ -162,19 +168,25 @@
      * @return {number} 旋转角度
      */
 
-    function getRotateAngle(centerPoint, startPoint, endPoint) {
-        const [centerX, centerY] = centerPoint;
-        const [rotateStartX, rotateStartY] = startPoint;
-        const [touchX, touchY] = endPoint;
+    function getRotateAngle(centerPoint, startPoint, endPoint) { 
+
+        var centerX = centerPoint[0];
+        var centerY = centerPoint[1];
+        var rotateStartX = startPoint[0];
+        var rotateStartY = startPoint[1];
+        var touchX = endPoint[0];
+        var touchY = endPoint[1];
+
         // 两个向量
-        const v1 = [rotateStartX - centerX, rotateStartY - centerY];
-        const v2 = [touchX - centerX, touchY - centerY];
+        var v1 = [rotateStartX - centerX, rotateStartY - centerY];
+        var v2 = [touchX - centerX, touchY - centerY];
+
         // 公式的分子
-        const numerator =  v1[0] * v2[1] - v1[1] * v2[0];
+        var numerator =  v1[0] * v2[1] - v1[1] * v2[0];
         // 公式的分母
-        const denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
+        var denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
             * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2));
-        const sin = numerator / denominator;
+        var sin = numerator / denominator;
         return Math.asin(sin);
     }
 
@@ -1021,47 +1033,104 @@
                 rorate = this.centerPoints();
                 rect.oldDegree = rect.degree;
                 resizelayer.setDisplay('none');
-            },
-            mousemove:function(e,pos){
 
 
-                if(rorate!==null){
+                //在句柄上按下鼠标后 创建一个临时的rect（透明）的 和画布一样大小 
+                //因为操作的动作要远远快于渲染的速度 那么鼠标就会划出该句柄 所以直接在这个rect执行的mousemove mouseup
 
-                    var c = rect.centerPoints();
-                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                var tmp = qcanvas.rect({
+                    start:[-10,-10],
+                    width:qcanvas.stage.width+20,
+                    height:qcanvas.stage.height+20, 
+                    drag:false,
+                    opacity:0,
+                    mousemove:function(e,pos){
 
-                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
-                        rect.oldDegree = rect.degree;
-                        rorate = rotateHandle.centerPoints();
-                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                        if(rorate!==null){
+
+                            var c = rect.centerPoints();
+                            var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                            if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                                rect.oldDegree = rect.degree;
+                                rorate = rotateHandle.centerPoints();
+                                var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-                        rotateHandle.setDegree(rect.degree);
+                                rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                                rotateHandle.setDegree(rect.degree);
 
-                    }else{
+                            }else{
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                                rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
 
-                        rotateHandle.setDegree(rect.degree);
+                                rotateHandle.setDegree(rect.degree);
+
+                            }
+
+                        }
+                    },
+                    mouseup:function(e,pos){
+                        rorate = null;
+
+                        //重置缩放句柄位置
+                        var point = rect.polyPoints();
+                        h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+                        h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+                        h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+                        h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+                        resizelayer.setDisplay('block');
+
+                        qcanvas.removeEle(tmp);
 
                     }
 
-                }
+                })
+
+
             },
-            mouseup:function(e,pos){
-                rorate = null;
+            // mousemove:function(e,pos){
 
-                //重置缩放句柄位置
-                var point = rect.polyPoints();
-                h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
-                h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
-                h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
-                h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
 
-                resizelayer.setDisplay('block');
+            //     if(rorate!==null){
 
-            }
+            //         var c = rect.centerPoints();
+            //         var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+            //         if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+            //             rect.oldDegree = rect.degree;
+            //             rorate = rotateHandle.centerPoints();
+            //             var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+            //             rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+            //             rotateHandle.setDegree(rect.degree);
+
+            //         }else{
+
+            //             rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+            //             rotateHandle.setDegree(rect.degree);
+
+            //         }
+
+            //     }
+            // },
+            // mouseup:function(e,pos){
+            //     rorate = null;
+
+            //     //重置缩放句柄位置
+            //     var point = rect.polyPoints();
+            //     h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            //     h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            //     h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            //     h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+            //     resizelayer.setDisplay('block');
+
+            // }
 
         })
 
@@ -1086,28 +1155,28 @@ window.onload = function() {
         height: 500,
         mousemove:function(e,pos){
 
-                if(rorate!==null){
+                // if(rorate!==null){
 
-                    var c = rect.centerPoints();
-                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                //     var c = rect.centerPoints();
+                //     var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
-                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
-                        rect.oldDegree = rect.degree;
-                        rorate = rotateHandle.centerPoints();
-                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                //     if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                //         rect.oldDegree = rect.degree;
+                //         rorate = rotateHandle.centerPoints();
+                //         var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-                        rotateHandle.setDegree(rect.degree);
+                //         rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                //         rotateHandle.setDegree(rect.degree);
 
-                    }else{
+                //     }else{
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                //         rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
 
-                        rotateHandle.setDegree(rect.degree);
+                //         rotateHandle.setDegree(rect.degree);
 
-                    }
-                }
+                //     }
+                // }
             },
         mouseup:function(e,pos){
             rorate = null;
@@ -1189,10 +1258,15 @@ window.onload = function() {
      */
 
     function getEndPointByRotate(startPoint, centerPoint, angle) {
-        const [centerX, centerY] = centerPoint;
-        const [x1, y1] = [startPoint[0] - centerX, startPoint[1] - centerY];
-        const x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
-        const y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
+        var centerX = centerPoint[0];
+        var centerY = centerPoint[1];
+
+        var x1 = startPoint[0] - centerX;
+        var y1 = startPoint[1] - centerY;
+
+
+        var x2 = x1 * Math.cos(angle) - y1 * Math.sin(angle);
+        var y2 = x1 * Math.sin(angle) + y1 * Math.cos(angle);
         return [x2 + centerX, y2 + centerY];
     }
 
@@ -1206,19 +1280,25 @@ window.onload = function() {
      * @return {number} 旋转角度
      */
 
-    function getRotateAngle(centerPoint, startPoint, endPoint) {
-        const [centerX, centerY] = centerPoint;
-        const [rotateStartX, rotateStartY] = startPoint;
-        const [touchX, touchY] = endPoint;
+    function getRotateAngle(centerPoint, startPoint, endPoint) { 
+
+        var centerX = centerPoint[0];
+        var centerY = centerPoint[1];
+        var rotateStartX = startPoint[0];
+        var rotateStartY = startPoint[1];
+        var touchX = endPoint[0];
+        var touchY = endPoint[1];
+
         // 两个向量
-        const v1 = [rotateStartX - centerX, rotateStartY - centerY];
-        const v2 = [touchX - centerX, touchY - centerY];
+        var v1 = [rotateStartX - centerX, rotateStartY - centerY];
+        var v2 = [touchX - centerX, touchY - centerY];
+
         // 公式的分子
-        const numerator =  v1[0] * v2[1] - v1[1] * v2[0];
+        var numerator =  v1[0] * v2[1] - v1[1] * v2[0];
         // 公式的分母
-        const denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
+        var denominator = Math.sqrt(Math.pow(v1[0], 2) + Math.pow(v1[1], 2)) 
             * Math.sqrt(Math.pow(v2[0], 2) + Math.pow(v2[1], 2));
-        const sin = numerator / denominator;
+        var sin = numerator / denominator;
         return Math.asin(sin);
     }
 
@@ -2065,47 +2145,104 @@ window.onload = function() {
                 rorate = this.centerPoints();
                 rect.oldDegree = rect.degree;
                 resizelayer.setDisplay('none');
-            },
-            mousemove:function(e,pos){
 
 
-                if(rorate!==null){
+                //在句柄上按下鼠标后 创建一个临时的rect（透明）的 和画布一样大小 
+                //因为操作的动作要远远快于渲染的速度 那么鼠标就会划出该句柄 所以直接在这个rect执行的mousemove mouseup
 
-                    var c = rect.centerPoints();
-                    var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+                var tmp = qcanvas.rect({
+                    start:[-10,-10],
+                    width:qcanvas.stage.width+20,
+                    height:qcanvas.stage.height+20, 
+                    drag:false,
+                    opacity:0,
+                    mousemove:function(e,pos){
 
-                    if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
-                        rect.oldDegree = rect.degree;
-                        rorate = rotateHandle.centerPoints();
-                        var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                        if(rorate!==null){
+
+                            var c = rect.centerPoints();
+                            var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+                            if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+                                rect.oldDegree = rect.degree;
+                                rorate = rotateHandle.centerPoints();
+                                var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
 
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-                        rotateHandle.setDegree(rect.degree);
+                                rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                                rotateHandle.setDegree(rect.degree);
 
-                    }else{
+                            }else{
 
-                        rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                                rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
 
-                        rotateHandle.setDegree(rect.degree);
+                                rotateHandle.setDegree(rect.degree);
+
+                            }
+
+                        }
+                    },
+                    mouseup:function(e,pos){
+                        rorate = null;
+
+                        //重置缩放句柄位置
+                        var point = rect.polyPoints();
+                        h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+                        h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+                        h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+                        h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+                        resizelayer.setDisplay('block');
+
+                        qcanvas.removeEle(tmp);
 
                     }
 
-                }
+                })
+
+
             },
-            mouseup:function(e,pos){
-                rorate = null;
+            // mousemove:function(e,pos){
 
-                //重置缩放句柄位置
-                var point = rect.polyPoints();
-                h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
-                h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
-                h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
-                h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
 
-                resizelayer.setDisplay('block');
+            //     if(rorate!==null){
 
-            }
+            //         var c = rect.centerPoints();
+            //         var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+            //         if(parseInt(angle* 180 / Math.PI)== 89 || parseInt(angle* 180 / Math.PI)== -89){
+            //             rect.oldDegree = rect.degree;
+            //             rorate = rotateHandle.centerPoints();
+            //             var angle = getRotateAngle([c.x,c.y], [rorate.x,rorate.y], [pos.x,pos.y])
+
+
+            //             rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+            //             rotateHandle.setDegree(rect.degree);
+
+            //         }else{
+
+            //             rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+
+            //             rotateHandle.setDegree(rect.degree);
+
+            //         }
+
+            //     }
+            // },
+            // mouseup:function(e,pos){
+            //     rorate = null;
+
+            //     //重置缩放句柄位置
+            //     var point = rect.polyPoints();
+            //     h1.setDegree(rect.degree).setStart([point[0].x - 5, point[0].y - 5]);
+            //     h2.setDegree(rect.degree).setStart([point[1].x - 5, point[1].y - 5]);
+            //     h3.setDegree(rect.degree).setStart([point[2].x - 5, point[2].y - 5]);
+            //     h4.setDegree(rect.degree).setStart([point[3].x - 5, point[3].y - 5]);
+
+            //     resizelayer.setDisplay('block');
+
+            // }
 
         })
 

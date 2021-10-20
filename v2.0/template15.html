@@ -80,21 +80,7 @@ var qcanvas = new Qcanvas({
     id: 'qcanvas',
     width: 500,
     height: 500,
-    mousedown: function() {
-        console.log('canvas mousedown')
-        console.log(qcanvas);
-        if (qcanvas.qresize !== null) {
-
-            qcanvas.qresize.resizeLayer.setDisplay('none');
-
-        }
-
-        if (qcanvas.qrotate !== null) {
-
-            qcanvas.qrotate.rotateLayer.setDisplay('none');
-
-        }
-    }
+    
 });
 
 var rect = qcanvas.rect({
@@ -105,7 +91,7 @@ var rect = qcanvas.rect({
     degree: 20,
     // radius:5,
     resize: true,
-    rotate: false,
+    rotate: true,
 
     mouseup: function() {
         console.log('mouseup')
@@ -120,7 +106,7 @@ var rect = qcanvas.rect({
     fillColor: '',
     degree: 90,
     // radius:5,
-    resize: true,
+    resize: false,
     rotate: true,
     mouseup: function() {
         console.log('mouseup')
