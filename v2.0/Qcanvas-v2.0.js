@@ -2521,20 +2521,27 @@ Qrect.prototype.drawRotateHandler = function(qcanvas,rect){
                                 var angle = qcanvas.getRotateAngle([c.x,c.y], [rect.angleHandleStart.x,rect.angleHandleStart.y], [pos.x,pos.y])
 
 
-                                rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-                                rect.angleHandle.setDegree(rect.degree);
+                                // rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
+                                rect.setDegree(rect.oldDegree);
+
 
                             }else{
-
                                 rect.setDegree(rect.oldDegree+parseInt(angle* 180 / Math.PI));
-
-                                rect.angleHandle.setDegree(rect.degree);
-
                             }
+                                rect.angleHandle.setDegree(rect.degree);
                         }
                     },
                     mouseup:function(e,pos){
                         rect.angleHandleStart = null;
+
+                        //角度换算到 -360~360
+                        if(rect.degree <0){
+                            var rate = parseInt(Math.abs(rect.degree)/360);
+                            rect.setDegree(360*rate + rect.degree);
+                        }else{
+                            var rate = parseInt(rect.degree/360);
+                            rect.setDegree(rect.degree - 360*rate);
+                        }
 
                         if(rect.resizeLayer){
                            //重置缩放句柄位置
