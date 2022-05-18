@@ -1597,6 +1597,7 @@ Qshape.prototype.shape = function(options) {
     var _this = this;
     var OPTIONS = {
         TYPE: 'shape',
+        borderColor:'#000',
         fillColor: '#666',
         points: [
             [310, 20],
@@ -1678,7 +1679,7 @@ Qshape.prototype.paintShape = function(obj) {
     //注：this是主类的上下文
 
     this.context.lineWidth = 1;
-    this.context.strokeStyle = "#000";
+    this.context.strokeStyle = obj.borderColor;
     this.context.beginPath();
 
     var _this = this;
