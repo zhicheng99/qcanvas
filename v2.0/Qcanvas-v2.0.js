@@ -135,7 +135,7 @@ QquadraticCurve.prototype.quadraticCurve = function(options) {
             var arrowX = fromX - topX;
             var arrowY = fromY - topY;
             // this.qcanvas.context.beginPath();
-            // 	this.qcanvas.context.setLineDash([]); 
+            //  this.qcanvas.context.setLineDash([]); 
 
 
             arrowX = toX + topX;
@@ -342,7 +342,7 @@ QquadraticCurve.prototype.paintQuadraticCurve = function(obj) {
 
 
 }
-//分离携带的文字	
+//分离携带的文字   
 QquadraticCurve.prototype.splitText = function(canvas_context,obj) {
 
  
@@ -363,7 +363,7 @@ QquadraticCurve.prototype.splitText = function(canvas_context,obj) {
  * 三次贝塞尔曲线类
  */
 function QbezierCurve(prototype){
-	 //主类原型中的方法全部引用过来 放到本实例的原型上
+     //主类原型中的方法全部引用过来 放到本实例的原型上
     //都引用过来的原因是 一些通用的方法 可以直接用this.调用
     for (var i in prototype) {
         QbezierCurve.prototype[i] = prototype[i];
@@ -373,238 +373,238 @@ function QbezierCurve(prototype){
 QbezierCurve.prototype.bezierCurve = function(options) {
     //注：this是主类的上下文 
 
-	var _this = this;
-	var OPTIONS = {
-		TYPE:'bezierCurve',
-		color:'#000',  //颜色
-		like:'-',     //画出来的样子 [-][->][<->][--][-->][<-->]
-		width:1,
-		start:[50,50],
-		handler1:[70,20],
-		handler2:[100,80],
-		end:[200,50],
-		drag:true,
-		pointerEvent:'auto',
-		handlerShow:false,
-		//withText:'text', //带着的文本
-		//withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
-		centerPoints:function(){ //元素中心点相对于整个画布的坐标
+    var _this = this;
+    var OPTIONS = {
+        TYPE:'bezierCurve',
+        color:'#000',  //颜色
+        like:'-',     //画出来的样子 [-][->][<->][--][-->][<-->]
+        width:1,
+        start:[50,50],
+        handler1:[70,20],
+        handler2:[100,80],
+        end:[200,50],
+        drag:true,
+        pointerEvent:'auto',
+        handlerShow:false,
+        //withText:'text', //带着的文本
+        //withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
+        centerPoints:function(){ //元素中心点相对于整个画布的坐标
 
-			var start = _this.isFun(this.start)?this.start():this.start;
-			var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
-			var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
+            var start = _this.isFun(this.start)?this.start():this.start;
+            var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
+            var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
 
-			var end = _this.isFun(this.end)?this.end():this.end;
+            var end = _this.isFun(this.end)?this.end():this.end;
 
-			var center1 = [
-				(handler1[0] < start[0] ? handler1[0]:start[0])+Math.abs(handler1[0]-start[0]) * 0.5,
-				(handler1[1] < start[1] ? handler1[1]:start[1])+Math.abs(handler1[1]-start[1]) * 0.5
-			]
+            var center1 = [
+                (handler1[0] < start[0] ? handler1[0]:start[0])+Math.abs(handler1[0]-start[0]) * 0.5,
+                (handler1[1] < start[1] ? handler1[1]:start[1])+Math.abs(handler1[1]-start[1]) * 0.5
+            ]
 
-			var center2 = [
-				(handler2[0] < end[0] ? handler2[0]:end[0])+Math.abs(handler2[0]-end[0]) * 0.5,
-				(handler2[1] < end[1] ? handler2[1]:end[1])+Math.abs(handler2[1]-end[1]) * 0.5
-			]
-
-
-			return [
-				(center2[0] < center1[0] ? center2[0]:center1[0])+Math.abs(center2[0]-center1[0]) * 0.5,
-				(center2[1] < center1[1] ? center2[1]:center1[1])+Math.abs(center2[1]-center1[1]) * 0.5
-			]
-
-		},
-		downFun:function(e,position){ 
-
-			//线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
-			var start = _this.isFun(this.start)?this.start():this.start;
-			var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
-			var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
-
-		 	var end = _this.isFun(this.end)?this.end():this.end; 
-			this.dis = [
-				position.x-start[0],
-				position.y-start[1],
-				position.x-handler1[0],
-				position.y-handler1[1],
-				position.x-handler2[0],
-				position.y-handler2[1],
-				position.x-end[0],
-				position.y-end[1]
-			]; 
-		},
-		moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
+            var center2 = [
+                (handler2[0] < end[0] ? handler2[0]:end[0])+Math.abs(handler2[0]-end[0]) * 0.5,
+                (handler2[1] < end[1] ? handler2[1]:end[1])+Math.abs(handler2[1]-end[1]) * 0.5
+            ]
 
 
-			var dragIsBool = _this.isBool(this.drag);
-					var dis  =this.dis;
-					var start = _this.isFun(this.start)?this.start():this.start;
-					var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
-					var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
+            return [
+                (center2[0] < center1[0] ? center2[0]:center1[0])+Math.abs(center2[0]-center1[0]) * 0.5,
+                (center2[1] < center1[1] ? center2[1]:center1[1])+Math.abs(center2[1]-center1[1]) * 0.5
+            ]
 
-				 	var end = _this.isFun(this.end)?this.end():this.end;
+        },
+        downFun:function(e,position){ 
+
+            //线的拖动要特殊处理 鼠标点击点距结束点的距离也得记录
+            var start = _this.isFun(this.start)?this.start():this.start;
+            var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
+            var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
+
+            var end = _this.isFun(this.end)?this.end():this.end; 
+            this.dis = [
+                position.x-start[0],
+                position.y-start[1],
+                position.x-handler1[0],
+                position.y-handler1[1],
+                position.x-handler2[0],
+                position.y-handler2[1],
+                position.x-end[0],
+                position.y-end[1]
+            ]; 
+        },
+        moveFun:function(e,position){  //当配置drageRange时  开始限制坐标
 
 
- 					
- 					var x0,y0,x1,y1,x2,y2,x3,y3;
-						 
-						if(dragIsBool && this.drag){
-							 x0 = position.x-dis[0];
-							 y0 = position.y-dis[1];
+            var dragIsBool = _this.isBool(this.drag);
+                    var dis  =this.dis;
+                    var start = _this.isFun(this.start)?this.start():this.start;
+                    var handler1 = _this.isFun(this.handler1)?this.handler1():this.handler1;
+                    var handler2 = _this.isFun(this.handler2)?this.handler2():this.handler2;
 
-							 x1 = position.x-dis[2];
-							 y1 = position.y-dis[3];
+                    var end = _this.isFun(this.end)?this.end():this.end;
 
-							 x2 = position.x-dis[4];
-							 y2 = position.y-dis[5];
 
-							 x3 = position.x-dis[6];
-							 y3 = position.y-dis[7];
+                    
+                    var x0,y0,x1,y1,x2,y2,x3,y3;
+                         
+                        if(dragIsBool && this.drag){
+                             x0 = position.x-dis[0];
+                             y0 = position.y-dis[1];
 
-						}else if(this.drag == 'vertical'){
-							 x0 = start[0];
-							 y0 = position.y-dis[1];
-							 x1 = handler1[0];
-							 y1 = position.y-dis[3];
-							 x2 = handler2[0];
-							 y2 = position.y-dis[5];
-							 x3 = end[0];
-							 y3 = position.y-dis[7];
+                             x1 = position.x-dis[2];
+                             y1 = position.y-dis[3];
 
-						}else if(this.drag == 'horizontal'){
-							 x0 = position.x-dis[0];
-							 y0 = start[1];
-							 x1 = position.x-dis[2];
-							 y1 = handler1[1];
-							 x2 = position.x-dis[4];
-							 y2 = handler2[1];
-							 x3 = position.x-dis[6];
-							 y3 = end[1];
+                             x2 = position.x-dis[4];
+                             y2 = position.y-dis[5];
 
-						} 
+                             x3 = position.x-dis[6];
+                             y3 = position.y-dis[7];
+
+                        }else if(this.drag == 'vertical'){
+                             x0 = start[0];
+                             y0 = position.y-dis[1];
+                             x1 = handler1[0];
+                             y1 = position.y-dis[3];
+                             x2 = handler2[0];
+                             y2 = position.y-dis[5];
+                             x3 = end[0];
+                             y3 = position.y-dis[7];
+
+                        }else if(this.drag == 'horizontal'){
+                             x0 = position.x-dis[0];
+                             y0 = start[1];
+                             x1 = position.x-dis[2];
+                             y1 = handler1[1];
+                             x2 = position.x-dis[4];
+                             y2 = handler2[1];
+                             x3 = position.x-dis[6];
+                             y3 = end[1];
+
+                        } 
  
 
-					 //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
-					this.start = [x0,y0];
-					this.handler1 = [x1,y1];
-					this.handler2 = [x2,y2];
-					this.end = [x3,y3] 
+                     //如果创建时位置数据依赖于别的元素 那么一旦拖动该元素 数据的依赖关系就会断开 切记
+                    this.start = [x0,y0];
+                    this.handler1 = [x1,y1];
+                    this.handler2 = [x2,y2];
+                    this.end = [x3,y3] 
 
 
-					this.handlerShow && (this.handlerObj1 !== null) && this.handlerObj1.setStart([x1,y1]);
-					this.handlerShow && (this.handlerObj2 !== null) && this.handlerObj2.setStart([x2,y2]);
+                    this.handlerShow && (this.handlerObj1 !== null) && this.handlerObj1.setStart([x1,y1]);
+                    this.handlerShow && (this.handlerObj2 !== null) && this.handlerObj2.setStart([x2,y2]);
 
 
 
-			},
-			drawArrow: function(fromX, fromY, toX, toY,theta,headlen,width,color) {
-				 
-				    var theta = typeof(theta) != 'undefined' ? theta : 30;
-				    var headlen = typeof(theta) != 'undefined' ? headlen : 10;
-				    var width = typeof(width) != 'undefined' ? width : 1;
-				    var color = typeof(color) != 'color' ? color : '#000';
-				 
-				    // 计算各角度和对应的P2,P3坐标
-				    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
-				    var angle1 = (angle + theta) * Math.PI / 180;
-				    var angle2 = (angle - theta) * Math.PI / 180;
-				    var topX = headlen * Math.cos(angle1);
-				    var topY = headlen * Math.sin(angle1);
-				    var botX = headlen * Math.cos(angle2);
-				    var botY = headlen * Math.sin(angle2);
-				 
-				    // this.qcanvas.context.save();
-				    // this.qcanvas.context.beginPath();
-				 
-				    var arrowX = fromX - topX;
-				    var arrowY = fromY - topY;
-				 		// this.qcanvas.context.beginPath();
-				  	// 	this.qcanvas.context.setLineDash([]); 
+            },
+            drawArrow: function(fromX, fromY, toX, toY,theta,headlen,width,color) {
+                 
+                    var theta = typeof(theta) != 'undefined' ? theta : 30;
+                    var headlen = typeof(theta) != 'undefined' ? headlen : 10;
+                    var width = typeof(width) != 'undefined' ? width : 1;
+                    var color = typeof(color) != 'color' ? color : '#000';
+                 
+                    // 计算各角度和对应的P2,P3坐标
+                    var angle = Math.atan2(fromY - toY, fromX - toX) * 180 / Math.PI;
+                    var angle1 = (angle + theta) * Math.PI / 180;
+                    var angle2 = (angle - theta) * Math.PI / 180;
+                    var topX = headlen * Math.cos(angle1);
+                    var topY = headlen * Math.sin(angle1);
+                    var botX = headlen * Math.cos(angle2);
+                    var botY = headlen * Math.sin(angle2);
+                 
+                    // this.qcanvas.context.save();
+                    // this.qcanvas.context.beginPath();
+                 
+                    var arrowX = fromX - topX;
+                    var arrowY = fromY - topY;
+                        // this.qcanvas.context.beginPath();
+                    //  this.qcanvas.context.setLineDash([]); 
 
 
-				    arrowX = toX + topX;
-				    arrowY = toY + topY;
-				    // this.qcanvas.context.moveTo(arrowX, arrowY);
-				    // this.qcanvas.context.lineTo(toX, toY);
-				    var arrow2X = toX + botX;
-				    var arrow2Y = toY + botY;
-				    // this.qcanvas.context.lineTo(arrow2X, arrow2Y);
-				    // this.qcanvas.context.strokeStyle = color;
-				    // this.qcanvas.context.lineWidth = width;
-				    // this.qcanvas.context.stroke();
+                    arrowX = toX + topX;
+                    arrowY = toY + topY;
+                    // this.qcanvas.context.moveTo(arrowX, arrowY);
+                    // this.qcanvas.context.lineTo(toX, toY);
+                    var arrow2X = toX + botX;
+                    var arrow2Y = toY + botY;
+                    // this.qcanvas.context.lineTo(arrow2X, arrow2Y);
+                    // this.qcanvas.context.strokeStyle = color;
+                    // this.qcanvas.context.lineWidth = width;
+                    // this.qcanvas.context.stroke();
 
-				    _this.qline.paintLine.call(_this,{
-						    	like:'-',
-								start:[arrowX, arrowY],
-								end:[toX, toY],
-								width:width,
-								color:color,
-								pointerEvent:'none'
+                    _this.qline.paintLine.call(_this,{
+                                like:'-',
+                                start:[arrowX, arrowY],
+                                end:[toX, toY],
+                                width:width,
+                                color:color,
+                                pointerEvent:'none'
 
-				    })
+                    })
 
-				    _this.qline.paintLine.call(_this,{
-						    	like:'-',
-								start:[toX, toY],
-								end:[arrow2X,arrow2Y],
-								width:width,
-								color:color,
-								pointerEvent:'none'
-				    }) 
-				}
-	}
+                    _this.qline.paintLine.call(_this,{
+                                like:'-',
+                                start:[toX, toY],
+                                end:[arrow2X,arrow2Y],
+                                width:width,
+                                color:color,
+                                pointerEvent:'none'
+                    }) 
+                }
+    }
 
-	this.extend(OPTIONS,options);		
-	this.appendSetFun(OPTIONS);
+    this.extend(OPTIONS,options);       
+    this.appendSetFun(OPTIONS);
 
-	//分离文字
-	if(typeof OPTIONS.withText !='undefined' && OPTIONS.withText!=''){
-		
-		this.qbezierCurve.splitText(this,OPTIONS);
-			
-	}
-	//显示控制点
-	OPTIONS.handlerShow && this.qbezierCurve.drawHandler.call(this,OPTIONS);
-	
+    //分离文字
+    if(typeof OPTIONS.withText !='undefined' && OPTIONS.withText!=''){
+        
+        this.qbezierCurve.splitText(this,OPTIONS);
+            
+    }
+    //显示控制点
+    OPTIONS.handlerShow && this.qbezierCurve.drawHandler.call(this,OPTIONS);
+    
 
-	return OPTIONS;
+    return OPTIONS;
 };
 
 QbezierCurve.prototype.drawHandler = function(obj){
-	var _this = this;
-	var handler1 = _this.isFun(obj.handler1)?obj.handler1():obj.handler1;
-	var handler2 = _this.isFun(obj.handler2)?obj.handler2():obj.handler2;
-	
+    var _this = this;
+    var handler1 = _this.isFun(obj.handler1)?obj.handler1():obj.handler1;
+    var handler2 = _this.isFun(obj.handler2)?obj.handler2():obj.handler2;
+    
 
 
-	obj.handlerObj1 = this.qarc.arc.call(this,{
-		start:handler1, 
-		sAngle:0,
-		eAngle:360,
-		fillColor:'blue',
-		opacity:0.2,
-		r:8, 
-		borderColor:'#ccc',
-		mousemove:function(){
-			if(_this.dragAim !== null){
-				obj.handler1 = this.start;
-			}
-		}
-	});	 
+    obj.handlerObj1 = this.qarc.arc.call(this,{
+        start:handler1, 
+        sAngle:0,
+        eAngle:360,
+        fillColor:'blue',
+        opacity:0.2,
+        r:8, 
+        borderColor:'#ccc',
+        mousemove:function(){
+            if(_this.dragAim !== null){
+                obj.handler1 = this.start;
+            }
+        }
+    });  
 
-	obj.handlerObj2 = this.qarc.arc.call(this,{
-		start:handler2, 
-		sAngle:0,
-		eAngle:360,
-		fillColor:'blue',
-		opacity:0.2,
-		r:8, 
-		borderColor:'#ccc',
-		mousemove:function(){
-			if(_this.dragAim !== null){
-				obj.handler2 = this.start;
-			}
-		}
-	});	 
+    obj.handlerObj2 = this.qarc.arc.call(this,{
+        start:handler2, 
+        sAngle:0,
+        eAngle:360,
+        fillColor:'blue',
+        opacity:0.2,
+        r:8, 
+        borderColor:'#ccc',
+        mousemove:function(){
+            if(_this.dragAim !== null){
+                obj.handler2 = this.start;
+            }
+        }
+    });  
 
 
 
@@ -612,147 +612,147 @@ QbezierCurve.prototype.drawHandler = function(obj){
 
 }
 QbezierCurve.prototype.paintBezierCurve = function(obj) {
-	this.qanimation.createAnimation(obj);
+    this.qanimation.createAnimation(obj);
  
-	var start = this.isFun(obj.start)?obj.start():obj.start;
-	var handler1 = this.isFun(obj.handler1)?obj.handler1():obj.handler1;
-	var handler2 = this.isFun(obj.handler2)?obj.handler2():obj.handler2;
-	var end = this.isFun(obj.end)?obj.end():obj.end;
+    var start = this.isFun(obj.start)?obj.start():obj.start;
+    var handler1 = this.isFun(obj.handler1)?obj.handler1():obj.handler1;
+    var handler2 = this.isFun(obj.handler2)?obj.handler2():obj.handler2;
+    var end = this.isFun(obj.end)?obj.end():obj.end;
 
-	this.context.strokeStyle = obj.color;
-	this.context.beginPath();
-	this.context.lineWidth = obj.width;
-	var drawLine = function(){
-		this.context.moveTo(start[0],start[1]); 
-		this.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-		this.context.stroke();
-	}
+    this.context.strokeStyle = obj.color;
+    this.context.beginPath();
+    this.context.lineWidth = obj.width;
+    var drawLine = function(){
+        this.context.moveTo(start[0],start[1]); 
+        this.context.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
+        this.context.stroke();
+    }
 
-	switch(obj.like)
-	{
-		case '-': 
-			drawLine.call(this)
-			break;
-		case '--': 
+    switch(obj.like)
+    {
+        case '-': 
+            drawLine.call(this)
+            break;
+        case '--': 
             this.createAntLineEffect(obj);
 
-			this.context.setLineDash([3]);
-			drawLine.call(this)
+            this.context.setLineDash([3]);
+            drawLine.call(this)
 
 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
             this.context.lineDashOffset = 0;
 
  
-			break;	
-		case '->': 
-			drawLine.call(this)
+            break;  
+        case '->': 
+            drawLine.call(this)
 
-			 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
+             
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
 
-			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color)
-			
-			break;
-		case '<-': 
-			drawLine.call(this)
-			 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
+            obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color)
+            
+            break;
+        case '<-': 
+            drawLine.call(this)
+             
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
 
-			obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color)
-			
-			break;
-		case '<->': 
-			drawLine.call(this)
-			
+            obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color)
+            
+            break;
+        case '<->': 
+            drawLine.call(this)
+            
 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
 
-			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
-			obj.drawArrow(handler1[0], handler1[1],start[0], start[1],30,10,1,obj.color);
-			
-			
-			break;
-		case '-->': 
+            obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
+            obj.drawArrow(handler1[0], handler1[1],start[0], start[1],30,10,1,obj.color);
+            
+            
+            break;
+        case '-->': 
             this.createAntLineEffect(obj);
 
-			this.context.setLineDash([3]);
-			drawLine.call(this)
+            this.context.setLineDash([3]);
+            drawLine.call(this)
 
 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
-			
-			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
+            
+            obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
             this.context.lineDashOffset = 0;
 
-			break;
-		case '<--': 
+            break;
+        case '<--': 
             this.createAntLineEffect(obj);
 
-			this.context.setLineDash([3]);
-			drawLine.call(this)
+            this.context.setLineDash([3]);
+            drawLine.call(this)
 
 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
-			
-			obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color);
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
+            
+            obj.drawArrow(handler1[0], handler1[1], start[0], start[1],30,10,1,obj.color);
             this.context.lineDashOffset = 0;
 
-			break;
-		case '<-->': 
+            break;
+        case '<-->': 
             this.createAntLineEffect(obj);
 
 
-			this.context.setLineDash([3]);
-			drawLine.call(this)
+            this.context.setLineDash([3]);
+            drawLine.call(this)
 
-			//可能路径是虚线形式的 设置成实线
-			this.context.setLineDash([]);
- 			
-			obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
-			obj.drawArrow(handler1[0], handler1[1],start[0], start[1],30,10,1,obj.color);
+            //可能路径是虚线形式的 设置成实线
+            this.context.setLineDash([]);
+            
+            obj.drawArrow(handler2[0], handler2[1], end[0], end[1],30,10,1,obj.color);
+            obj.drawArrow(handler1[0], handler1[1],start[0], start[1],30,10,1,obj.color);
             this.context.lineDashOffset = 0;
 
-			break;
+            break;
 
-	}
+    }
 
 
-	//需要响应事件
-	//影子画布上需要再画一份
-	if(obj.pointerEvent == 'auto'){ 
-		this.shadowContext.strokeStyle = obj.shadowFillColor;
-		this.shadowContext.beginPath();
-		this.shadowContext.lineWidth = 20;
+    //需要响应事件
+    //影子画布上需要再画一份
+    if(obj.pointerEvent == 'auto'){ 
+        this.shadowContext.strokeStyle = obj.shadowFillColor;
+        this.shadowContext.beginPath();
+        this.shadowContext.lineWidth = 20;
 
-		
-		this.shadowContext.moveTo(start[0],start[1]); 
-		this.shadowContext.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
-		this.shadowContext.stroke();
-	}
+        
+        this.shadowContext.moveTo(start[0],start[1]); 
+        this.shadowContext.bezierCurveTo(handler1[0],handler1[1],handler2[0],handler2[1], end[0],end[1]);
+        this.shadowContext.stroke();
+    }
 
 
 };
 
-//分离携带的文字	
+//分离携带的文字   
 QbezierCurve.prototype.splitText = function(canvas_context,obj){
-	
+    
 
-	var tmp = canvas_context.text.call(this,{
-			TYPE:'text',
-			text:obj.withText,
-			color:obj.color,
-			withTextAlign:obj.withTextAlign?obj.withTextAlign:'center',
-			start:function(){return obj.centerPoints()},
-			pointerEvent:'none'
-	});
-	obj.withTextId = tmp.id;
+    var tmp = canvas_context.text.call(this,{
+            TYPE:'text',
+            text:obj.withText,
+            color:obj.color,
+            withTextAlign:obj.withTextAlign?obj.withTextAlign:'center',
+            start:function(){return obj.centerPoints()},
+            pointerEvent:'none'
+    });
+    obj.withTextId = tmp.id;
 }
 
 
@@ -777,7 +777,7 @@ start:[0,0],  //开始坐标
 end:[50,50],  //结束坐标
 color:'red',  //颜色
 like:'-',     //画出来的样子 [-][->][--][-->]
-width:1,			//线条宽度
+width:1,            //线条宽度
 withText:'text', //带着的文本
 withTextAlign:'center'  //文本的横向位置 [left center(默认) right]
 }
@@ -884,7 +884,7 @@ Qline.prototype.line = function(options) {
             var arrowX = fromX - topX;
             var arrowY = fromY - topY;
             // this.qcanvas.context.beginPath();
-            // 	this.qcanvas.context.setLineDash([]); 
+            //  this.qcanvas.context.setLineDash([]); 
 
 
             arrowX = toX + topX;
@@ -945,7 +945,7 @@ Qline.prototype.getMiddleCoordinates = function(obj) {
 
 }
 
-//分离携带的文字	
+//分离携带的文字   
 Qline.prototype.splitText = function(canvas_context, obj) {
     var self = this;
     var tmp = canvas_context.text({
@@ -1979,6 +1979,7 @@ Qspirit.prototype.spirit = function(options) {
         drag: true,
         pointerEvent: 'auto',
         degree: 0,
+        size:'',
 
         /*img:{},
         row:0,
@@ -2072,14 +2073,26 @@ Qspirit.prototype.spirit = function(options) {
 
             if (obj.isLoop) {
 
-                if (obj.framesIndex[1] == (max - 1)) {
-                    //obj.step=-1;
-                    obj.framesIndex[1] = 0;
+                if(obj.step ==1){ //正向播动画
+                     if (obj.framesIndex[1] == (max - 1)) {
+                        //obj.step=-1;
+                        obj.framesIndex[1] = 0;
+                    }
+
+                }else{ //反向播动画
+                    if (obj.framesIndex[1] == 0) {
+                        obj.framesIndex[1] = obj.frames[obj.framesIndex[0]].length-1
+                    }
                 }
 
-                if (obj.framesIndex[1] == 0) {
-                    obj.step = 1;
-                }
+                // if (obj.framesIndex[1] == (max - 1)) {
+                //     //obj.step=-1;
+                //     obj.framesIndex[1] = 0;
+                // }
+
+                // if (obj.framesIndex[1] == 0) {
+                //     obj.step = 1;
+                // }
 
             }
         },
@@ -2115,6 +2128,10 @@ Qspirit.prototype.spirit = function(options) {
     this.extend(OPTIONS, options);
     this.appendSetFun(OPTIONS);
 
+
+   
+
+
     //如果指定的img参数是一个图片地址 则需要去加载 完成后替找掉OPTIONS.img
     if (tmp != '') {
 
@@ -2122,6 +2139,36 @@ Qspirit.prototype.spirit = function(options) {
             var img = _this.getSourceByName("img");
 
             OPTIONS.img = img;
+
+            if(options.size == 'cover'){
+
+                delete OPTIONS.sWidth;
+                delete OPTIONS.sHeight;
+
+                 var sourceObj = _this.qspirit.sourcePosition({
+                        width:OPTIONS.img.width / OPTIONS.column,
+                        height:OPTIONS.img.height / OPTIONS.row,
+                    }, OPTIONS.tWidth, OPTIONS.tHeight);
+
+
+
+                 // console.log(sourceObj);
+                 // console.log('原本sWidth:'+OPTIONS.img.width / OPTIONS.column)
+                 // console.log('原本sHeight:'+OPTIONS.img.height / OPTIONS.row)
+                 // console.log('每一帧的x偏移量:'+sourceObj.sStart[0])
+                 // console.log('每一帧的y偏移量:'+sourceObj.sStart[1])
+
+
+                 //重置原区域
+                 OPTIONS.sWidth = sourceObj.sWidth;
+                 OPTIONS.sHeight = sourceObj.sHeight;
+
+                 //每一帧偏移量
+                 OPTIONS.frameOffsetX = sourceObj.sStart[0];
+                 OPTIONS.frameOffsetY = sourceObj.sStart[1];
+
+            }
+
             _this.qspirit.createFrames.call(_this, OPTIONS);
 
         })
@@ -2160,7 +2207,8 @@ Qspirit.prototype.createFrames = function(obj) {
         }
     }
 
-    obj.framesIndex = typeof obj.framesIndex == 'undefined' ? [0, 0] : obj.framesIndex;
+    var rate = frames[obj.framesIndex[0]].length/(obj.column-1);
+    obj.framesIndex = typeof obj.framesIndex == 'undefined' ? [0, 0] : [obj.framesIndex[0],parseInt(obj.framesIndex[1]*rate)];
     obj.frames = frames;
 }
 
@@ -2227,16 +2275,57 @@ Qspirit.prototype.paintSpirit = function(obj) {
     obj.moveFrameIndex(obj);
 
 
+    if(obj.size == 'cover'){  //覆盖整个区域 （适配需要加上每一帧的偏移量）
+
+        var sx = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][0] + obj.frameOffsetX;
+        var sy = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][1]+ obj.frameOffsetY;
+        var sWidth = obj.sWidth;
+        var sHeight = obj.sHeight;
 
 
-    var sx = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][0];
-    var sy = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][1];
-    var sWidth = obj.img.width / obj.column; //obj.tWidth;
-    var sHeight = obj.img.height / obj.row; //obj.tHeight;
+
+    }else{
+        var sx = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][0];
+        var sy = obj.frames[obj.framesIndex[0]][obj.framesIndex[1]][1];
+        var sWidth = obj.img.width / obj.column; //obj.tWidth;
+        var sHeight = obj.img.height / obj.row; //obj.tHeight;
+    }
+
+   
 
 
 
     this.context.drawImage(obj.img, sx, sy, sWidth, sHeight, obj.tStart[0], obj.tStart[1], obj.tWidth, obj.tHeight);
+
+}
+Qspirit.prototype.sourcePosition = function(pic, w, h) {
+
+    //原图及目标区域的宽高比
+    var sourceRate = pic.width / pic.height;
+    var targetRate = w / h;
+    var x, y, w, h;
+
+    if (sourceRate >= targetRate) {
+        h = pic.height;
+        w = targetRate * pic.height;
+        y = 0;
+        x = (pic.width - w) * 0.5;
+    } else {
+        w = pic.width;
+        h = pic.width / targetRate;
+        x = 0;
+        y = (pic.height - h) * 0.5;
+
+    }
+
+    return {
+        sStart: [x, y],
+        sWidth: w,
+        sHeight: h,
+        sourceRate: sourceRate,
+        targetRate: targetRate
+    }
+
 
 }
 /**
@@ -3808,7 +3897,7 @@ Qanimation.prototype.animate = function(aim, startStyle, endStyle, during, isLoo
     }
 }
 //通过对象的animation属性中序列对象frames 改变相应的属性值
-//使渲染过程中生成动画		
+//使渲染过程中生成动画        
 Qanimation.prototype.createAnimation = function(obj) {
 
     if (typeof obj.animation != 'undefined' && obj.animation && obj.animation.frames) {
@@ -3842,7 +3931,7 @@ Qanimation.prototype.createAnimation = function(obj) {
                     obj.animation.loopNum++;
 
                     if (obj.animation.loopNum <= isLoop) {
-                        obj.animation.step = -1; //反方向运动回去	
+                        obj.animation.step = -1; //反方向运动回去  
                     }
 
                     if ((obj.animation.loopNum - 1) == isLoop) {
@@ -3855,7 +3944,7 @@ Qanimation.prototype.createAnimation = function(obj) {
 
 
                     if (obj.animation.loopNum <= isLoop) {
-                        obj.animation.step = 1; //反方向运动回去	
+                        obj.animation.step = 1; //反方向运动回去   
                         // obj.animation.framesIndex = 0;
                     }
 
@@ -3870,7 +3959,7 @@ Qanimation.prototype.createAnimation = function(obj) {
 
                 if (isLoop) {
                     if (obj.animation.framesIndex == (framesCount - 1)) {
-                        obj.animation.step = -1; //反方向运动回去	
+                        obj.animation.step = -1; //反方向运动回去  
                         // obj.animation.framesIndex = 0;
                         obj.animation.finishCallback(obj);
                     }
@@ -4000,7 +4089,7 @@ Qevent.prototype.init = function() {
 
     if ("ontouchstart" in window) {
         for (var i in this.MOBILE_Event) {
-            // canvas.addEventListener(i,callback,false);		
+            // canvas.addEventListener(i,callback,false);       
             canvas.addEventListener(i, function(e) {
                 var position = _this.getEventPosition(e);
                 _this.eventCallback(e, position); //用户定义的回调函数
@@ -4495,7 +4584,7 @@ Qcanvas.prototype.clear = function() {
     this.canvas.width = this.canvas.width;
     this.context.scale(this.dpr, this.dpr);
     if(this.TYPE == 'canvas'){ //只有上下文是主画布时 才清除影子画布
-	    this.shadowCanvas.width = this.shadowCanvas.width;
+        this.shadowCanvas.width = this.shadowCanvas.width;
     }
 
 }
@@ -4818,7 +4907,7 @@ Qcanvas.prototype.loadImgSource = function(sourceObj) {
 
 
 }
-//加载图片资源				
+//加载图片资源                
 Qcanvas.prototype.load = function(sourceObj, callback) {
 
     if (typeof this.source == 'undefined') {
