@@ -4878,27 +4878,41 @@ Qcanvas.prototype.loadImgSource = function(sourceObj) {
     return new this.loadPromise(function(resolve, reject) {
         //先实现加载图片资源
         var imgArr = [];
+        var imgMap = {};
         var num = 0;
 
         for (var i = 0; i < urlArr.length; i++) {
             var img = new Image();
             imgArr.push(img);
             img.onload = function() {
-                num++;
-                if (num == imgArr.length) {
-                    resolve(imgArr);
+                if(typeof imgMap[this.sort] == 'undefined'){
+                    imgMap[this.sort] = this;
+                    num++;
+                    if (num == imgArr.length) {
+                        resolve(imgArr);
+                    }  
                 }
+                
             };
             img.onerror = function() {
-                // console.log('err');
-                num++;
-                if (num == imgArr.length) {
-                    resolve(imgArr);
+                if(typeof imgMap[this.sort] == 'undefined'){
+                    imgMap[this.sort] = this;
+                    num++;
+                    if (num == imgArr.length) {
+                        resolve(imgArr);
+                    }  
                 }
                 console.log('索引为' + this.sort + '的资源加载失败');
             }
             img.sort = i;
             img.src = urlArr[i];
+            if(img.complete || img.width){ //已经在缓存中了
+                imgMap[img.sort] = img;
+                num++;
+                if (num == imgArr.length) {
+                    resolve(imgArr);
+                }
+            }
         }
 
 
@@ -4925,16 +4939,26 @@ Qcanvas.prototype.load = function(sourceObj, callback) {
         var img = new Image();
         imgArr.push(img);
         img.onload = function() {
-            _this.source[this.alias] = this;
+            if(typeof _this.source[this.alias] == 'undefined'){
+                _this.source[this.alias] = this;
 
-            num++;
+                num++;
 
-            if (num == imgArr.length) {
-                callback(_this.source);
+                if (num == imgArr.length) {
+                    callback(_this.source);
+                }   
             }
+           
         };
         img.alias = i;
         img.src = sourceObj[i];
+        if(img.complete || img.width){ //已经在缓存中了
+            _this.source[img.alias] = img;
+            num++;
+            if (num == imgArr.length) {
+                callback(_this.source);
+            }
+        }
     }
 
 }
