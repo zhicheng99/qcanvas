@@ -2131,7 +2131,6 @@ Qspirit.prototype.spirit = function(options) {
 
    
 
-
     //如果指定的img参数是一个图片地址 则需要去加载 完成后替找掉OPTIONS.img
     if (tmp != '') {
 
@@ -2152,7 +2151,7 @@ Qspirit.prototype.spirit = function(options) {
 
 
 
-                 // console.log(sourceObj);
+                 console.log(sourceObj);
                  // console.log('原本sWidth:'+OPTIONS.img.width / OPTIONS.column)
                  // console.log('原本sHeight:'+OPTIONS.img.height / OPTIONS.row)
                  // console.log('每一帧的x偏移量:'+sourceObj.sStart[0])
@@ -4267,20 +4266,19 @@ Qevent.prototype.findElmByEventPosition = function(position) {
 }
 
 Qevent.prototype.getEventPosition = function(ev) {
-    var x, y;
-    //console.log(ev);
+    var x, y; 
     if (this.MOBILE_Event[ev.type]) {
         var c = ev.type != 'touchend' ? ev.touches[0] : ev.changedTouches[0];
         x = c.clientX - c.target.offsetLeft;
         y = c.clientY - c.target.offsetTop;
 
     } else {
-        if (ev.layerX || ev.layerX == 0) {
-            x = ev.layerX;
-            y = ev.layerY;
-        } else if (ev.offsetX || ev.offsetX == 0) { // Opera
+        if (ev.offsetX || ev.offsetX == 0) { // Opera
             x = ev.offsetX;
             y = ev.offsetY;
+        }else if (ev.layerX || ev.layerX == 0){
+            x = ev.layerX;
+            y = ev.layerY;
         }
     }
 

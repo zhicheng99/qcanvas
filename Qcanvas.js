@@ -3422,13 +3422,13 @@ Qevent.prototype.getEventPosition = function(ev){
 		y= c.clientY-c.target.offsetTop;
 		
 	}else{
-		 if (ev.layerX || ev.layerX == 0) {
-			x = ev.layerX;
-			y = ev.layerY;
-		} else if (ev.offsetX || ev.offsetX == 0) { // Opera
-			x = ev.offsetX;
-			y = ev.offsetY;
-		}
+		 if (ev.offsetX || ev.offsetX == 0) { // Opera
+            x = ev.offsetX;
+            y = ev.offsetY;
+        }else if (ev.layerX || ev.layerX == 0){
+            x = ev.layerX;
+            y = ev.layerY;
+        }
 	}
 	
 	
