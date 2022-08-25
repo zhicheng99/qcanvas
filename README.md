@@ -23,65 +23,69 @@ https://zhicheng99.github.io/qcanvas/
 部分示例载图
 
 线
-![](img/2.0/line.jpg)
+![](img/2.0/gif/line.gif)
+
 
 文本
-![](img/2.0/text.jpg)
+![](img/2.0/gif/text.gif)
 
 矩形
-![](img/2.0/rect.jpg)
+![](img/2.0/gif/rect.gif)
 
 圆
-![](img/2.0/arc.jpg)
+![](img/2.0/gif/arc.gif)
 
 多边形
-![](img/2.0/polygon.jpg)
+![](img/2.0/gif/polygon.gif)
 
 图片
-![](img/2.0/img.jpg)
+![](img/2.0/gif/img.gif)
 
 精灵图
-![](img/2.0/spirit.jpg)
+![](img/2.0/gif/spirit.gif)
+
+动画
+![](img/2.0/gif/animate.gif)
 
 修改元素层级
-![](img/2.0/z-index.jpg)
+![](img/2.0/gif/z-index.gif)
 
 layer中的元素层级
-![](img/2.0/layer_z-index.jpg)
+![](img/2.0/gif/layer.gif)
 
 拖动限制范围 (现只支持Qarc、Qpolygon、Qrect实例)
-![](img/2.0/range.jpg)
+![](img/2.0/gif/range.gif)
 
 右键菜单
-![](img/2.0/contextMenu.jpg)
+![](img/2.0/gif/contextMenu.gif)
 
 二次曲线
-![](img/2.0/quadraticCurve.jpg)
+![](img/2.0/gif/quadraticCurve.gif)
 
 二次曲线控制点计算
-![](img/2.0/quadraticCurve——handler.jpg)
+![](img/2.0/gif/quadraticCurve_handler.gif)
 
 
 三次曲线
-![](img/2.0/bezierCurve.jpg)
+![](img/2.0/gif/bezierCurve.gif)
 
 三次曲线控制点计算
-![](img/2.0/bezierCurve——handler.jpg)
+![](img/2.0/gif/bezierCurve_handler.gif)
 
 折线连接元素（横向）
-![](img/2.0/broken_horizontal.jpg)
+![](img/2.0/gif/broken_horizontal.gif)
 
 折线连接元素（竖向）
-![](img/2.0/broken_vertical.jpg)
+![](img/2.0/gif/broken_vertical.gif)
 
 折线连接元素（横向）拖动
-![](img/2.0/broken_horizontal——drag.jpg)
+![](img/2.0/gif/broken_horizontal_drag.gif)
 
 折线连接元素（竖向）拖动
-![](img/2.0/broken_vertical——drag.jpg)
+![](img/2.0/gif/broken_vertical_drag.gif)
 
 rect缩放 旋转
-![](img/2.0/resize_rotate.jpg)
+![](img/2.0/gif/resize.gif)
 
 rect缩放 旋转 算法
-![](img/2.0/rect_resize_rotate.jpg)
+![](img/2.0/gif/rotate.gif)
