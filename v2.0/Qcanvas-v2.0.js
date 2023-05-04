@@ -4846,7 +4846,7 @@ Qcanvas.prototype.loadPromise = function(fn) {
 
     function resolve(value) {
         setTimeout(function() {
-            succallbacks.forEach((callback) => {
+            succallbacks.forEach(function(callback) {
                 callback(value);
             })
         }, 0)
@@ -4854,7 +4854,7 @@ Qcanvas.prototype.loadPromise = function(fn) {
 
     function reject(value) {
         setTimeout(function() {
-            failcallbacks.forEach((callback) => {
+            failcallbacks.forEach(function(callback) {
                 callback(value);
             })
         }, 0)
