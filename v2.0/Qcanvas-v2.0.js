@@ -4770,8 +4770,7 @@ Qcanvas.prototype.start = function() {
     this.lastLoop = currentLoop;
 
 
-    window.requestNextAnimationFrame(this.start.bind(this))
-
+    this.r = window.requestNextAnimationFrame(this.start.bind(this)) 
 }
 
 Qcanvas.prototype.extend = function(o, n) {
@@ -5030,7 +5029,11 @@ Qcanvas.prototype.getShadowPixelColor = function(pos) {
 };
 //销毁所有对象 释放资源
 Qcanvas.prototype.destroy = function() {
+    var _this = this;
     this.elements = [];
+    setTimeout(function(){
+        window.cancelNextAnimationFrame(_this.r);
+    },200)
 
 }
 Qcanvas.prototype.Tween = {
@@ -5295,7 +5298,14 @@ Qcanvas.prototype.createAntLineEffect = function(obj){
     }
 }
 
-
+window.cancelNextAnimationFrame = window.cancelAnimationFrame ||
+  Window.webkitCancelAnimationFrame ||
+  window.mozCancelAnimationFrame ||
+  window.msCancelAnimationFrame ||
+  window.oCancelAnimationFrame ||
+  function (id) {
+    window.clearTimeout(id)
+  };
 
 typeof window.requestNextAnimationFrame == 'undefined' &&
     (function() {
